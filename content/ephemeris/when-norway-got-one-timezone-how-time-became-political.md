@@ -1,11 +1,11 @@
 ---
-title: "when norway got one timezone: the political battle from local solar time to cet"
+title: "When Norway Got One Timezone: The Political Battle from Local Solar Time to CET"
 slug: when-norway-got-one-timezone-how-time-became-political
 date: "2026-03-09"
 updated: "2026-03-09"
-author: "earth moves"
+author: "Earth Moves"
 column: natural-time
-description: "norway unified to one timezone on january 1, 1895, ditching local solar times across 26â° longitude. political fights over multi-zones lost to cet; learn how railways, greenwich's win, and earth's slowing rotation (needing utc leap seconds) shaped modern time."
+description: "Norway unified to one timezone on January 1, 1895, ditching local solar times across 26° longitude. Political fights over multi-zones lost to CET; learn how railways, Greenwich's win, and Earth's slowing rotation (needing UTC leap seconds) shaped modern time."
 keywords:
   - "norway timezone history"
   - "how timezones were created"
@@ -14,20 +14,20 @@ keywords:
 instrument: watch
 ---
 
-# when norway got one timezone: the political battle from local solar time to cet
+# When Norway Got One Timezone: The Political Battle from Local Solar Time to CET
 
-norway adopted central european timeâ€”utc+01:00â€”on 1 january 1895.
+Norway adopted Central European Time—UTC+01:00—on 1 January 1895.
 
-villages stretched across 26â° of longitude. utvã¦r sat at 4.7â° e. vardã¸ reached 30.9â° e. clocks followed the sun's zenith.
+Villages stretched across 26° of longitude. Utvær sat at 4.7° E. Vardø reached 30.9° E. Clocks followed the Sun's zenith.
 
-hammerfest, at 70.6â° n, saw noon arrive 1 hour 3 minutes after kristiansand, at 58.0â° n. earth turns 15â° per hour. or 7.292115 ã— 10â»âµ radians per second.
+Hammerfest, at 70.6° N, saw noon arrive 1 hour 3 minutes after Kristiansand, at 58.0° N. Earth turns 15° per hour. Or 7.292115 × 10⁻⁵ radians per second.
 
-church bells rang with shadows. markets opened at midday glare. fishermen in lofoten chased lunar tides. farmers in ã˜stlandet sowed under solstice rays.
+Church bells rang with shadows. Markets opened at midday glare. Fishermen in Lofoten chased lunar tides. Farmers in Østlandet sowed under solstice rays.
 
-a sundial in trondheim, 10.4â° e, caught true noon. the meridian crossed the subsolar point at 12:00:00.
+A sundial in Trondheim, 10.4° E, caught true noon. The meridian crossed the subsolar point at 12:00:00.
 
-steamships tore the pattern in the 1850s. coastal telegraphs hummed. signals from stockholm landed askew. captains twisted watches mid-voyage.
+Steamships tore the pattern in the 1850s. Coastal telegraphs hummed. Signals from Stockholm landed askew. Captains twisted watches mid-voyage.
 
-horse posts inland hauled time's rifts.
+Horse posts inland hauled time's rifts.
 
-one clock now binds the coast. earth's spin hums beneath. listen to its steady tick. norway turns as one.
+One clock now binds the coast. Earth's spin hums beneath. Listen to its steady tick. Norway turns as one.
