@@ -110,7 +110,7 @@ export default function HomePage() {
       {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â HERO Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section className="hero">
         <div className="hero-bg">
-          <Image src="/images/hero-earth.jpg" alt="Earth from space" fill priority quality={90} style={{ objectFit: "cover" }} />
+          <Image src="/images/hero-earth.webp" alt="Earth from space" fill priority quality={90} style={{ objectFit: "cover" }} />
         </div>
         <div className="hero-content">
           <h1>Earth Moves</h1>
