@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import "../earth-moves.css";
 
-// â”€â”€â”€ TYPES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ TYPES Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
 interface ArticleOrder {
   id: string;
@@ -24,7 +24,7 @@ interface ArticleOrder {
 
 const STAGE_LABELS: Record<string, { label: string; color: string; grok: string }> = {
   queued:      { label: "Queued",           color: "#555",    grok: "" },
-  planning:    { label: "GROK 1â†’2 Planning", color: "#E0A040", grok: "Commissioner + Architect" },
+  planning:    { label: "GROK 1Ã¢â€ â€™2 Planning", color: "#E0A040", grok: "Commissioner + Architect" },
   writing:     { label: "GROK 3 Writing",    color: "#60A5FA", grok: "The Writer" },
   imaging:     { label: "GROK 4 Generating",  color: "#C084FC", grok: "Image Director" },
   "editing-1": { label: "GROK 5 Fact-check", color: "#6BCB77", grok: "Precision Editor" },
@@ -35,7 +35,7 @@ const STAGE_LABELS: Record<string, { label: string; color: string; grok: string 
   error:       { label: "Error",             color: "#E06060", grok: "" },
 };
 
-// â”€â”€â”€ MAIN COMPONENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ MAIN COMPONENT Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
 export default function AIDashboard() {
   const [apiKey, setApiKey] = useState("");
@@ -123,7 +123,7 @@ export default function AIDashboard() {
           <div style={S.headerTag}>Ephemeris AI Pipeline</div>
           <h1 style={S.h1}>The Seven Groks</h1>
           <p style={S.headerSub}>
-            Commission â†’ Plan â†’ Write â†’ Image â†’ Fact-check â†’ Voice â†’ Proof â†’ Publish
+            Commission Ã¢â€ â€™ Plan Ã¢â€ â€™ Write Ã¢â€ â€™ Image Ã¢â€ â€™ Fact-check Ã¢â€ â€™ Voice Ã¢â€ â€™ Proof Ã¢â€ â€™ Publish
           </p>
         </header>
 
@@ -152,7 +152,7 @@ export default function AIDashboard() {
         </div>
 
         <div style={S.grid}>
-          {/* Left column â€” Controls */}
+          {/* Left column Ã¢â‚¬â€ Controls */}
           <div style={S.panel}>
             {/* API Key */}
             <div style={S.section}>
@@ -164,7 +164,7 @@ export default function AIDashboard() {
                 placeholder="xai-..."
                 style={S.input}
               />
-              <p style={S.hint}>Get yours at console.x.ai â€” stored locally only</p>
+              <p style={S.hint}>Get yours at console.x.ai Ã¢â‚¬â€ stored locally only</p>
             </div>
 
             {/* Auto-publish toggle */}
@@ -232,7 +232,7 @@ Aurora Forecast: Understanding the Kp Index`}
             </div>
           </div>
 
-          {/* Right column â€” Order status */}
+          {/* Right column Ã¢â‚¬â€ Order status */}
           <div style={S.panel}>
             <div style={{ ...S.row, marginBottom: 16 }}>
               <span style={S.label}>Pipeline Queue</span>
@@ -260,7 +260,7 @@ Aurora Forecast: Understanding the Kp Index`}
                       <div style={S.orderTopic}>{order.topic}</div>
                       <div style={S.orderMeta}>
                         {new Date(order.createdAt).toLocaleTimeString()}
-                        {stage.grok && <span style={{ marginLeft: 8, color: "rgba(160,180,220,.45)" }}>â†’ {stage.grok}</span>}
+                        {stage.grok && <span style={{ marginLeft: 8, color: "rgba(160,180,220,.45)" }}>Ã¢â€ â€™ {stage.grok}</span>}
                       </div>
                     </div>
                     <div style={{
@@ -269,7 +269,7 @@ Aurora Forecast: Understanding the Kp Index`}
                       borderColor: stage.color + "50",
                       color: stage.color,
                     }}>
-                      {order.status === "done" || order.status === "error" ? "" : "â— "}
+                      {order.status === "done" || order.status === "error" ? "" : "Ã¢â€”Â "}
                       {stage.label}
                     </div>
                   </div>
@@ -279,7 +279,7 @@ Aurora Forecast: Understanding the Kp Index`}
                       {order.error && <p style={{ color: "#E06060", fontSize: 12 }}>Error: {order.error}</p>}
                       {order.slug && order.status === "done" && (
                         <Link href={`/ephemeris/${order.slug}`} style={S.viewLink}>
-                          View published article â†’
+                          View published article Ã¢â€ â€™
                         </Link>
                       )}
                       {order.images && order.images.length > 0 && (
@@ -346,7 +346,7 @@ Aurora Forecast: Understanding the Kp Index`}
   );
 }
 
-// â”€â”€â”€ STYLES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ STYLES Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
 const S: Record<string, React.CSSProperties> = {
   page: {

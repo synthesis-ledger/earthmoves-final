@@ -1,7 +1,7 @@
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// EARTH MOVES â€” THE EPHEMERIS AI PIPELINE v2
+// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// EARTH MOVES Ã¢â‚¬â€ THE EPHEMERIS AI PIPELINE v2
 // 7-stage Grok pipeline with REAL image generation via grok-imagine-image
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
 
 import fs from "fs";
 import path from "path";
@@ -11,7 +11,7 @@ const GROK_IMAGE_URL = "https://api.x.ai/v1/images/generations";
 const GROK_MODEL = "grok-4-1-fast-reasoning";
 const GROK_IMAGE_MODEL = "grok-imagine-image";
 
-// â”€â”€â”€ TYPES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ TYPES Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
 export interface GeneratedImage {
   position: string;      // "hero" | "after-section-1" etc.
@@ -43,7 +43,7 @@ export interface PipelineConfig {
   grokApiKey: string;
 }
 
-// â”€â”€â”€ STATUS PERSISTENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ STATUS PERSISTENCE Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
 const STATUS_DIR = path.join(process.cwd(), "content", "ephemeris");
 const STATUS_FILE = path.join(STATUS_DIR, ".pipeline-status.json");
@@ -60,7 +60,7 @@ export function savePipelineStatus(orders: ArticleOrder[]) {
   fs.writeFileSync(STATUS_FILE, JSON.stringify(orders, null, 2));
 }
 
-// â”€â”€â”€ GROK CHAT API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ GROK CHAT API Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
 async function callGrok(
   systemPrompt: string,
@@ -101,7 +101,7 @@ async function callGrok(
   throw new Error("Grok call failed after retries");
 }
 
-// â”€â”€â”€ GROK IMAGE GENERATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ GROK IMAGE GENERATION Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
 async function generateImage(
   prompt: string,
@@ -163,9 +163,9 @@ async function downloadImage(url: string, savePath: string): Promise<boolean> {
 
 function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)); }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  THE SEVEN GROK INSTANCES â€” SOUL DEFINITIONS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+//  THE SEVEN GROK INSTANCES Ã¢â‚¬â€ SOUL DEFINITIONS
+// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
 
 const GROK1_SOUL = `You are the Commissioner of The Ephemeris, the editorial publication of Earth Moves.
 
@@ -173,7 +173,7 @@ ABOUT EARTH MOVES:
 Earth Moves reconnects humanity with astronomical time. It has two live instruments: 
 The Watch (24-hour polar projection chronometer with NASA textures, real-time day/night, 
 Moon, ISS tracking, tidal ellipses, NOAA space weather) and The Calendar (orbital view 
-of Earth around the Sun with zodiac constellations, planetary positions, 8 FyrtÃ¥rn anchor 
+of Earth around the Sun with zodiac constellations, planetary positions, 8 FyrtÃƒÂ¥rn anchor 
 dates for solstices/equinoxes/cross-quarters).
 
 Philosophy: industrial time (seconds, minutes, hours) disconnects us from nature. Natural 
@@ -211,11 +211,11 @@ DECIDE:
 2. SECTIONS: 3-6 H2 sections. First paragraph must directly answer the primary 
    question (for AI citation engines). Include a "The numbers" data section.
 3. IMAGES: 2-4 images. The FIRST image is always position "hero" (used as the 
-   article's header image in frontmatter â€” NOT placed in the article body).
+   article's header image in frontmatter Ã¢â‚¬â€ NOT placed in the article body).
    Additional images use positions "inline-1", "inline-2", "inline-3" and ARE 
    placed in the article body by the writer. Each image needs a detailed 
    visual description for AI image generation. Every image MUST have a unique 
-   description â€” never request the same visual twice. Think: deep void black 
+   description Ã¢â‚¬â€ never request the same visual twice. Think: deep void black 
    backgrounds, astronomical subjects, Earth from space, the cosmos.
 4. FAQ: 3-5 question-answer pairs for Schema.org markup.
 
@@ -238,7 +238,7 @@ Return ONLY this JSON:
 
 const GROK3_SOUL = `You are the voice of Earth Moves.
 
-You write for The Ephemeris â€” the editorial arm of a project reconnecting humanity 
+You write for The Ephemeris Ã¢â‚¬â€ the editorial arm of a project reconnecting humanity 
 with astronomical time. You are not a blogger or journalist. You are something closer 
 to a thoughtful observatory director: scientifically precise, philosophically grounded, 
 occasionally poetic without being flowery.
@@ -259,7 +259,7 @@ STRUCTURE:
 - "The numbers" section with key data points.
 - Final paragraph: Connect to human experience. Reference the relevant instrument.
 
-TERMINOLOGY: "Sol" for astronomical day. "FyrtÃ¥rn" for 8 orbital anchors. "Natural time" 
+TERMINOLOGY: "Sol" for astronomical day. "FyrtÃƒÂ¥rn" for 8 orbital anchors. "Natural time" 
 vs "industrial time". "The Watch" and "The Calendar" (capitalised). Earth, Moon, Sun 
 capitalised.
 
@@ -269,14 +269,14 @@ ABSOLUTELY FORBIDDEN:
 "Did you know?" / Any clickbait. No emojis. No hedging on established science.
 
 IMAGES: Place {{IMAGE_SLOT:inline-1}}, {{IMAGE_SLOT:inline-2}} etc. where the Architect 
-specified inline images. Do NOT place {{IMAGE_SLOT:hero}} â€” the hero image is handled 
+specified inline images. Do NOT place {{IMAGE_SLOT:hero}} Ã¢â‚¬â€ the hero image is handled 
 automatically by the page template. Only use inline-1, inline-2, inline-3 for body images.
 Never place the same slot marker twice.
 
 FAQ: Do NOT write FAQ content in the article body. No "Frequently Asked Questions" heading.
 No Q&A pairs in the text. The FAQ section is rendered automatically from frontmatter data 
 by the page template. If you feel compelled to answer a FAQ question, weave the answer 
-naturally into the relevant section â€” but never as a labelled Q&A format.
+naturally into the relevant section Ã¢â‚¬â€ but never as a labelled Q&A format.
 
 Write complete Markdown. No frontmatter. Follow the blueprint exactly.`;
 
@@ -290,14 +290,14 @@ THE EARTH MOVES AESTHETIC:
 - Deep void black backgrounds (#000000 to #060A13)
 - Sapphire blue atmospheric glows
 - Gold (#C9A96E) accent lighting
-- Crystalline clarity â€” sharp, not soft
-- Scientific precision â€” diagrams should look like observatory instruments
+- Crystalline clarity Ã¢â‚¬â€ sharp, not soft
+- Scientific precision Ã¢â‚¬â€ diagrams should look like observatory instruments
 - No text in images (text is added by the article layout)
 - No people unless specifically about human experience
 - Photorealistic for astronomical subjects (Earth, Moon, Sun, stars)
 - Technical/diagrammatic for orbital mechanics and instrument explanations
 
-FOR EACH IMAGE, return enhanced prompts. Use UNIQUE descriptions for every image â€” 
+FOR EACH IMAGE, return enhanced prompts. Use UNIQUE descriptions for every image Ã¢â‚¬â€ 
 never generate the same visual twice in one article. The first image (position "hero") 
 uses 16:9 aspect ratio. Inline images use "4:3" or "3:2".
 
@@ -336,9 +336,9 @@ SOLE FOCUS: factual accuracy. Verify every claim in the article.
 CHECK EVERY:
 - Distance (Earth-Sun perihelion 147.1M km, aphelion 152.1M km)
 - Speed (Earth orbital: 29.29-30.29 km/s)
-- Date (solstices, equinoxes, meteor peaks â€” verify mentally against known values)
+- Date (solstices, equinoxes, meteor peaks Ã¢â‚¬â€ verify mentally against known values)
 - Period (Moon synodic: 29.53 days, sidereal: 27.32 days)
-- Tilt (Earth axial: 23.44Â°)
+- Tilt (Earth axial: 23.44Ã‚Â°)
 - Historical dates and attributions
 - Names of missions, spacecraft, astronomers
 
@@ -358,9 +358,9 @@ THE EARTH MOVES VOICE: Meditative yet precise. Curious, not performative. Confid
 on science. Connects cosmic to human. Respects intelligence.
 
 KILL ON SIGHT:
-- "Interestingly..." "Fascinatingly..." "Remarkably..." â€” empty calories
-- "It's worth noting that..." â€” just note it
-- "Scientists believe..." â€” name the science or state the fact
+- "Interestingly..." "Fascinatingly..." "Remarkably..." Ã¢â‚¬â€ empty calories
+- "It's worth noting that..." Ã¢â‚¬â€ just note it
+- "Scientists believe..." Ã¢â‚¬â€ name the science or state the fact
 - Passive voice where active is stronger
 - Paragraphs >5 sentences. Sentences >30 words (rare exceptions for rhythm)
 - Corporate-blog voice. "Dive into" "unpack" "game-changer" "cutting-edge"
@@ -380,16 +380,16 @@ The article has been fact-checked and voice-edited. You are the last eyes.
 
 CHECK:
 - Grammar, spelling (British-leaning international English, Oxford comma)
-- Punctuation: em dashes no spaces (â€”), correct semicolons
+- Punctuation: em dashes no spaces (Ã¢â‚¬â€), correct semicolons
 - Markdown: ## headings, **bold**, *italic*, proper lists
 - No orphaned sentences or incomplete paragraphs
 - Smooth transitions between sections
 - "The numbers" section uses consistent dash bullets
 - FAQ answers are complete concise sentences
-- Consistent caps: Earth, Moon, Sun, the Watch, the Calendar, FyrtÃ¥rn
+- Consistent caps: Earth, Moon, Sun, the Watch, the Calendar, FyrtÃƒÂ¥rn
 - {{IMAGE_SLOT:position}} markers preserved for inline images (don't remove them)
-- If you see {{IMAGE_SLOT:hero}} in the body, REMOVE it â€” the hero is handled by template
-- If you see a "Frequently Asked Questions" section with Q&A pairs, REMOVE it entirely â€” 
+- If you see {{IMAGE_SLOT:hero}} in the body, REMOVE it Ã¢â‚¬â€ the hero is handled by template
+- If you see a "Frequently Asked Questions" section with Q&A pairs, REMOVE it entirely Ã¢â‚¬â€ 
   FAQ is rendered from frontmatter by the page template, not from body text
 - Remove any duplicate images (same path appearing twice)
 
@@ -398,15 +398,15 @@ VERIFY STRUCTURE:
 - 3-6 H2 sections
 - "The numbers" section exists
 - Final paragraph references instrument
-- Word count within Â±15% of target
+- Word count within Ã‚Â±15% of target
 
 OUTPUT: Complete final article in Markdown.
 After the article, add --- then: {"wordCount": N, "quality": "publish|needs-review"}`;
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
 //  PIPELINE EXECUTION
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
 
 function toSlug(title: string): string {
   return title.toLowerCase().replace(/[''""]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
@@ -434,7 +434,7 @@ export async function runPipeline(order: ArticleOrder, config: PipelineConfig): 
   };
 
   try {
-    // â•â•â• STAGE 1: COMMISSIONER â•â•â•
+    // Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â STAGE 1: COMMISSIONER Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
     update({ status: "planning" });
     const briefRaw = await callGrok(GROK1_SOUL,
       `Article order:\n${order.topic}\n\nAdditional notes: ${order.notes || "None"}`,
@@ -448,7 +448,7 @@ export async function runPipeline(order: ArticleOrder, config: PipelineConfig): 
 
     const slug = briefData.slug as string;
 
-    // â•â•â• STAGE 2: ARCHITECT â•â•â•
+    // Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â STAGE 2: ARCHITECT Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
     const planRaw = await callGrok(GROK2_SOUL,
       `Commissioner's brief:\n${JSON.stringify(briefData, null, 2)}`,
       grokApiKey, 0.6, 2500);
@@ -456,13 +456,13 @@ export async function runPipeline(order: ArticleOrder, config: PipelineConfig): 
     const planData = parseJSON(planRaw);
     update({ plan: JSON.stringify(planData) });
 
-    // â•â•â• STAGE 3: WRITER â•â•â•
+    // Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â STAGE 3: WRITER Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
     update({ status: "writing" });
     const writerPrompt = `BRIEF:\n${JSON.stringify(briefData, null, 2)}\n\nBLUEPRINT:\n${JSON.stringify(planData, null, 2)}\n\nWrite the complete article. Target ${(planData.wordCount as number) || 2000} words. Place {{IMAGE_SLOT:hero}} before the first section and {{IMAGE_SLOT:inline-N}} where images belong.`;
     const draft = await callGrok(GROK3_SOUL, writerPrompt, grokApiKey, 0.8, 8000);
     update({ draft, status: "imaging" });
 
-    // â•â•â• STAGE 4: IMAGE DIRECTOR + GENERATION â•â•â•
+    // Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â STAGE 4: IMAGE DIRECTOR + GENERATION Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
     const architectImages = (planData.images as { position: string; generationPrompt?: string; aspectRatio?: string; alt?: string }[]) || [];
 
     // Get refined prompts from Grok 4
@@ -497,9 +497,9 @@ export async function runPipeline(order: ArticleOrder, config: PipelineConfig): 
             alt: spec.alt || (briefData.title as string),
             credit: "Generated by Earth Moves AI",
           });
-          console.log(`âœ… Image saved: ${savePath}`);
+          console.log(`Ã¢Å“â€¦ Image saved: ${savePath}`);
         } else {
-          console.warn(`âš  Image download failed for ${spec.position}, retrying with simpler prompt...`);
+          console.warn(`Ã¢Å¡Â  Image download failed for ${spec.position}, retrying with simpler prompt...`);
           // Retry with simplified prompt
           const retryUrl = await generateImage(
             `${(briefData.title as string)}, deep space void black background, astronomical, 8K detail`,
@@ -519,10 +519,10 @@ export async function runPipeline(order: ArticleOrder, config: PipelineConfig): 
           }
         }
       } else {
-        console.warn(`âš  Image generation failed for ${spec.position} after all retries`);
+        console.warn(`Ã¢Å¡Â  Image generation failed for ${spec.position} after all retries`);
       }
 
-      // Rate limit courtesy â€” wait between image generations
+      // Rate limit courtesy Ã¢â‚¬â€ wait between image generations
       await sleep(1500);
     }
 
@@ -546,19 +546,19 @@ export async function runPipeline(order: ArticleOrder, config: PipelineConfig): 
     patchedDraft = patchedDraft.replace(/## Frequently Asked Questions[\s\S]*?(?=\n## |\n---|\Z)/gi, "");
     patchedDraft = patchedDraft.replace(/## FAQ[\s\S]*?(?=\n## |\n---|\Z)/gi, "");
 
-    // â•â•â• STAGE 5: PRECISION EDITOR â•â•â•
+    // Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â STAGE 5: PRECISION EDITOR Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
     update({ status: "editing-1" });
     const edit1 = await callGrok(GROK5_SOUL,
       `Verify all facts:\n\n${patchedDraft}`, grokApiKey, 0.3, 8000);
     update({ edit1 });
 
-    // â•â•â• STAGE 6: VOICE EDITOR â•â•â•
+    // Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â STAGE 6: VOICE EDITOR Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
     update({ status: "editing-2" });
     const edit2 = await callGrok(GROK6_SOUL,
       `Polish voice and tone:\n\n${edit1}`, grokApiKey, 0.6, 8000);
     update({ edit2 });
 
-    // â•â•â• STAGE 7: FINAL PROOF â•â•â•
+    // Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â STAGE 7: FINAL PROOF Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
     update({ status: "editing-3" });
     const finalRaw = await callGrok(GROK7_SOUL,
       `Final proof:\n\n${edit2}`, grokApiKey, 0.3, 8000);
@@ -568,7 +568,7 @@ export async function runPipeline(order: ArticleOrder, config: PipelineConfig): 
     const finalArticle = splitIdx > 0 ? finalRaw.slice(0, splitIdx).trim() : finalRaw.trim();
     update({ final: finalArticle });
 
-    // â•â•â• PUBLISH â•â•â•
+    // Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â PUBLISH Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
     if (config.autoPublish) {
       update({ status: "publishing" });
       const date = new Date().toISOString().slice(0, 10);
@@ -608,7 +608,7 @@ instrument: ${(briefData.instrument as string) || "none"}`;
 
       const filePath = path.join(process.cwd(), "content", "ephemeris", `${slug}.md`);
       fs.writeFileSync(filePath, frontmatter + finalArticle, "utf-8");
-      console.log(`âœ… Published: ${filePath}`);
+      console.log(`Ã¢Å“â€¦ Published: ${filePath}`);
 
       update({ status: "done", slug, completedAt: new Date().toISOString() });
     } else {
@@ -623,7 +623,7 @@ instrument: ${(briefData.instrument as string) || "none"}`;
   }
 }
 
-// â”€â”€â”€ PARSE ORDERS FILE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ PARSE ORDERS FILE Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
 export function parseOrdersFromText(text: string): { topic: string; notes?: string }[] {
   return text

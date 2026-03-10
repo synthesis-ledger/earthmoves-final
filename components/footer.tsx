@@ -26,7 +26,7 @@ export default function Footer() {
           TEDx Talk
         </a>
       </div>
-      <span className="f-copy">Â© 2026 Earth Moves AS</span>
+      <span className="f-copy">Ã‚Â© 2026 Earth Moves AS</span>
     </footer>
   );
 }

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './earth-moves.css'
 
 export const metadata: Metadata = {
-  title: 'Earth Moves â€” Connecting Nature, Space and Time',
+  title: 'Earth Moves Ã¢â‚¬â€ Connecting Nature, Space and Time',
   description: 'Experience time as Earth. A 24-hour chronometer and orbital calendar by Brage W. Johansen.',
 }
 
