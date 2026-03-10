@@ -83,7 +83,6 @@ export default function HomePage() {
       {/* ═══ NAV ═══ */}
       <nav className={`em-nav${scrolled ? " scrolled" : ""}`}>
         <Link href="/" className="nav-logo">
-          {/* Path updated to /images/ */}
           <Image src="/images/em-logo-white.png" alt="Earth Moves" width={160} height={32} style={{ height: "auto", width: "clamp(120px, 12vw, 160px)" }} priority />
         </Link>
         <div className="nav-links">
@@ -111,17 +110,8 @@ export default function HomePage() {
       {/* ═══ HERO ═══ */}
       <section className="hero">
         <div className="hero-bg">
-          {/* Swapped to Video tag to support your .mp4 file */}
-          <video 
-            autoPlay 
-            muted 
-            loop 
-            playsInline
-            poster="/images/hero-earth.webp" 
-            style={{ objectFit: "cover", width: "100%", height: "100%" }}
-          >
-            <source src="/images/watches-hero.mp4" type="video/mp4" />
-          </video>
+          {/* RESTORED: Static Hero Image instead of video */}
+          <Image src="/images/hero-earth.webp" alt="Earth from space" fill priority quality={90} style={{ objectFit: "cover" }} />
         </div>
         <div className="hero-content">
           <h1>Earth Moves</h1>
@@ -228,7 +218,6 @@ export default function HomePage() {
                   display: "grid", gridTemplateColumns: "1fr 1fr",
                   gap: "clamp(1rem, 2vw, 2rem)",
                 }}>
-                  {/* Copernicus - Path updated to /images/ */}
                   <Link href="/watches" style={{
                     textDecoration: "none", color: "inherit",
                     borderRadius: 20, overflow: "hidden",
@@ -269,7 +258,6 @@ export default function HomePage() {
                     </div>
                   </Link>
       
-                  {/* Oceanic - Path updated to /images/ */}
                   <Link href="/watches" style={{
                     textDecoration: "none", color: "inherit",
                     borderRadius: 20, overflow: "hidden",
@@ -385,7 +373,6 @@ export default function HomePage() {
 
       {/* ═══ FOOTER ═══ */}
       <footer className="em-footer">
-        {/* Path updated to /images/ */}
         <Link href="/" className="f-brand"><Image src="/images/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: 120, opacity: 0.8 }} /></Link>
         <div className="f-links">
           <Link href="/watch">Watch</Link>

@@ -1,7 +1,7 @@
-// ═══════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════════════
 // /app/ephemeris/[slug]/page.tsx — Individual article page
 // Server Component: full SSR for SEO + AEO crawlability
-// ═══════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════════════
 
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -121,7 +121,8 @@ export default async function ArticlePage(props: {
       {/* ═══ NAV ═══ */}
       <nav className="em-nav scrolled">
         <Link href="/" className="nav-logo">
-          <Image src="/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: "clamp(120px, 12vw, 160px)" }} priority />
+          {/* Path updated to /images/ */}
+          <Image src="/images/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: "clamp(120px, 12vw, 160px)" }} priority />
         </Link>
         <div className="nav-links">
           <Link href="/#instruments">Instruments</Link>
@@ -237,7 +238,8 @@ export default async function ArticlePage(props: {
       {/* ═══ FOOTER ═══ */}
       <footer className="em-footer">
         <div className="f-brand">
-          <Image src="/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: 120, opacity: 0.8 }} />
+          {/* Path updated to /images/ */}
+          <Image src="/images/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: 120, opacity: 0.8 }} />
         </div>
         <div className="f-links">
           <Link href="/watch">Watch</Link>
