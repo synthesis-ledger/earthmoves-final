@@ -83,7 +83,8 @@ export default function HomePage() {
       {/* ═══ NAV ═══ */}
       <nav className={`em-nav${scrolled ? " scrolled" : ""}`}>
         <Link href="/" className="nav-logo">
-          <Image src="/em-logo-white.png" alt="Earth Moves" width={160} height={32} style={{ height: "auto", width: "clamp(120px, 12vw, 160px)" }} priority />
+          {/* Path updated to /images/ */}
+          <Image src="/images/em-logo-white.png" alt="Earth Moves" width={160} height={32} style={{ height: "auto", width: "clamp(120px, 12vw, 160px)" }} priority />
         </Link>
         <div className="nav-links">
           <Link href="#instruments">Instruments</Link>
@@ -110,7 +111,17 @@ export default function HomePage() {
       {/* ═══ HERO ═══ */}
       <section className="hero">
         <div className="hero-bg">
-          <Image src="/images/hero-earth.webp" alt="Earth from space" fill priority quality={90} style={{ objectFit: "cover" }} />
+          {/* Swapped to Video tag to support your .mp4 file */}
+          <video 
+            autoPlay 
+            muted 
+            loop 
+            playsInline
+            poster="/images/hero-earth.webp" 
+            style={{ objectFit: "cover", width: "100%", height: "100%" }}
+          >
+            <source src="/images/watches-hero.mp4" type="video/mp4" />
+          </video>
         </div>
         <div className="hero-content">
           <h1>Earth Moves</h1>
@@ -140,7 +151,6 @@ export default function HomePage() {
         </div>
         <div className="instruments-grid">
           <div className="instrument-card reveal">
-            {/* Updated to .webp based on your file list */}
             <Image className="instrument-img" src="/images/watch-instrument.webp" alt="Earth Moves Watch — Live polar projection with real-time day/night cycle" width={600} height={600} />
             <div className="instrument-body">
               <h3>The Watch</h3>
@@ -149,7 +159,6 @@ export default function HomePage() {
             </div>
           </div>
           <div className="instrument-card reveal reveal-delay-1">
-            {/* Updated to .webp based on your file list */}
             <Image className="instrument-img" src="/images/calendar-instrument.webp" alt="Earth Moves Calendar — Orbital view with zodiac constellations" width={600} height={600} />
             <div className="instrument-body">
               <h3>The Calendar</h3>
@@ -219,7 +228,7 @@ export default function HomePage() {
                   display: "grid", gridTemplateColumns: "1fr 1fr",
                   gap: "clamp(1rem, 2vw, 2rem)",
                 }}>
-                  {/* Copernicus - Fixed to .png.png based on your file list */}
+                  {/* Copernicus - Path updated to /images/ */}
                   <Link href="/watches" style={{
                     textDecoration: "none", color: "inherit",
                     borderRadius: 20, overflow: "hidden",
@@ -230,7 +239,7 @@ export default function HomePage() {
                   }}>
                     <div style={{ overflow: "hidden", aspectRatio: "16/10" }}>
                       <Image
-                        src="/copernicus-front.png.png"
+                        src="/images/copernicus-front.png.png"
                         alt="Earth Moves Copernicus"
                         width={1920} height={1200}
                         style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s" }}
@@ -260,7 +269,7 @@ export default function HomePage() {
                     </div>
                   </Link>
       
-                  {/* Oceanic - Fixed to .png.png based on your file list */}
+                  {/* Oceanic - Path updated to /images/ */}
                   <Link href="/watches" style={{
                     textDecoration: "none", color: "inherit",
                     borderRadius: 20, overflow: "hidden",
@@ -271,7 +280,7 @@ export default function HomePage() {
                   }}>
                     <div style={{ overflow: "hidden", aspectRatio: "16/10" }}>
                       <Image
-                        src="/oceanic-front.png.png"
+                        src="/images/oceanic-front.png.png"
                         alt="Earth Moves Oceanic"
                         width={1920} height={1200}
                         style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s" }}
@@ -376,7 +385,8 @@ export default function HomePage() {
 
       {/* ═══ FOOTER ═══ */}
       <footer className="em-footer">
-        <Link href="/" className="f-brand"><Image src="/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: 120, opacity: 0.8 }} /></Link>
+        {/* Path updated to /images/ */}
+        <Link href="/" className="f-brand"><Image src="/images/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: 120, opacity: 0.8 }} /></Link>
         <div className="f-links">
           <Link href="/watch">Watch</Link>
           <Link href="/calendar">Calendar</Link>

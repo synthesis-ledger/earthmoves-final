@@ -35,8 +35,9 @@ export default function Nav() {
     <>
       <nav className={`em-nav${showScrolled ? " scrolled" : ""}`}>
         <Link href="/" className="nav-logo">
+          {/* Updated path to /images/ */}
           <Image
-            src="/em-logo-white.png"
+            src="/images/em-logo-white.png"
             alt="Earth Moves"
             width={160}
             height={32}

@@ -44,7 +44,8 @@ export default function EphemerisIndex() {
 
       <nav className="em-nav scrolled">
         <Link href="/" className="nav-logo">
-          <Image src="/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: "clamp(120px, 12vw, 160px)" }} priority />
+          {/* Path updated to /images/ */}
+          <Image src="/images/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: "clamp(120px, 12vw, 160px)" }} priority />
         </Link>
         <div className="nav-links">
           <Link href="/#instruments">Instruments</Link>
@@ -112,7 +113,8 @@ export default function EphemerisIndex() {
 
       <footer className="em-footer">
         <Link href="/" className="f-brand">
-          <Image src="/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: 120, opacity: 0.8 }} />
+          {/* Path updated to /images/ */}
+          <Image src="/images/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: 120, opacity: 0.8 }} />
         </Link>
         <div className="f-links">
           <Link href="/watch">Watch</Link>

@@ -5,8 +5,9 @@ export default function Footer() {
   return (
     <footer className="em-footer">
       <Link href="/" className="f-brand">
+        {/* Updated path to /images/ */}
         <Image
-          src="/em-logo-white.png"
+          src="/images/em-logo-white.png"
           alt="Earth Moves"
           width={120}
           height={24}
@@ -26,7 +27,7 @@ export default function Footer() {
           TEDx Talk
         </a>
       </div>
-      <span className="f-copy">Ã‚Â© 2026 Earth Moves AS</span>
+      <span className="f-copy">© 2026 Earth Moves AS</span>
     </footer>
   );
 }

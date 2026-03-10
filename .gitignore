@@ -3,5 +3,7 @@
 .env
 .env.local
 .env*.local
-*.mp4
-public/ephemeris/
+
+# REMOVE THESE LINES:
+# *.mp4
+# public/ephemeris/
