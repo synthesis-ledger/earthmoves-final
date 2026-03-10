@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import "./earth-moves.css";
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Article type for homepage Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── Article type for homepage ──────────────────────────────────────────
 interface HomeArticle {
   title: string;
   slug: string;
@@ -43,13 +43,13 @@ export default function HomePage() {
     return () => observer.disconnect();
   }, []);
 
-  // Fallback data matching real articles Ã¢â‚¬â€ ensures variants always render
+  // Fallback data matching real articles — ensures variants always render
   const FALLBACK_ARTICLES: HomeArticle[] = [
-    { title: "8 FyrtÃƒÂ¥rn Anchors: Earth's Orbital Celebrations Ã¢â‚¬â€ Solstices, Equinoxes & Cross-Quarters", slug: "eight-fyrtarn-anchors", column: "Natural Time", columnColor: "#6BCB77", description: "Earth Moves identifies 8 astronomical anchors marking our orbital journey: Perihelion, Imbolc, Vernal Equinox, Beltane, Summer Solstice, Lammas, Autumnal Equinox, and Winter Solstice.", date: "2026-03-09", readingTime: 5 },
+    { title: "8 Fyrtårn Anchors: Earth's Orbital Celebrations — Solstices, Equinoxes & Cross-Quarters", slug: "eight-fyrtarn-anchors", column: "Natural Time", columnColor: "#6BCB77", description: "Earth Moves identifies 8 astronomical anchors marking our orbital journey: Perihelion, Imbolc, Vernal Equinox, Beltane, Summer Solstice, Lammas, Autumnal Equinox, and Winter Solstice.", date: "2026-03-09", readingTime: 5 },
     { title: "Aurora Borealis & Australis: Complete Guide to Causes, Colors & Viewing Tips", slug: "aurora-borealis-australis-explained", column: "Space Weather", columnColor: "#60A5FA", description: "What causes Aurora Borealis and Australis? Solar wind particles excite oxygen for green/red glows. Best viewing: Kp 3+, midnight, dark skies.", date: "2026-03-09", readingTime: 4 },
     { title: "Carrington Event: The Solar Storm That Could Destroy the Power Grid", slug: "carrington-event-solar-storm", column: "Space Weather", columnColor: "#60A5FA", description: "What if a Carrington-level solar storm hit today? The 1859 event fried telegraphs; now it could cost trillions and collapse modern infrastructure.", date: "2026-03-09", readingTime: 4 },
     { title: "The Sleeping Satellite: Understanding Earth's Moon", slug: "the-sleeping-satellite-moon", column: "Natural Time", columnColor: "#6BCB77", description: "The Moon orbits Earth in 29.5 days, tidally locked so we always see the same face. It creates tides, stabilises Earth's tilt, and shaped the evolution of life.", date: "2026-03-09", readingTime: 5 },
-    { title: "Coronal Mass Ejections: When the Sun Hurls Billions of Tons at Earth", slug: "coronal-mass-ejections-explained", column: "Space Weather", columnColor: "#60A5FA", description: "A CME is a massive plasma eruption from the Sun Ã¢â‚¬â€ 1-10 billion tonnes travelling at up to 3,000 km/s. When Earth-directed, they drive aurora and geomagnetic storms.", date: "2026-03-09", readingTime: 4 },
+    { title: "Coronal Mass Ejections: When the Sun Hurls Billions of Tons at Earth", slug: "coronal-mass-ejections-explained", column: "Space Weather", columnColor: "#60A5FA", description: "A CME is a massive plasma eruption from the Sun — 1-10 billion tonnes travelling at up to 3,000 km/s. When Earth-directed, they drive aurora and geomagnetic storms.", date: "2026-03-09", readingTime: 4 },
   ];
 
   const [latestArticles, setLatestArticles] = useState<HomeArticle[]>(FALLBACK_ARTICLES);
@@ -80,7 +80,7 @@ export default function HomePage() {
     <>
       <div className="stars" />
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â NAV Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══ NAV ═══ */}
       <nav className={`em-nav${scrolled ? " scrolled" : ""}`}>
         <Link href="/" className="nav-logo">
           <Image src="/em-logo-white.png" alt="Earth Moves" width={160} height={32} style={{ height: "auto", width: "clamp(120px, 12vw, 160px)" }} priority />
@@ -107,7 +107,7 @@ export default function HomePage() {
         <Link href="#talk" onClick={closeMobile}>TEDx Talk</Link>
       </div>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â HERO Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══ HERO ═══ */}
       <section className="hero">
         <div className="hero-bg">
           <Image src="/images/hero-earth.webp" alt="Earth from space" fill priority quality={90} style={{ objectFit: "cover" }} />
@@ -120,7 +120,7 @@ export default function HomePage() {
         <div className="hero-scroll"><span>Explore</span><div className="scroll-line" /></div>
       </section>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â PHILOSOPHY Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══ PHILOSOPHY ═══ */}
       <section className="philosophy" id="philosophy">
         <span className="section-label reveal">A New Concept of Time</span>
         <blockquote className="reveal reveal-delay-1">
@@ -129,10 +129,10 @@ export default function HomePage() {
           Seeing time and the nearby solar system in context can provide new
           mental insight.
         </blockquote>
-        <cite className="reveal reveal-delay-2">Ã¢â‚¬â€ The Earth Moves Philosophy</cite>
+        <cite className="reveal reveal-delay-2">— The Earth Moves Philosophy</cite>
       </section>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â INSTRUMENTS Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══ INSTRUMENTS ═══ */}
       <section className="instruments" id="instruments">
         <div className="instruments-header">
           <span className="section-label reveal">Online Instruments</span>
@@ -140,15 +140,17 @@ export default function HomePage() {
         </div>
         <div className="instruments-grid">
           <div className="instrument-card reveal">
-            <Image className="instrument-img" src="/images/watch-instrument.png" alt="Earth Moves Watch Ã¢â‚¬â€ Live polar projection with real-time day/night cycle" width={600} height={600} />
+            {/* Updated to .webp based on your file list */}
+            <Image className="instrument-img" src="/images/watch-instrument.webp" alt="Earth Moves Watch — Live polar projection with real-time day/night cycle" width={600} height={600} />
             <div className="instrument-body">
               <h3>The Watch</h3>
-              <p>A 24-hour timepiece following Earth&apos;s rotation. See your location on a live polar projection with real-time day and night, the Moon&apos;s position, cities illuminated, and the ISS orbiting overhead Ã¢â‚¬â€ all moving as Earth truly does.</p>
+              <p>A 24-hour timepiece following Earth&apos;s rotation. See your location on a live polar projection with real-time day and night, the Moon&apos;s position, cities illuminated, and the ISS orbiting overhead — all moving as Earth truly does.</p>
               <Link href="/watch" className="btn-instrument">View Online Instrument <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg></Link>
             </div>
           </div>
           <div className="instrument-card reveal reveal-delay-1">
-            <Image className="instrument-img" src="/images/calendar-instrument.png" alt="Earth Moves Calendar Ã¢â‚¬â€ Orbital view with zodiac constellations" width={600} height={600} />
+            {/* Updated to .webp based on your file list */}
+            <Image className="instrument-img" src="/images/calendar-instrument.webp" alt="Earth Moves Calendar — Orbital view with zodiac constellations" width={600} height={600} />
             <div className="instrument-body">
               <h3>The Calendar</h3>
               <p>An orbital calendar displaying Earth&apos;s precise position around the Sun. Track equinoxes, solstices, and celestial events through an immersive visualization with zodiac constellations, planetary positions, and real-time astronomical data.</p>
@@ -159,47 +161,32 @@ export default function HomePage() {
       </section>
 
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â THE EPHEMERIS Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══ THE EPHEMERIS ═══ */}
       <VariantG arts={arts} />
 
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â FEATURES Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══ FEATURES ═══ */}
       <section className="features" id="features">
         <div className="features-header">
           <span className="section-label reveal">Why Earth Moves</span>
           <h2 className="reveal reveal-delay-1">Reconnect with the rhythm of nature</h2>
         </div>
         <div className="features-grid">
-          <Feature icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" /></svg>} title="Get Grounded" text='Earth Moves is "a priori" Ã¢â‚¬â€ a foundational truth. The Earth moves around the Sun. That is why we have time. Know where you are on the planet.' />
+          <Feature icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" /></svg>} title="Get Grounded" text='Earth Moves is "a priori" — a foundational truth. The Earth moves around the Sun. That is why we have time. Know where you are on the planet.' />
           <Feature icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 3a6 6 0 016 6c0 5-6 9-6 9s-6-4-6-9a6 6 0 016-6z" /><circle cx="12" cy="9" r="2" /></svg>} title="Align with Nature" text="Nature follows the Earth's seasons around the Sun. No biological process takes exactly one second. Events take a moment, a day, a season." delay={1} />
           <Feature icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></svg>} title="Understand Near Space" text="When you have a model of the Moon, Earth, and Sun on your wrist, you gain a correct model of what is happening around you in the cosmos." delay={2} />
-          <Feature icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" /><path d="M12 6v6l4 2" /></svg>} title="Reduce Stress" text="The industrial clock is meant to control. With Earth Moves, perhaps you decide to follow the Sun's rhythm Ã¢â‚¬â€ to bed earlier, and rise with the light." />
+          <Feature icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" /><path d="M12 6v6l4 2" /></svg>} title="Reduce Stress" text="The industrial clock is meant to control. With Earth Moves, perhaps you decide to follow the Sun's rhythm — to bed earlier, and rise with the light." />
           <Feature icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>} title="In Rhythm with the Tides" text="Earth is always moving, shaping life's flow. This reflects nature's cycles, the planetary pulse, the endless dance and ebb together with the Moon." delay={1} />
           <Feature icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>} title="Space Weather Tracking" text="Monitor solar activity, geomagnetic storms, and space weather conditions. Track meteor showers and near-Earth objects with live NASA data integration." delay={2} />
         </div>
       </section>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-           HOMEPAGE STORE REPLACEMENT
-           
-           Replace the current store banner section in app/page.tsx:
-           
-           DELETE THIS:
-           Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
-           <section id="store" className="store-section">
-             <div className="store-banner reveal" style={{ ... }}>
-               <Image src="/images/store-banner.jpg" ... />
-             </div>
-           </section>
-           
-           PASTE THIS INSTEAD:
-           Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══ STORE ═══ */}
       
             <section id="store" style={{
               padding: "clamp(5rem, 10vw, 8rem) clamp(1.5rem, 4vw, 4rem)",
               position: "relative", zIndex: 1, overflow: "hidden",
             }}>
-              {/* Atmospheric glow */}
               <div style={{
                 position: "absolute", top: "50%", left: "50%",
                 transform: "translate(-50%, -50%)",
@@ -208,7 +195,6 @@ export default function HomePage() {
               }} />
       
               <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
-                {/* Header */}
                 <div className="reveal" style={{ textAlign: "center", marginBottom: "clamp(2.5rem, 5vw, 4rem)" }}>
                   <span className="section-label">The Collection</span>
                   <h2 style={{
@@ -225,16 +211,15 @@ export default function HomePage() {
                     maxWidth: 480, margin: ".5rem auto 0", lineHeight: 1.7,
                   }}>
                     Automatic mechanical watches displaying the Moon, tides, and
-                    Earth&apos;s rotation Ã¢â‚¬â€ as they truly are. Norwegian designed.
+                    Earth&apos;s rotation — as they truly are. Norwegian designed.
                   </p>
                 </div>
       
-                {/* Two watch cards */}
                 <div className="reveal" style={{
                   display: "grid", gridTemplateColumns: "1fr 1fr",
                   gap: "clamp(1rem, 2vw, 2rem)",
                 }}>
-                  {/* Copernicus */}
+                  {/* Copernicus - Fixed to .png.png based on your file list */}
                   <Link href="/watches" style={{
                     textDecoration: "none", color: "inherit",
                     borderRadius: 20, overflow: "hidden",
@@ -245,7 +230,7 @@ export default function HomePage() {
                   }}>
                     <div style={{ overflow: "hidden", aspectRatio: "16/10" }}>
                       <Image
-                        src="/images/copernicus-front.png"
+                        src="/copernicus-front.png.png"
                         alt="Earth Moves Copernicus"
                         width={1920} height={1200}
                         style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s" }}
@@ -267,15 +252,15 @@ export default function HomePage() {
                         <span style={{
                           fontFamily: "'DM Mono', monospace",
                           fontSize: ".65rem", color: "var(--text-dim)", letterSpacing: ".04em",
-                        }}>$1,200 USD Ã‚Â· 41mm Ã‚Â· Automatic</span>
+                        }}>$1,200 USD · 41mm · Automatic</span>
                         <span style={{
                           fontSize: ".72rem", color: "var(--gold)", letterSpacing: ".04em",
-                        }}>View Ã¢â€ â€™</span>
+                        }}>View →</span>
                       </div>
                     </div>
                   </Link>
       
-                  {/* Oceanic */}
+                  {/* Oceanic - Fixed to .png.png based on your file list */}
                   <Link href="/watches" style={{
                     textDecoration: "none", color: "inherit",
                     borderRadius: 20, overflow: "hidden",
@@ -286,7 +271,7 @@ export default function HomePage() {
                   }}>
                     <div style={{ overflow: "hidden", aspectRatio: "16/10" }}>
                       <Image
-                        src="/images/oceanic-front.png"
+                        src="/oceanic-front.png.png"
                         alt="Earth Moves Oceanic"
                         width={1920} height={1200}
                         style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s" }}
@@ -308,10 +293,10 @@ export default function HomePage() {
                         <span style={{
                           fontFamily: "'DM Mono', monospace",
                           fontSize: ".65rem", color: "var(--text-dim)", letterSpacing: ".04em",
-                        }}>$1,200 USD Ã‚Â· 41mm Ã‚Â· Moon &amp; Tide</span>
+                        }}>$1,200 USD · 41mm · Moon &amp; Tide</span>
                         <span style={{
                           fontSize: ".72rem", color: "var(--gold)", letterSpacing: ".04em",
-                        }}>View Ã¢â€ â€™</span>
+                        }}>View →</span>
                       </div>
                     </div>
                   </Link>
@@ -335,7 +320,7 @@ export default function HomePage() {
                     fontSize: ".6rem", color: "var(--text-dim)",
                     marginTop: "1rem", letterSpacing: ".06em",
                   }}>
-                    PRE-ORDER NOW Ã‚Â· FREE WORLDWIDE SHIPPING
+                    PRE-ORDER NOW · FREE WORLDWIDE SHIPPING
                   </p>
                 </div>
               </div>
@@ -358,23 +343,23 @@ export default function HomePage() {
             </section>
       
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â TED TALK Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══ TED TALK ═══ */}
       <section className="tedtalk" id="talk">
         <a href="https://www.youtube.com/watch?v=5YKttXvoBZk" target="_blank" rel="noopener noreferrer" className="tedtalk-visual reveal">
-          <Image src="/images/tedx-talk.webp" alt="Brage Johansen TEDx Talk Ã¢â‚¬â€ A Natural Concept of Time" width={800} height={450} style={{ width: "100%", height: "auto", display: "block" }} />
+          <Image src="/images/tedx-talk.webp" alt="Brage Johansen TEDx Talk — A Natural Concept of Time" width={800} height={450} style={{ width: "100%", height: "auto", display: "block" }} />
           <div className="tedtalk-play"><div className="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19" /></svg></div></div>
         </a>
         <div className="tedtalk-text reveal reveal-delay-1">
           <span className="section-label">TEDx Fredrikstad</span>
           <h2>A Natural Concept&nbsp;of&nbsp;Time</h2>
-          <p>In this TEDx talk, Brage W. Johansen presents his philosophy on how our perception of time has become disconnected from nature. He introduces Earth Moves as a bridge between human constructs and cosmic cycles Ã¢â‚¬â€ reconnecting us to time as it was meant to be experienced.</p>
+          <p>In this TEDx talk, Brage W. Johansen presents his philosophy on how our perception of time has become disconnected from nature. He introduces Earth Moves as a bridge between human constructs and cosmic cycles — reconnecting us to time as it was meant to be experienced.</p>
           <a href="https://www.youtube.com/watch?v=5YKttXvoBZk" target="_blank" rel="noopener noreferrer" className="btn-watch">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19" /></svg> Watch the Talk
           </a>
         </div>
       </section>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â NEWSLETTER Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══ NEWSLETTER ═══ */}
       <section className="reveal" style={{
         padding: "clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 4rem)",
         maxWidth: 680, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1,
@@ -389,7 +374,7 @@ export default function HomePage() {
         <NewsletterForm />
       </section>
 
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â FOOTER Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      {/* ═══ FOOTER ═══ */}
       <footer className="em-footer">
         <Link href="/" className="f-brand"><Image src="/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: 120, opacity: 0.8 }} /></Link>
         <div className="f-links">
@@ -399,16 +384,11 @@ export default function HomePage() {
           <a href="https://earthmoves.space/store">Store</a>
           <a href="https://www.youtube.com/watch?v=5YKttXvoBZk" target="_blank" rel="noopener noreferrer">TEDx Talk</a>
         </div>
-        <span className="f-copy">Ã‚Â© 2026 Earth Moves AS</span>
+        <span className="f-copy">© 2026 Earth Moves AS</span>
       </footer>
     </>
   );
 }
-
-
-/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-   THE EPHEMERIS Ã¢â‚¬â€ "The Bento" (dashboard grid, varied card sizes)
-   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 
 function VariantG({ arts }: { arts: HomeArticle[] }) {
   const fmtLong = (d: string) => new Date(d).toLocaleDateString("en-US", { month: "long", day: "numeric" });
@@ -437,7 +417,7 @@ function VariantG({ arts }: { arts: HomeArticle[] }) {
           display: "grid", gridTemplateColumns: "repeat(12, 1fr)",
           gridAutoRows: "minmax(120px, auto)", gap: "clamp(.75rem, 1.5vw, 1.25rem)",
         }}>
-          {/* Featured Ã¢â‚¬â€ spans 7 cols, 2 rows */}
+          {/* Featured */}
           <Link href={`/ephemeris/${arts[0].slug}`} className="eph-g-card eph-g-feat" style={{
             gridColumn: "1 / 8", gridRow: "1 / 3",
             textDecoration: "none", color: "inherit", borderRadius: 20, overflow: "hidden",
@@ -466,9 +446,9 @@ function VariantG({ arts }: { arts: HomeArticle[] }) {
               </p>
               <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                 <span style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", color: "var(--text-dim)" }}>
-                  {fmtLong(arts[0].date)} Ã‚Â· {arts[0].readingTime} min
+                  {fmtLong(arts[0].date)} · {arts[0].readingTime} min
                 </span>
-                <span style={{ fontSize: ".72rem", color: "var(--gold)", letterSpacing: ".04em" }}>Read Ã¢â€ â€™</span>
+                <span style={{ fontSize: ".72rem", color: "var(--gold)", letterSpacing: ".04em" }}>Read →</span>
               </div>
             </div>
           </Link>
@@ -505,7 +485,7 @@ function VariantG({ arts }: { arts: HomeArticle[] }) {
             <span style={{ fontFamily: "'DM Mono', monospace", fontSize: ".6rem", color: "var(--text-dim)", marginTop: ".75rem" }}>{arts[2].readingTime} min read</span>
           </Link>
 
-          {/* Bottom row Ã¢â‚¬â€ two equal cards */}
+          {/* Bottom row — two equal cards */}
           {arts.slice(3, 5).map((a) => (
             <Link key={a.slug} href={`/ephemeris/${a.slug}`} className="eph-g-card eph-g-bottom" style={{
               gridColumn: "span 6",
@@ -521,8 +501,8 @@ function VariantG({ arts }: { arts: HomeArticle[] }) {
               <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.2rem", fontWeight: 400, lineHeight: 1.25, margin: "0 0 .5rem", color: "var(--text-primary)" }}>{a.title}</h4>
               <p style={{ fontSize: ".82rem", color: "var(--text-secondary)", lineHeight: 1.65, margin: "0 0 auto", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>{a.description}</p>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: ".75rem" }}>
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: ".6rem", color: "var(--text-dim)" }}>{fmtShort(a.date)} Ã‚Â· {a.readingTime} min</span>
-                <span style={{ fontSize: ".65rem", color: "var(--gold)", letterSpacing: ".04em" }}>Read Ã¢â€ â€™</span>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: ".6rem", color: "var(--text-dim)" }}>{fmtShort(a.date)} · {a.readingTime} min</span>
+                <span style={{ fontSize: ".65rem", color: "var(--gold)", letterSpacing: ".04em" }}>Read →</span>
               </div>
             </Link>
           ))}
@@ -552,11 +532,6 @@ function VariantG({ arts }: { arts: HomeArticle[] }) {
     </section>
   );
 }
-
-
-/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-   SHARED COMPONENTS
-   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 
 function EphemerisFallback() {
   return (
@@ -601,7 +576,7 @@ function NewsletterForm() {
       <form onSubmit={handleSubmit} style={{ display: "flex", gap: ".5rem", maxWidth: 400, margin: "0 auto" }}>
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required style={{ flex: 1, padding: ".7rem 1rem", borderRadius: 8, border: "1px solid var(--border)", background: "rgba(15,22,42,.8)", color: "var(--text-primary)", fontFamily: "'DM Sans', sans-serif", fontSize: ".88rem", outline: "none" }} />
         <button type="submit" disabled={status === "sending"} style={{ padding: ".7rem 1.5rem", borderRadius: 8, border: "1px solid rgba(201,169,110,.4)", background: "rgba(201,169,110,.15)", color: "var(--gold-light)", fontFamily: "'DM Sans', sans-serif", fontSize: ".82rem", fontWeight: 600, letterSpacing: ".06em", textTransform: "uppercase", cursor: "pointer", whiteSpace: "nowrap" }}>
-          {status === "sending" ? "Ã¢â‚¬Â¦" : "Subscribe"}
+          {status === "sending" ? "…" : "Subscribe"}
         </button>
       </form>
       {status === "error" && <p style={{ color: "#E06060", fontSize: ".78rem", marginTop: ".5rem" }}>Something went wrong. Try again.</p>}
