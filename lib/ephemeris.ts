@@ -10,7 +10,7 @@ import path from "path";
 
 // ─── TYPES ────────────────────────────────────────────────────────────
 
-export type EphemerisColumn =
+export type ephemeriscolumn =
   | "sol-report"
   | "space-weather"
   | "natural-time"
@@ -23,7 +23,7 @@ export interface ArticleMeta {
   date: string;           // ISO date: "2026-03-15"
   updated?: string;        // ISO date of last update (AEO freshness signal)
   author: string;
-  column: EphemerisColumn;
+  column: ephemeriscolumn;
   description: string;     // 150-160 chars — used for meta + OG + AI citation
   keywords: string[];      // primary keyword first, then secondaries
   instrument?: "watch" | "calendar" | "none";
@@ -44,7 +44,7 @@ export interface Article {
 
 // ─── COLUMN DISPLAY DATA ──────────────────────────────────────────────
 
-export const COLUMNS: Record<EphemerisColumn, { label: string; description: string; color: string }> = {
+export const COLUMNS: Record<ephemeriscolumn, { label: string; description: string; color: string }> = {
   "sol-report":       { label: "Sol Report",       description: "Monthly orbit briefing — what's happening in Earth's journey this month", color: "#C9A96E" },
   "space-weather":    { label: "Space Weather",    description: "Solar storms, aurora forecasts, and live conditions from NOAA SWPC",      color: "#60A5FA" },
   "natural-time":     { label: "Natural Time",     description: "Essays on reconnecting with astronomical rhythms",                       color: "#6BCB77" },
@@ -348,7 +348,7 @@ export function getArticle(slug: string): Article | null {
     date: (rawMeta.date as string) || new Date().toISOString().slice(0, 10),
     updated: rawMeta.updated as string | undefined,
     author: (rawMeta.author as string) || "Earth Moves",
-    column: (rawMeta.column as EphemerisColumn) || "natural-time",
+    column: (rawMeta.column as ephemeriscolumn) || "natural-time",
     description: (rawMeta.description as string) || "",
     keywords: (rawMeta.keywords as string[]) || [],
     instrument: (rawMeta.instrument as ArticleMeta["instrument"]) || "none",
@@ -387,7 +387,7 @@ export function getAllArticles(includeDrafts = false): Article[] {
 
 // ─── GET ARTICLES BY COLUMN ───────────────────────────────────────────
 
-export function getArticlesByColumn(column: EphemerisColumn): Article[] {
+export function getArticlesByColumn(column: ephemeriscolumn): Article[] {
   return getAllArticles().filter((a) => a.meta.column === column);
 }
 

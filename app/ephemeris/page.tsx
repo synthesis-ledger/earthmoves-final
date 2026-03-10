@@ -5,9 +5,9 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { getAllArticles, COLUMNS, EphemerisColumn } from "@/lib/ephemeris";
-import EphemerisCard from "@/components/ephemeris/EphemerisCard";
-import EmailCapture from "@/components/ephemeris/EmailCapture";
+import { getAllArticles, COLUMNS, ephemeriscolumn } from "@/lib/ephemeris";
+import ephemeriscard from "@/components/ephemeris/ephemeriscard";
+import emailcapture from "@/components/ephemeris/emailcapture";
 import "../earth-moves.css";
 import "./ephemeris.css";
 
@@ -36,7 +36,7 @@ export default function EphemerisIndex() {
   const rest = articles.slice(1);
 
   // Group remaining by column
-  const byColumn: Partial<Record<EphemerisColumn, typeof articles>> = {};
+  const byColumn: Partial<Record<ephemeriscolumn, typeof articles>> = {};
   for (const a of rest) {
     if (!byColumn[a.meta.column]) byColumn[a.meta.column] = [];
     byColumn[a.meta.column]!.push(a);
@@ -76,12 +76,12 @@ export default function EphemerisIndex() {
         {/* ─── FEATURED ARTICLE ─── */}
         {featured && (
           <section className="eph-featured">
-            <EphemerisCard article={featured} featured />
+            <ephemeriscard article={featured} featured />
           </section>
         )}
 
         {/* ─── COLUMN SECTIONS ─── */}
-        {(Object.keys(COLUMNS) as EphemerisColumn[]).map((col) => {
+        {(Object.keys(COLUMNS) as ephemeriscolumn[]).map((col) => {
           const colArticles = byColumn[col];
           if (!colArticles?.length) return null;
           const colData = COLUMNS[col];
@@ -97,7 +97,7 @@ export default function EphemerisIndex() {
               </div>
               <div className="eph-column-grid">
                 {colArticles.slice(0, 4).map((a) => (
-                  <EphemerisCard key={a.meta.slug} article={a} />
+                  <ephemeriscard key={a.meta.slug} article={a} />
                 ))}
               </div>
             </section>
@@ -110,14 +110,14 @@ export default function EphemerisIndex() {
             <h2 className="eph-archive-heading">All Articles</h2>
             <div className="eph-archive-grid">
               {articles.map((a) => (
-                <EphemerisCard key={a.meta.slug} article={a} compact />
+                <ephemeriscard key={a.meta.slug} article={a} compact />
               ))}
             </div>
           </section>
         )}
 
         {/* ─── EMAIL CAPTURE ─── */}
-        <EmailCapture />
+        <emailcapture />
       </main>
 
       {/* ═══ FOOTER ═══ */}
