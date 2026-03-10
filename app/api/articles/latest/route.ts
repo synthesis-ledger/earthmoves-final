@@ -27,3 +27,4 @@ export async function GET() {
     return NextResponse.json({ articles: [], error: String(err) });
   }
 }
+// force-rebuild-v1
