@@ -1,14 +1,14 @@
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-// EARTH MOVES Ã¢â‚¬â€ THE EPHEMERIS ENGINE
+// ═══════════════════════════════════════════════════════════════════════
+// EARTH MOVES — THE EPHEMERIS ENGINE
 // Zero-dependency article system for Next.js App Router
 // Reads .md files from content/ephemeris/, parses frontmatter + markdown,
 // generates Schema.org JSON-LD, Open Graph, RSS, and sitemap data.
-// Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+// ═══════════════════════════════════════════════════════════════════════
 
 import fs from "fs";
 import path from "path";
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ TYPES Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── TYPES ──────────────────────────────────────────────────────────
 
 export type ephemeriscolumn =
   | "sol-report"
@@ -24,39 +24,39 @@ export interface ArticleMeta {
   updated?: string;        // ISO date of last update (AEO freshness signal)
   author: string;
   column: ephemeriscolumn;
-  description: string;     // 150-160 chars Ã¢â‚¬â€ used for meta + OG + AI citation
+  description: string;     // 150-160 chars — used for meta + OG + AI citation
   keywords: string[];      // primary keyword first, then secondaries
   instrument?: "watch" | "calendar" | "none";
   image?: string;          // path relative to /public, e.g. "/ephemeris/perihelion.jpg"
   imageAlt?: string;
   imageCredit?: string;    // "NASA/JPL" or "ESA/Hubble" etc.
-  draft?: boolean;         // true = hidden from index + sitemap
+  draft?: boolean;          // true = hidden from index + sitemap
   faq?: { q: string; a: string }[];  // FAQ pairs for Schema.org FAQPage markup
 }
 
 export interface Article {
   meta: ArticleMeta;
-  content: string;         // raw markdown
-  html: string;            // rendered HTML
-  readingTime: number;     // minutes
+  content: string;          // raw markdown
+  html: string;             // rendered HTML
+  readingTime: number;      // minutes
   wordCount: number;
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ COLUMN DISPLAY DATA Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── COLUMN DISPLAY DATA ────────────────────────────────────────────
 
 export const COLUMNS: Record<ephemeriscolumn, { label: string; description: string; color: string }> = {
-  "sol-report":       { label: "Sol Report",       description: "Monthly orbit briefing Ã¢â‚¬â€ what's happening in Earth's journey this month", color: "#C9A96E" },
+  "sol-report":       { label: "Sol Report",       description: "Monthly orbit briefing — what's happening in Earth's journey this month", color: "#C9A96E" },
   "space-weather":    { label: "Space Weather",    description: "Solar storms, aurora forecasts, and live conditions from NOAA SWPC",      color: "#60A5FA" },
   "natural-time":     { label: "Natural Time",     description: "Essays on reconnecting with astronomical rhythms",                       color: "#6BCB77" },
   "instrument-notes": { label: "Instrument Notes", description: "Technical deep-dives into how the Watch and Calendar work",              color: "#E0A040" },
   "field-notes":      { label: "Field Notes",      description: "Observations, photography, and reports from the field",                  color: "#C084FC" },
 };
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ CONTENT DIRECTORY Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── CONTENT DIRECTORY ──────────────────────────────────────────────
 
 const CONTENT_DIR = path.join(process.cwd(), "content", "ephemeris");
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ FRONTMATTER PARSER Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── FRONTMATTER PARSER ─────────────────────────────────────────────
 // Parses YAML-like frontmatter between --- delimiters. No js-yaml needed.
 
 function parseFrontmatter(raw: string): { meta: Record<string, unknown>; content: string } {
@@ -159,10 +159,9 @@ function parseFrontmatter(raw: string): { meta: Record<string, unknown>; content
   return { meta, content };
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ MARKDOWN Ã¢â€ â€™ HTML RENDERER Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── MARKDOWN → HTML RENDERER ────────────────────────────────────────
 // Minimal renderer covering: headings, paragraphs, bold, italic, links,
 // images, blockquotes, ordered/unordered lists, horizontal rules, code.
-// No external library needed. Handles the 95% case for editorial content.
 
 function renderMarkdown(md: string): string {
   const lines = md.split("\n");
@@ -173,8 +172,11 @@ function renderMarkdown(md: string): string {
 
   const inline = (text: string): string => {
     return text
-      // Images: ![alt](src)
-      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" loading="lazy" class="eph-img" />')
+      // Images: ![alt](src) - FIXED TO SUPPORT WEBP AND LOWERCASE
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, src) => {
+        const cleanSrc = src.replace(/\.(jpg|jpeg|png)$/i, ".webp").toLowerCase();
+        return `<img src="${cleanSrc}" alt="${alt}" loading="lazy" class="eph-img" />`;
+      })
       // Links: [text](url)
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
       // Bold: **text** or __text__
@@ -213,9 +215,8 @@ function renderMarkdown(md: string): string {
       continue;
     }
 
-    // Pipe table detection: line starts and ends with | and next line is separator
+    // Pipe table detection
     if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
-      // Look ahead to see if this is a table (need at least header + separator)
       const tableLines: string[] = [trimmed];
       let j = i + 1;
       while (j < lines.length && lines[j].trim().startsWith("|") && lines[j].trim().endsWith("|")) {
@@ -224,16 +225,13 @@ function renderMarkdown(md: string): string {
       }
       if (tableLines.length >= 2 && tableLines[1].match(/^\|[\s\-:|]+\|$/)) {
         closeParagraph(); closeList(); closeBlockquote();
-        // Parse header
         const headerCells = tableLines[0].split("|").slice(1, -1).map(c => c.trim());
-        // Parse alignment from separator row
         const sepCells = tableLines[1].split("|").slice(1, -1).map(c => c.trim());
         const aligns = sepCells.map(c => {
           if (c.startsWith(":") && c.endsWith(":")) return "center";
           if (c.endsWith(":")) return "right";
           return "left";
         });
-        // Build table HTML
         out.push('<table class="eph-table">');
         out.push("<thead><tr>");
         headerCells.forEach((cell, ci) => {
@@ -250,7 +248,7 @@ function renderMarkdown(md: string): string {
           out.push("</tr>");
         }
         out.push("</tbody></table>");
-        i = j - 1; // skip processed lines
+        i = j - 1; 
         continue;
       }
     }
@@ -305,11 +303,12 @@ function renderMarkdown(md: string): string {
       continue;
     }
 
-    // Special: image with credit {{image:path|alt|credit}}
+    // Special: image with credit {{image:path|alt|credit}} - FIXED FOR WEBP/LOWERCASE
     const imgMatch = trimmed.match(/^\{\{image:(.+?)\|(.+?)\|(.+?)\}\}$/);
     if (imgMatch) {
       closeParagraph(); closeList(); closeBlockquote();
-      out.push(`<figure class="eph-figure"><img src="${imgMatch[1]}" alt="${imgMatch[2]}" loading="lazy" class="eph-img" /><figcaption>${imgMatch[3]}</figcaption></figure>`);
+      const finalSrc = imgMatch[1].replace(/\.(jpg|jpeg|png)$/i, ".webp").toLowerCase();
+      out.push(`<figure class="eph-figure"><img src="${finalSrc}" alt="${imgMatch[2]}" loading="lazy" class="eph-img" /><figcaption>${imgMatch[3]}</figcaption></figure>`);
       continue;
     }
 
@@ -324,14 +323,14 @@ function renderMarkdown(md: string): string {
   return out.join("\n");
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ READING TIME Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── READING TIME ───────────────────────────────────────────────────
 
 function calcReadingTime(text: string): { minutes: number; words: number } {
   const words = text.replace(/[#*>\-_\[\](){}|`]/g, " ").split(/\s+/).filter(Boolean).length;
   return { minutes: Math.max(1, Math.ceil(words / 230)), words };
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ LOAD SINGLE ARTICLE Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── LOAD SINGLE ARTICLE ────────────────────────────────────────────
 
 export function getArticle(slug: string): Article | null {
   const filePath = path.join(CONTENT_DIR, `${slug}.md`);
@@ -352,7 +351,8 @@ export function getArticle(slug: string): Article | null {
     description: (rawMeta.description as string) || "",
     keywords: (rawMeta.keywords as string[]) || [],
     instrument: (rawMeta.instrument as ArticleMeta["instrument"]) || "none",
-    image: rawMeta.image as string | undefined,
+    // IMAGE FIX: Sync path to webp and lowercase
+    image: rawMeta.image ? (rawMeta.image as string).replace(/\.(jpg|jpeg|png)$/i, ".webp").toLowerCase() : undefined,
     imageAlt: rawMeta.imageAlt as string | undefined,
     imageCredit: rawMeta.imageCredit as string | undefined,
     draft: (rawMeta.draft as boolean) || false,
@@ -364,7 +364,7 @@ export function getArticle(slug: string): Article | null {
   return { meta, content, html, readingTime: minutes, wordCount: words };
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ LOAD ALL ARTICLES Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── LOAD ALL ARTICLES ─────────────────────────────────────────────
 
 export function getAllArticles(includeDrafts = false): Article[] {
   if (!fs.existsSync(CONTENT_DIR)) return [];
@@ -380,23 +380,21 @@ export function getAllArticles(includeDrafts = false): Article[] {
     }
   }
 
-  // Sort by date descending (newest first)
   articles.sort((a, b) => b.meta.date.localeCompare(a.meta.date));
   return articles;
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ GET ARTICLES BY COLUMN Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── GET ARTICLES BY COLUMN ─────────────────────────────────────────
 
 export function getArticlesByColumn(column: ephemeriscolumn): Article[] {
   return getAllArticles().filter((a) => a.meta.column === column);
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ RELATED ARTICLES Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── RELATED ARTICLES ──────────────────────────────────────────────
 
 export function getRelatedArticles(current: Article, max = 3): Article[] {
   const all = getAllArticles().filter((a) => a.meta.slug !== current.meta.slug);
 
-  // Score by: same column (3pts), shared keywords (1pt each)
   const scored = all.map((a) => {
     let score = 0;
     if (a.meta.column === current.meta.column) score += 3;
@@ -410,7 +408,7 @@ export function getRelatedArticles(current: Article, max = 3): Article[] {
   return scored.slice(0, max).map((s) => s.article);
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ SCHEMA.ORG JSON-LD GENERATORS Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── SCHEMA.ORG JSON-LD GENERATORS ──────────────────────────────────
 
 export function generateArticleSchema(article: Article, baseUrl: string): object {
   const url = `${baseUrl}/ephemeris/${article.meta.slug}`;
@@ -463,7 +461,7 @@ export function generateBreadcrumbSchema(article: Article, baseUrl: string): obj
   };
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ RSS FEED GENERATOR Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── RSS FEED GENERATOR ─────────────────────────────────────────────
 
 export function generateRSS(articles: Article[], baseUrl: string): string {
   const items = articles.slice(0, 30).map((a) => `
@@ -480,7 +478,7 @@ export function generateRSS(articles: Article[], baseUrl: string): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>The Ephemeris Ã¢â‚¬â€ Earth Moves</title>
+    <title>The Ephemeris — Earth Moves</title>
     <link>${baseUrl}/ephemeris</link>
     <description>Astronomical briefings, orbital insights, and natural time philosophy from Earth Moves.</description>
     <language>en</language>
@@ -488,7 +486,7 @@ export function generateRSS(articles: Article[], baseUrl: string): string {
     <atom:link href="${baseUrl}/ephemeris/feed.xml" rel="self" type="application/rss+xml" />
     <image>
       <url>${baseUrl}/logo.png</url>
-      <title>The Ephemeris Ã¢â‚¬â€ Earth Moves</title>
+      <title>The Ephemeris — Earth Moves</title>
       <link>${baseUrl}/ephemeris</link>
     </image>
     ${items}
@@ -496,7 +494,7 @@ export function generateRSS(articles: Article[], baseUrl: string): string {
 </rss>`;
 }
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ SITEMAP ENTRIES Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── SITEMAP ENTRIES ────────────────────────────────────────────────
 
 export function generateSitemapEntries(baseUrl: string): string {
   const articles = getAllArticles();
@@ -508,7 +506,6 @@ export function generateSitemapEntries(baseUrl: string): string {
     <priority>0.7</priority>
   </url>`);
 
-  // Add the index page
   entries.unshift(`
   <url>
     <loc>${baseUrl}/ephemeris</loc>
