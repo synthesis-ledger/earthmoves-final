@@ -1,6 +1,6 @@
-// ═══════════════════════════════════════════════════════════════════════
-// /app/api/ai/pipeline/route.ts — Pipeline control endpoint v2
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// /app/api/ai/pipeline/route.ts â€” Pipeline control endpoint v2
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 import { NextResponse } from "next/server";
 import {
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
 
   const config = { autoPublish, grokApiKey: apiKey };
 
-  // Fire and forget — runs sequentially in background
+  // Fire and forget â€” runs sequentially in background
   (async () => {
     for (const order of articleOrders) {
       await runPipeline(order, config);

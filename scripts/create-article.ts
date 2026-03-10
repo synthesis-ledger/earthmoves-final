@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-// ═══════════════════════════════════════════════════════════════════════
-// EARTH MOVES — EPHEMERIS ARTICLE GENERATOR
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// EARTH MOVES â€” EPHEMERIS ARTICLE GENERATOR
 // 
 // Usage:
 //   npx ts-node scripts/create-article.ts
@@ -9,31 +9,31 @@
 //   npx ts-node scripts/create-article.ts --from-brief briefs/perseids.json
 //
 // This script can be used in two modes:
-//   1. Interactive — prompts for title, column, keywords, etc.
-//   2. From brief — reads a JSON brief file (designed for AI batch generation)
+//   1. Interactive â€” prompts for title, column, keywords, etc.
+//   2. From brief â€” reads a JSON brief file (designed for AI batch generation)
 //
 // The brief JSON format is also what you feed to Claude/GPT to generate
 // complete articles. See BRIEF_TEMPLATE below.
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 import fs from "fs";
 import path from "path";
 import readline from "readline";
 
-// ─── BRIEF TEMPLATE (for AI generation) ──────────────────────────────
+// â”€â”€â”€ BRIEF TEMPLATE (for AI generation) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const BRIEF_TEMPLATE = {
   // Required
   title: "",
   slug: "",               // lowercase-hyphenated, no special chars
   column: "",             // sol-report | space-weather | natural-time | instrument-notes | field-notes
-  description: "",        // 150-160 chars — THE most important field for SEO + AEO
+  description: "",        // 150-160 chars â€” THE most important field for SEO + AEO
   keywords: [],           // primary keyword first, then 3-5 secondaries
   
   // Content guidance
   primaryQuestion: "",    // The main question this article answers (for AEO)
   angle: "",              // What makes this article unique vs Wikipedia
-  instrument: "",         // watch | calendar | none — which instrument to link
+  instrument: "",         // watch | calendar | none â€” which instrument to link
   
   // Optional enrichment
   faq: [],                // Array of {q, a} pairs for Schema.org FAQ markup
@@ -44,10 +44,10 @@ const BRIEF_TEMPLATE = {
   author: "Earth Moves",
 };
 
-// ─── AI SYSTEM PROMPT ────────────────────────────────────────────────
+// â”€â”€â”€ AI SYSTEM PROMPT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Use this as the system prompt when generating articles with Claude/GPT
 
-export const AI_SYSTEM_PROMPT = `You are the editorial voice of Earth Moves — a project that reconnects 
+export const AI_SYSTEM_PROMPT = `You are the editorial voice of Earth Moves â€” a project that reconnects 
 humanity with astronomical time. Your tone is meditative yet precise, 
 grounded in science but reaching toward philosophy. You write like a 
 thoughtful observatory director: clear, authoritative, occasionally poetic, 
@@ -55,7 +55,7 @@ never academic or dry.
 
 VOICE RULES:
 - Write as "Earth Moves" (the project), not as a person
-- Use "we" sparingly — prefer direct statements about Earth, the Sun, the Moon
+- Use "we" sparingly â€” prefer direct statements about Earth, the Sun, the Moon
 - Never use "you might be surprised to learn" or similar clickbait phrasing
 - Numbers are sacred: every figure must be astronomically accurate
 - Link concepts back to what the Watch or Calendar instrument shows
@@ -71,7 +71,7 @@ STRUCTURE FOR AEO + SEO:
 
 TERMINOLOGY:
 - Use "Sol" for a day (when being astronomical), "day" in casual context
-- Use "Fyrtårn" (lighthouse) for the 8 orbital anchors
+- Use "FyrtÃ¥rn" (lighthouse) for the 8 orbital anchors
 - Use "natural time" vs "industrial time" (Brage's framework)
 - Refer to instruments as "the Watch" and "the Calendar" (capitalised)
 
@@ -82,7 +82,7 @@ FORBIDDEN:
 - No hedging ("might", "perhaps", "arguably") on established science
 - No emojis in body text`;
 
-// ─── SLUG GENERATOR ──────────────────────────────────────────────────
+// â”€â”€â”€ SLUG GENERATOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function toSlug(title: string): string {
   return title
@@ -93,7 +93,7 @@ function toSlug(title: string): string {
     .slice(0, 80);
 }
 
-// ─── GENERATE FRONTMATTER ────────────────────────────────────────────
+// â”€â”€â”€ GENERATE FRONTMATTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function generateFrontmatter(brief: typeof BRIEF_TEMPLATE): string {
   const date = new Date().toISOString().slice(0, 10);
@@ -127,7 +127,7 @@ instrument: ${brief.instrument || "none"}`;
   return fm;
 }
 
-// ─── GENERATE ARTICLE PROMPT ─────────────────────────────────────────
+// â”€â”€â”€ GENERATE ARTICLE PROMPT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // This generates the user prompt to send to Claude/GPT along with AI_SYSTEM_PROMPT
 
 export function generateArticlePrompt(brief: typeof BRIEF_TEMPLATE): string {
@@ -142,14 +142,14 @@ BRIEF:
 - Instrument link: ${brief.instrument}
 - Description (use as the thesis): ${brief.description}
 
-Write the full article body in Markdown (without frontmatter — I will add that).
+Write the full article body in Markdown (without frontmatter â€” I will add that).
 Include H2 sections, a "The numbers" section with key data, and conclude with 
 a reference to the live ${brief.instrument || "Calendar"} instrument.
 
 ${brief.faq && brief.faq.length > 0 ? `\nAlso address these FAQ questions naturally within the article:\n${(brief.faq as { q: string; a: string }[]).map((f) => `- ${f.q}`).join("\n")}` : ""}`;
 }
 
-// ─── CREATE ARTICLE FILE ─────────────────────────────────────────────
+// â”€â”€â”€ CREATE ARTICLE FILE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function createArticleFile(brief: typeof BRIEF_TEMPLATE, body?: string): string {
   const slug = brief.slug || toSlug(brief.title);
@@ -166,7 +166,7 @@ function createArticleFile(brief: typeof BRIEF_TEMPLATE, body?: string): string 
   return filePath;
 }
 
-// ─── BATCH GENERATION FROM BRIEFS ────────────────────────────────────
+// â”€â”€â”€ BATCH GENERATION FROM BRIEFS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function processBriefFile(briefPath: string): void {
   const raw = fs.readFileSync(briefPath, "utf-8");
@@ -176,21 +176,21 @@ export function processBriefFile(briefPath: string): void {
     // Multiple briefs in one file
     for (const b of brief) {
       const fp = createArticleFile(b);
-      console.log(`✅ Created: ${fp}`);
+      console.log(`âœ… Created: ${fp}`);
     }
   } else {
     const fp = createArticleFile(brief);
-    console.log(`✅ Created: ${fp}`);
+    console.log(`âœ… Created: ${fp}`);
   }
 }
 
-// ─── INTERACTIVE MODE ────────────────────────────────────────────────
+// â”€â”€â”€ INTERACTIVE MODE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 async function interactive() {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   const ask = (q: string): Promise<string> => new Promise((res) => rl.question(q, res));
 
-  console.log("\n═══ EARTH MOVES — CREATE EPHEMERIS ARTICLE ═══\n");
+  console.log("\nâ•â•â• EARTH MOVES â€” CREATE EPHEMERIS ARTICLE â•â•â•\n");
 
   const title = await ask("Title: ");
   const column = await ask("Column (sol-report/space-weather/natural-time/instrument-notes/field-notes): ");
@@ -215,14 +215,14 @@ async function interactive() {
   };
 
   const filePath = createArticleFile(brief);
-  console.log(`\n✅ Article stub created: ${filePath}`);
-  console.log(`\n📋 AI generation prompt copied below:\n`);
+  console.log(`\nâœ… Article stub created: ${filePath}`);
+  console.log(`\nðŸ“‹ AI generation prompt copied below:\n`);
   console.log(generateArticlePrompt(brief));
 
   rl.close();
 }
 
-// ─── MAIN ────────────────────────────────────────────────────────────
+// â”€â”€â”€ MAIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const args = process.argv.slice(2);
 

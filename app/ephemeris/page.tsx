@@ -1,6 +1,6 @@
-// ═══════════════════════════════════════════════════════════════════════
-// /app/ephemeris/page.tsx — The Ephemeris index (magazine home)
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// /app/ephemeris/page.tsx â€” The Ephemeris index (magazine home)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 import { Metadata } from "next";
 import Image from "next/image";
@@ -14,11 +14,11 @@ import "./ephemeris.css";
 const BASE_URL = "https://earthmoves.space";
 
 export const metadata: Metadata = {
-  title: "The Ephemeris — Earth Moves",
+  title: "The Ephemeris â€” Earth Moves",
   description:
-    "Astronomical briefings, orbital insights, and natural time philosophy. The editorial voice of Earth Moves — connecting nature, space and time.",
+    "Astronomical briefings, orbital insights, and natural time philosophy. The editorial voice of Earth Moves â€” connecting nature, space and time.",
   openGraph: {
-    title: "The Ephemeris — Earth Moves",
+    title: "The Ephemeris â€” Earth Moves",
     description: "Astronomical briefings, orbital insights, and natural time philosophy.",
     url: `${BASE_URL}/ephemeris`,
     siteName: "Earth Moves",
@@ -46,7 +46,7 @@ export default function EphemerisIndex() {
     <>
       <div className="stars" />
 
-      {/* ═══ NAV ═══ */}
+      {/* â•â•â• NAV â•â•â• */}
       <nav className="em-nav scrolled">
         <Link href="/" className="nav-logo">
           <Image src="/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: "clamp(120px, 12vw, 160px)" }} priority />
@@ -60,7 +60,7 @@ export default function EphemerisIndex() {
       </nav>
 
       <main className="eph-index">
-        {/* ─── HEADER ─── */}
+        {/* â”€â”€â”€ HEADER â”€â”€â”€ */}
         <header className="eph-index-header">
           <span className="section-label">The Ephemeris</span>
           <h1>Astronomical Briefings &amp; Natural Time</h1>
@@ -73,14 +73,14 @@ export default function EphemerisIndex() {
           </Link>
         </header>
 
-        {/* ─── FEATURED ARTICLE ─── */}
+        {/* â”€â”€â”€ FEATURED ARTICLE â”€â”€â”€ */}
         {featured && (
           <section className="eph-featured">
             <ephemeriscard article={featured} featured />
           </section>
         )}
 
-        {/* ─── COLUMN SECTIONS ─── */}
+        {/* â”€â”€â”€ COLUMN SECTIONS â”€â”€â”€ */}
         {(Object.keys(COLUMNS) as ephemeriscolumn[]).map((col) => {
           const colArticles = byColumn[col];
           if (!colArticles?.length) return null;
@@ -104,7 +104,7 @@ export default function EphemerisIndex() {
           );
         })}
 
-        {/* ─── ALL ARTICLES (archive) ─── */}
+        {/* â”€â”€â”€ ALL ARTICLES (archive) â”€â”€â”€ */}
         {rest.length > 4 && (
           <section className="eph-archive">
             <h2 className="eph-archive-heading">All Articles</h2>
@@ -116,11 +116,11 @@ export default function EphemerisIndex() {
           </section>
         )}
 
-        {/* ─── EMAIL CAPTURE ─── */}
+        {/* â”€â”€â”€ EMAIL CAPTURE â”€â”€â”€ */}
         <emailcapture />
       </main>
 
-      {/* ═══ FOOTER ═══ */}
+      {/* â•â•â• FOOTER â•â•â• */}
       <footer className="em-footer">
         <Link href="/" className="f-brand"><Image src="/em-logo-white.png" alt="Earth Moves" width={480} height={96} style={{ height: "auto", width: 120, opacity: 0.8 }} /></Link>
         <div className="f-links">
@@ -129,7 +129,7 @@ export default function EphemerisIndex() {
           <Link href="/ephemeris">Ephemeris</Link>
           <a href="https://earthmoves.space/store">Store</a>
         </div>
-        <span className="f-copy">© 2026 Earth Moves AS</span>
+        <span className="f-copy">Â© 2026 Earth Moves AS</span>
       </footer>
     </>
   );

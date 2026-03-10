@@ -58,7 +58,7 @@ export default function emailcapture() {
               className="eph-email-btn"
               disabled={status === "sending"}
             >
-              {status === "sending" ? "…" : "Subscribe"}
+              {status === "sending" ? "â€¦" : "Subscribe"}
             </button>
           </form>
         )}

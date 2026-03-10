@@ -1,6 +1,6 @@
-// ═══════════════════════════════════════════════════════════════════════
-// /app/watches/page.tsx — The Collection (Watch Store Bridge)
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// /app/watches/page.tsx â€” The Collection (Watch Store Bridge)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 import { Metadata } from "next";
 import Image from "next/image";
@@ -11,11 +11,11 @@ import "./watches.css";
 const STORE_URL = "https://earthmoves.one";
 
 export const metadata: Metadata = {
-  title: "The Collection — Earth Moves Astronomical Watches",
+  title: "The Collection â€” Earth Moves Astronomical Watches",
   description:
-    "Copernicus and Oceanic: automatic mechanical watches displaying real celestial mechanics — Moon orbit, tides, and day/night cycles — on your wrist. Norwegian craftsmanship meets cosmic precision.",
+    "Copernicus and Oceanic: automatic mechanical watches displaying real celestial mechanics â€” Moon orbit, tides, and day/night cycles â€” on your wrist. Norwegian craftsmanship meets cosmic precision.",
   openGraph: {
-    title: "The Collection — Earth Moves Watches",
+    title: "The Collection â€” Earth Moves Watches",
     description:
       "Automatic mechanical watches displaying real celestial mechanics on your wrist.",
     url: "https://earthmoves.space/watches",
@@ -29,7 +29,7 @@ export default function WatchesPage() {
     <>
       <div className="stars" />
 
-      {/* ═══ NAV ═══ */}
+      {/* â•â•â• NAV â•â•â• */}
       <nav className="em-nav scrolled">
         <Link href="/" className="nav-logo">
           <Image
@@ -50,7 +50,7 @@ export default function WatchesPage() {
         </div>
       </nav>
 
-      {/* ═══ HERO — Video Background ═══ */}
+      {/* â•â•â• HERO â€” Video Background â•â•â• */}
       <section className="w-hero">
         <div className="w-hero-video">
           <video autoPlay loop muted playsInline>
@@ -68,7 +68,7 @@ export default function WatchesPage() {
         </div>
       </section>
 
-      {/* ═══ COLLECTION — Two Watch Cards ═══ */}
+      {/* â•â•â• COLLECTION â€” Two Watch Cards â•â•â• */}
       <section className="w-collection">
         <span className="w-collection-label section-label"></span>
         <h2 className="w-collection-title">
@@ -79,12 +79,12 @@ export default function WatchesPage() {
         </p>
 
         <div className="w-grid">
-          {/* ── COPERNICUS ── */}
+          {/* â”€â”€ COPERNICUS â”€â”€ */}
           <div className="w-card">
             <div className="w-card-img">
               <Image
                 src="/images/copernicus-front.png"
-                alt="Earth Moves Copernicus — The lunar system on your wrist"
+                alt="Earth Moves Copernicus â€” The lunar system on your wrist"
                 width={1920}
                 height={1200}
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
@@ -111,18 +111,18 @@ export default function WatchesPage() {
                   Pre-order Now
                 </a>
                 <a href="#copernicus-details" className="w-btn-secondary">
-                  Details ↓
+                  Details â†“
                 </a>
               </div>
             </div>
           </div>
 
-          {/* ── OCEANIC ── */}
+          {/* â”€â”€ OCEANIC â”€â”€ */}
           <div className="w-card">
             <div className="w-card-img">
               <Image
                 src="/images/oceanic-front.png"
-                alt="Earth Moves Oceanic — Synch with nature, ocean and space"
+                alt="Earth Moves Oceanic â€” Synch with nature, ocean and space"
                 width={1920}
                 height={1200}
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
@@ -154,7 +154,7 @@ export default function WatchesPage() {
                   rel="noopener noreferrer"
                   className="w-btn-secondary"
                 >
-                  Full Details →
+                  Full Details â†’
                 </a>
               </div>
             </div>
@@ -162,7 +162,7 @@ export default function WatchesPage() {
         </div>
       </section>
 
-      {/* ═══ PHILOSOPHY STRIP ═══ */}
+      {/* â•â•â• PHILOSOPHY STRIP â•â•â• */}
       <section className="w-philosophy">
         <div style={{ width: 40, height: 1, background: "var(--gold)", margin: "0 auto 2rem", opacity: .4 }} />
         <p className="w-philosophy-quote">
@@ -171,11 +171,11 @@ export default function WatchesPage() {
           dance of Earth, Moon and tides.&rdquo;
         </p>
         <p style={{ fontFamily: "'DM Mono', monospace", fontSize: ".65rem", color: "var(--text-dim)", marginTop: "1.5rem", letterSpacing: ".08em" }}>
-          — BRAGE W. JOHANSEN, FOUNDER
+          â€” BRAGE W. JOHANSEN, FOUNDER
         </p>
       </section>
 
-      {/* ═══ HOW IT WORKS — COPERNICUS DEEP DIVE ═══ */}
+      {/* â•â•â• HOW IT WORKS â€” COPERNICUS DEEP DIVE â•â•â• */}
       <section className="w-how" id="copernicus-details">
         <div style={{ textAlign: "center", marginBottom: "clamp(2.5rem, 5vw, 4rem)" }}>
           <span className="section-label" style={{ display: "block", marginBottom: ".5rem" }}>How It Works</span>
@@ -192,7 +192,7 @@ export default function WatchesPage() {
           <div className="w-how-image">
             <Image
               src="/images/copernicus-explained.png"
-              alt="Copernicus dial explained — Sun, Moon, Earth, day/night cycle"
+              alt="Copernicus dial explained â€” Sun, Moon, Earth, day/night cycle"
               width={1344}
               height={768}
               style={{ width: "100%", height: "auto" }}
@@ -201,7 +201,7 @@ export default function WatchesPage() {
           <div className="w-how-features">
             <div className="w-how-feature">
               <h4>Sun always at 12:00</h4>
-              <p>The Sun stays fixed at the top — a heliocentric perspective.</p>
+              <p>The Sun stays fixed at the top â€” a heliocentric perspective.</p>
             </div>
             <div className="w-how-feature">
               <h4>24h rotation</h4>
@@ -227,7 +227,7 @@ export default function WatchesPage() {
         </div>
       </section>
 
-      {/* ═══ THE COMPLETE EXPERIENCE ═══ */}
+      {/* â•â•â• THE COMPLETE EXPERIENCE â•â•â• */}
       <section className="w-unbox">
         <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           <span className="section-label" style={{ display: "block", marginBottom: ".5rem" }}>What&apos;s Included</span>
@@ -243,7 +243,7 @@ export default function WatchesPage() {
         <div className="w-unbox-img">
           <Image
             src="/images/copernicus-unboxed.png"
-            alt="Copernicus unboxing — watch, extra strap, book, and presentation box"
+            alt="Copernicus unboxing â€” watch, extra strap, book, and presentation box"
             width={1824}
             height={1140}
             style={{ width: "100%", height: "auto" }}
@@ -251,7 +251,7 @@ export default function WatchesPage() {
         </div>
         <div className="w-unbox-text">
           <p>
-            The watch is delivered with an extra strap and a book — <em>Earth&apos;s
+            The watch is delivered with an extra strap and a book â€” <em>Earth&apos;s
             Greatest Moves</em> by Brage W. Johansen. It introduces the foundation for
             the watch and your understanding of Time, Space and Nature.
           </p>
@@ -263,7 +263,7 @@ export default function WatchesPage() {
         </div>
       </section>
 
-      {/* ═══ SPECIFICATIONS ═══ */}
+      {/* â•â•â• SPECIFICATIONS â•â•â• */}
       <section className="w-specs">
         <div className="w-specs-header">
           <span className="section-label" style={{ display: "block", marginBottom: ".5rem" }}>Specifications</span>
@@ -368,7 +368,7 @@ export default function WatchesPage() {
         </p>
       </section>
 
-      {/* ═══ BRIDGE TO INSTRUMENTS ═══ */}
+      {/* â•â•â• BRIDGE TO INSTRUMENTS â•â•â• */}
       <section style={{
         padding: "clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 4rem)",
         maxWidth: 900, margin: "0 auto", position: "relative", zIndex: 1,
@@ -392,7 +392,7 @@ export default function WatchesPage() {
               The Watch
             </h3>
             <p style={{ fontSize: ".8rem", color: "var(--text-secondary)", margin: 0, lineHeight: 1.6 }}>
-              See what Copernicus shows — live. A digital recreation of the heliocentric dial with real astronomical data.
+              See what Copernicus shows â€” live. A digital recreation of the heliocentric dial with real astronomical data.
             </p>
           </Link>
           <Link href="/calendar" style={{
@@ -417,7 +417,7 @@ export default function WatchesPage() {
         </div>
       </section>
 
-      {/* ═══ FINAL CTA ═══ */}
+      {/* â•â•â• FINAL CTA â•â•â• */}
       <section className="w-cta">
         <div style={{ width: 40, height: 1, background: "var(--gold)", margin: "0 auto 2.5rem", opacity: .3 }} />
         <h2>
@@ -449,11 +449,11 @@ export default function WatchesPage() {
           fontFamily: "'DM Mono', monospace", fontSize: ".65rem",
           color: "var(--text-dim)", marginTop: "1.5rem", letterSpacing: ".06em",
         }}>
-          $1,200 USD · FREE WORLDWIDE SHIPPING · 2-YEAR WARRANTY
+          $1,200 USD Â· FREE WORLDWIDE SHIPPING Â· 2-YEAR WARRANTY
         </p>
       </section>
 
-      {/* ═══ FOOTER ═══ */}
+      {/* â•â•â• FOOTER â•â•â• */}
       <footer className="em-footer">
         <Link href="/" className="f-brand">
           <Image
@@ -471,7 +471,7 @@ export default function WatchesPage() {
           <Link href="/watches">Collection</Link>
           <a href={STORE_URL} target="_blank" rel="noopener noreferrer">Store</a>
         </div>
-        <span className="f-copy">© 2026 Earth Moves AS</span>
+        <span className="f-copy">Â© 2026 Earth Moves AS</span>
       </footer>
     </>
   );

@@ -2,18 +2,18 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
-// ═══════════════════════════════════════════════════════════════════════
-// EARTH MOVES — CALENDAR v6.2  "The Instrument"
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// EARTH MOVES â€” CALENDAR v6.2  "The Instrument"
 // "Time is not numbers on a screen. It is a planet moving through the void."
 //
-// v6.2 — ZODIAC CONSTELLATION RING:
-//   ✦ 12 zodiac PNG images at correct ecliptic positions beyond Mars orbit
-//   ✦ Active constellation brightens when opposite the Sun
-//   ✦ "Towards Milky Way Core" arrow near Sagittarius
-//   ✦ Orbit scaled to fit full zodiac ring (aR / 2.1)
-//   ✦ Zodiac enabled by default
+// v6.2 â€” ZODIAC CONSTELLATION RING:
+//   âœ¦ 12 zodiac PNG images at correct ecliptic positions beyond Mars orbit
+//   âœ¦ Active constellation brightens when opposite the Sun
+//   âœ¦ "Towards Milky Way Core" arrow near Sagittarius
+//   âœ¦ Orbit scaled to fit full zodiac ring (aR / 2.1)
+//   âœ¦ Zodiac enabled by default
 //   (all v6.1 features preserved)
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 const DEG = Math.PI / 180;
 const RAD = 180 / Math.PI;
@@ -37,7 +37,7 @@ function _smoothNoise(x: number): number {
   return a + (b - a) * t;
 }
 
-// ─── ISO WEEK NUMBER ──────────────────────────────────────────────────
+// â”€â”€â”€ ISO WEEK NUMBER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function getISOWeek(d: Date): number {
   const date = new Date(d.getTime());
   date.setHours(0, 0, 0, 0);
@@ -46,7 +46,7 @@ function getISOWeek(d: Date): number {
   return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
 }
 
-// ─── REALISTIC ORBITAL DATA (AU & Years) ─────────────────────────────
+// â”€â”€â”€ REALISTIC ORBITAL DATA (AU & Years) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const ECCENTRICITY = 0.0167;
 const SEMI_MAJOR = 1.0;
 const PLANET_DATA = {
@@ -139,7 +139,7 @@ function dateKey(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-// ─── KEPLERIAN ELLIPSE POINT ─────────────────────────────────────────
+// â”€â”€â”€ KEPLERIAN ELLIPSE POINT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function orbitalPoint(date: Date, cx: number, cy: number, aR: number, bR: number, focusOffset: number) {
   const M = meanAnomaly(date);
   const Ev = eccentricAnomaly(M, ECCENTRICITY);
@@ -162,16 +162,16 @@ function precomputeOrbit(year: number, cx: number, cy: number, aR: number, bR: n
   return pts;
 }
 
-// ─── 8 FYRTÅRN — Lighthouses ─────────────────────────────────────────
+// â”€â”€â”€ 8 FYRTÃ…RN â€” Lighthouses â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const FYRTARN = [
-  { name: "Perihelion", date: "01-03", color: "#FFD060", glyph: "◉" },
-  { name: "Imbolc",     date: "02-02", color: "#A0C8FF", glyph: "❄" },
-  { name: "Equinox",    date: "03-20", color: "#60DDA0", glyph: "⚖" },
-  { name: "Beltane",    date: "05-01", color: "#FF9060", glyph: "✦" },
-  { name: "Solstice",   date: "06-21", color: "#FFE040", glyph: "☀" },
-  { name: "Lammas",     date: "08-01", color: "#FFA040", glyph: "✦" },
-  { name: "Equinox",    date: "09-22", color: "#60DDA0", glyph: "⚖" },
-  { name: "Solstice",   date: "12-21", color: "#8080FF", glyph: "☽" },
+  { name: "Perihelion", date: "01-03", color: "#FFD060", glyph: "â—‰" },
+  { name: "Imbolc",     date: "02-02", color: "#A0C8FF", glyph: "â„" },
+  { name: "Equinox",    date: "03-20", color: "#60DDA0", glyph: "âš–" },
+  { name: "Beltane",    date: "05-01", color: "#FF9060", glyph: "âœ¦" },
+  { name: "Solstice",   date: "06-21", color: "#FFE040", glyph: "â˜€" },
+  { name: "Lammas",     date: "08-01", color: "#FFA040", glyph: "âœ¦" },
+  { name: "Equinox",    date: "09-22", color: "#60DDA0", glyph: "âš–" },
+  { name: "Solstice",   date: "12-21", color: "#8080FF", glyph: "â˜½" },
 ];
 
 const METEOR_ARCS = [
@@ -220,7 +220,7 @@ const ZODIAC_BLUEPRINT = [
     lines: [[0,1],[3,2],[2,0],[4,3]] },
 ];
 
-// ─── ZODIAC IMAGE POSITIONS (day-of-year midpoints for each sign) ────
+// â”€â”€â”€ ZODIAC IMAGE POSITIONS (day-of-year midpoints for each sign) â”€â”€â”€â”€
 const ZODIAC_SIGNS = [
   { name: "Capricorn",   file: "capricorn",   midDay: 5 },
   { name: "Aquarius",    file: "aquarius",    midDay: 35 },
@@ -292,13 +292,13 @@ const SAMPLE_EVENTS: CalEvent[] = [
     date: dateKey(new Date()), startTime: "11:00", endTime: "13:00",
     allDay: false, location: "", virtualLink: "",
     dialIns: [], attendees: [], organizer: "Lars Horpestad",
-    description: "Focus time — Earth Moves v5 development.",
+    description: "Focus time â€” Earth Moves v5 development.",
     reminders: [5], showAs: "out-of-office", category: "Focus",
     color: "#60C080", privacy: "private", recurrence: "none",
   },
 ];
 
-// ─── SETTINGS ────────────────────────────────────────────────────────
+// â”€â”€â”€ SETTINGS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 interface Settings {
   timeFormat: "24h" | "12h";
   hemisphere: "auto" | "north" | "south";
@@ -331,7 +331,7 @@ const DEFAULT_SETTINGS: Settings = {
   panicAlwaysVisible: false,
 };
 
-// ─── MOMENTS CONTENT ─────────────────────────────────────────────────
+// â”€â”€â”€ MOMENTS CONTENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const MOMENT_POOL = [
   (km: string) => `Since you opened this, Earth has carried you ${km} km forward.`,
   () => "Mid-day is your peak daylight window. Schedule your most important work in the light.",
@@ -340,9 +340,9 @@ const MOMENT_POOL = [
   () => "The Perseids peak in mid-August. Earth crosses the debris trail every year, same week.",
   () => "At 107,000 km/h, your next hour-long meeting will carry you 107,000 km through space.",
   () => "Shortest day in the northern hemisphere: December 21. Plan morning syncs around the light.",
-  () => "Earth is now closer to the Sun than in July — about 5 million km closer.",
+  () => "Earth is now closer to the Sun than in July â€” about 5 million km closer.",
   () => "Geminids meteor shower peaks December 14. One of the strongest of the year.",
-  (km: string) => `${km} km and counting. The planet doesn't wait — neither should your priorities.`,
+  (km: string) => `${km} km and counting. The planet doesn't wait â€” neither should your priorities.`,
   () => "Solstice week: day length reaches its annual extreme. A natural inflection point.",
   () => "Equinox: exactly 12 hours of daylight everywhere on Earth today.",
 ];
@@ -357,13 +357,13 @@ function getMoment(kmTraveled: number, idx: number): string {
   return fn(km);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  MINI WATCH — Ported from Earth Moves v3.5 watch
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  MINI WATCH â€” Ported from Earth Moves v3.5 watch
 //  Uses local /day.jpg + /night.jpg textures (same /public folder)
 //  Stripped: no aurora, tides, satellites, empathy cities, meteors
 //  Kept: globe, terminator, hour markers, clock hand, digital time,
 //        moon phase icon, pole indicator
-// ═══════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 const MINI_TEX_W = 1024;
 const MINI_TEX_H = 512;
@@ -398,7 +398,7 @@ function hourAngleForWatch(h: number, south: boolean): number {
   return south ? h * (Math.PI / 12) : (h - 12) * (Math.PI / 12);
 }
 
-// Globe texture cache builder (from watch v3.5, simplified — no clouds)
+// Globe texture cache builder (from watch v3.5, simplified â€” no clouds)
 function buildGlobeCacheMini(
   dayPx: Uint8ClampedArray | null,
   nightPx: Uint8ClampedArray | null,
@@ -499,9 +499,9 @@ function buildGlobeCacheMini(
   return cache;
 }
 
-// ════════════════════════════════════════════════════════════════════
-//  MINI WATCH COMPONENT — Full watch-quality in 220×220
-// ════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  MINI WATCH COMPONENT â€” Full watch-quality in 220Ã—220
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function MiniWatch({ now, lat, lon, southPole, hourMode }: {
   now: Date; lat: number; lon: number;
   southPole: boolean; hourMode: "min" | "mid";
@@ -593,7 +593,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
       globeCacheTimeRef.current = nowSec;
     }
 
-    // ── LAYER 0: Deep space background ──
+    // â”€â”€ LAYER 0: Deep space background â”€â”€
     c.fillStyle = "#000000";
     c.fillRect(0, 0, S, S);
     const bg = c.createRadialGradient(cx, cy, wR * 0.18, cx, cy, S * 0.6);
@@ -612,7 +612,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
       c.beginPath(); c.arc(sx, sy, 0.5, 0, TAU); c.fill();
     }
 
-    // ── LAYER 2: Earth globe ──
+    // â”€â”€ LAYER 2: Earth globe â”€â”€
     c.save();
     const drawR = eR * 1.045;
     c.beginPath(); c.arc(cx, cy, drawR, 0, TAU); c.clip();
@@ -666,7 +666,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
 
     c.restore(); // end Earth clip
 
-    // ── LAYER 7: Atmosphere glow ──
+    // â”€â”€ LAYER 7: Atmosphere glow â”€â”€
     const ag2 = c.createRadialGradient(cx, cy, eR - 2, cx, cy, eR + 14);
     ag2.addColorStop(0, "rgba(55,125,250,0)");
     ag2.addColorStop(.42, "rgba(55,125,250,.038)");
@@ -675,7 +675,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
     c.fillStyle = ag2;
     c.beginPath(); c.arc(cx, cy, eR + 14, 0, TAU); c.fill();
 
-    // ── LAYER 8: Clock hand ──
+    // â”€â”€ LAYER 8: Clock hand â”€â”€
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const lt = new Date(now.toLocaleString("en-US", { timeZone: tz }));
     const lH = lt.getHours() + lt.getMinutes() / 60 + lt.getSeconds() / 3600;
@@ -698,7 +698,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
 
     // Pole indicator removed for clean premium look
 
-    // ── LAYER 9: Vernier precision rings + hour markers ──
+    // â”€â”€ LAYER 9: Vernier precision rings + hour markers â”€â”€
     // Multiple concentric hairline rings for chronometer feel
     const vI = wR * ZM.VERNIER_INNER;
     const vO = wR * ZM.VERNIER_OUTER;
@@ -711,7 +711,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
       c.beginPath(); c.arc(cx, cy, r, 0, TAU); c.stroke();
     });
 
-    // Dedicated moon orbital track — very faint ring
+    // Dedicated moon orbital track â€” very faint ring
     c.strokeStyle = "rgba(180,190,210,0.06)";
     c.lineWidth = 0.4;
     c.beginPath(); c.arc(cx, cy, moonTrackR, 0, TAU); c.stroke();
@@ -720,7 +720,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
     c.strokeStyle = "rgba(115,145,195,.15)"; c.lineWidth = .6;
     c.beginPath(); c.arc(cx, cy, bz, 0, TAU); c.stroke();
 
-    // Fine graduation tick marks — every 15 minutes
+    // Fine graduation tick marks â€” every 15 minutes
     for (let h = 0; h < 24; h++) {
       for (let q = 0; q < 4; q++) {
         const time = h + q / 4;
@@ -742,7 +742,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
           tickAlpha = isEvenHour ? 0.25 : 0.15;
           tickWidth = isEvenHour ? 0.8 : 0.5;
         } else {
-          // Quarter-hour ticks — very fine
+          // Quarter-hour ticks â€” very fine
           tickStart = vI + (vO - vI) * 0.5;
           tickEnd = vO - S * 0.003;
           tickAlpha = 0.07;
@@ -815,7 +815,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
       }
     }
 
-    // ── Moon fixed lower-left like your image
+    // â”€â”€ Moon fixed lower-left like your image
     const moonR = wR * 0.61;
     const moonAngle = 2.05; // lower-left position
     const mx = cx + moonR * Math.cos(moonAngle);
@@ -855,7 +855,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
     c.beginPath(); c.arc(mx, my, mS, 0, TAU); c.stroke();
     c.restore();
 
-    // ── LAYER 12: Digital time + date — CENTERED "Mega Time" ──
+    // â”€â”€ LAYER 12: Digital time + date â€” CENTERED "Mega Time" â”€â”€
     const dH = lt.getHours().toString().padStart(2, "0");
     const dM = lt.getMinutes().toString().padStart(2, "0");
 
@@ -866,7 +866,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
     scrim.addColorStop(1, "rgba(0,4,14,0)");
     c.fillStyle = scrim; c.beginPath(); c.arc(cx, cy, S * .18, 0, TAU); c.fill();
 
-    // Large centered time + clean date — matches image exactly
+    // Large centered time + clean date â€” matches image exactly
     c.fillStyle = "#ffffff";
     c.font = `200 ${S * 0.178}px 'DM Sans',system-ui`;
     c.textAlign = "center"; c.textBaseline = "middle";
@@ -894,9 +894,9 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
 }
 
 
-// ════════════════════════════════════════════════════════════════════
-//  EVENT PANEL — Full Outlook-style
-// ════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+//  EVENT PANEL â€” Full Outlook-style
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function EventPanel({ event, onClose, onSave, onDelete }: {
   event: CalEvent | null;
   onClose: () => void;
@@ -954,7 +954,7 @@ function EventPanel({ event, onClose, onSave, onDelete }: {
       <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid rgba(30,50,100,0.3)", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ fontSize: 11, color: "rgba(80,120,200,0.5)", letterSpacing: "1.5px", textTransform: "uppercase" }}>Event Details</div>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "rgba(120,150,200,0.5)", cursor: "pointer", fontSize: 18, padding: 0, lineHeight: 1 }}>×</button>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: "rgba(120,150,200,0.5)", cursor: "pointer", fontSize: 18, padding: 0, lineHeight: 1 }}>Ã—</button>
         </div>
         <input value={draft.title} onChange={e => set("title", e.target.value)} placeholder="Add title"
           style={{ ...inputStyle, fontSize: 16, fontWeight: 300, marginTop: 10, letterSpacing: 0.3 }} />
@@ -967,7 +967,7 @@ function EventPanel({ event, onClose, onSave, onDelete }: {
         </div>
         {earthKm > 0 && (
           <div style={{ ...fieldBlock, padding: "8px 11px", background: "rgba(20,40,100,0.3)", borderRadius: 6, border: "1px solid rgba(40,70,140,0.2)", fontSize: 10, color: "rgba(96,165,250,0.6)", fontFamily: "'DM Sans',system-ui" }}>
-            🌍 Earth travels ~{earthKm.toLocaleString()} km during this meeting
+            ðŸŒ Earth travels ~{earthKm.toLocaleString()} km during this meeting
           </div>
         )}
         <div style={{ ...fieldBlock, display: "flex", alignItems: "center", gap: 10 }}>
@@ -979,17 +979,17 @@ function EventPanel({ event, onClose, onSave, onDelete }: {
         <div style={fieldBlock}><span style={labelStyle}>Location</span>
           <input value={draft.location} onChange={e => set("location", e.target.value)} placeholder="Add location" style={inputStyle} />
           {draft.location && <button style={{ fontSize: 9, color: "rgba(96,165,250,0.5)", background: "none", border: "none", cursor: "pointer", padding: "2px 0", marginTop: 2 }}
-            onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent(draft.location)}`, "_blank")}>Open in Maps →</button>}
+            onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent(draft.location)}`, "_blank")}>Open in Maps â†’</button>}
         </div>
         <div style={fieldBlock}><span style={labelStyle}>Virtual Link</span>
           <div style={{ display: "flex", gap: 6 }}>
             <input value={draft.virtualLink} onChange={e => set("virtualLink", e.target.value)} placeholder="Zoom / Teams / Meet URL" style={{ ...inputStyle, flex: 1 }} />
             {draft.virtualLink && <button onClick={() => window.open(draft.virtualLink, "_blank")}
-              style={{ background: "rgba(30,80,180,0.3)", border: "1px solid rgba(50,120,220,0.3)", borderRadius: 6, color: "rgba(140,185,255,0.8)", cursor: "pointer", padding: "0 10px", fontSize: 10, whiteSpace: "nowrap" }}>{detectPlatform(draft.virtualLink)} →</button>}
+              style={{ background: "rgba(30,80,180,0.3)", border: "1px solid rgba(50,120,220,0.3)", borderRadius: 6, color: "rgba(140,185,255,0.8)", cursor: "pointer", padding: "0 10px", fontSize: 10, whiteSpace: "nowrap" }}>{detectPlatform(draft.virtualLink)} â†’</button>}
           </div>
         </div>
         {draft.dialIns.length > 0 && <div style={fieldBlock}><span style={labelStyle}>Dial-in</span>
-          {draft.dialIns.map((d, i) => <div key={i} style={{ fontSize: 11, color: "rgba(160,190,240,0.65)", fontFamily: "'DM Sans',system-ui", marginBottom: 3 }}>{d.number}{d.pin ? ` · PIN: ${d.pin}` : ""}</div>)}
+          {draft.dialIns.map((d, i) => <div key={i} style={{ fontSize: 11, color: "rgba(160,190,240,0.65)", fontFamily: "'DM Sans',system-ui", marginBottom: 3 }}>{d.number}{d.pin ? ` Â· PIN: ${d.pin}` : ""}</div>)}
         </div>}
         <div style={fieldBlock}><span style={labelStyle}>Attendees</span>
           {draft.attendees.map((att, i) => (
@@ -1010,12 +1010,12 @@ function EventPanel({ event, onClose, onSave, onDelete }: {
           </div>
         </div>
         <div style={fieldBlock}><span style={labelStyle}>Organizer</span><input value={draft.organizer} onChange={e => set("organizer", e.target.value)} style={inputStyle} /></div>
-        <div style={fieldBlock}><span style={labelStyle}>Description / Agenda</span><textarea value={draft.description} onChange={e => set("description", e.target.value)} placeholder="Add notes, agenda items, links…" style={{ ...inputStyle, minHeight: 70, resize: "vertical" }} /></div>
+        <div style={fieldBlock}><span style={labelStyle}>Description / Agenda</span><textarea value={draft.description} onChange={e => set("description", e.target.value)} placeholder="Add notes, agenda items, linksâ€¦" style={{ ...inputStyle, minHeight: 70, resize: "vertical" }} /></div>
         <div style={{ ...fieldBlock, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           <div><span style={labelStyle}>Show As</span><select value={draft.showAs} onChange={e => set("showAs", e.target.value as CalEvent["showAs"])} style={inputStyle}>
             {(["busy","free","tentative","out-of-office"] as const).map(v => <option key={v} value={v}>{v.charAt(0).toUpperCase()+v.slice(1).replace("-"," ")}</option>)}
           </select></div>
-          <div><span style={labelStyle}>Privacy</span><select value={draft.privacy} onChange={e => set("privacy", e.target.value as CalEvent["privacy"])} style={inputStyle}><option value="public">Public</option><option value="private">Private 🔒</option></select></div>
+          <div><span style={labelStyle}>Privacy</span><select value={draft.privacy} onChange={e => set("privacy", e.target.value as CalEvent["privacy"])} style={inputStyle}><option value="public">Public</option><option value="private">Private ðŸ”’</option></select></div>
         </div>
         <div style={fieldBlock}><span style={labelStyle}>Recurrence</span>
           <select value={draft.recurrence} onChange={e => set("recurrence", e.target.value)} style={inputStyle}>
@@ -1049,9 +1049,9 @@ function EventPanel({ event, onClose, onSave, onDelete }: {
   );
 }
 
-// ════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  SETTINGS PANEL (unchanged from v5.5)
-// ════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function SettingsPanel({ settings, onChange, onClose }: {
   settings: Settings; onChange: (s: Settings) => void; onClose: () => void;
 }) {
@@ -1073,7 +1073,7 @@ function SettingsPanel({ settings, onChange, onClose }: {
       <div style={{ padding: "18px 20px 0", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
           <span style={{ fontSize: 11, color: "rgba(80,120,200,0.5)", letterSpacing: "1.5px", textTransform: "uppercase" }}>Settings</span>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "rgba(120,150,200,0.5)", cursor: "pointer", fontSize: 18, padding: 0 }}>×</button>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: "rgba(120,150,200,0.5)", cursor: "pointer", fontSize: 18, padding: 0 }}>Ã—</button>
         </div>
         <div style={{ display: "flex", gap: 2, marginBottom: 16, flexWrap: "wrap" }}>
           {tabs.map(t => <button key={t} onClick={() => setTab(t)} style={{ padding: "4px 9px", borderRadius: 4, cursor: "pointer", fontSize: 9, textTransform: "capitalize", letterSpacing: "0.5px", background: tab===t?"rgba(40,90,200,0.35)":"rgba(15,25,55,0.6)", border: tab===t?"1px solid rgba(60,130,255,0.4)":"1px solid rgba(30,50,100,0.3)", color: tab===t?"rgba(160,200,255,0.9)":"rgba(100,130,180,0.5)" }}>{t}</button>)}
@@ -1090,7 +1090,7 @@ function SettingsPanel({ settings, onChange, onClose }: {
         </>)}
         {tab === "cycles" && (<>
           <div style={sectionHead}>Orbital Features</div>
-          {([["showLunarWave","Lunar Wave","12.5 visible cycles of the moon"],["showFyrtarn","8 Fyrtårn Anchors","The lighthouses of the year"],["showSolarBreath","Solar Breath","Solstice pulse — working capacity"],["showMeteorArcs","Meteor Debris Arcs","Perseids, Geminids, Lyrids, Orionids"],["showZodiac","Zodiac Constellations","12 ecliptic sign images"]] as [keyof Settings, string, string][]).map(([k, label, sub]) => (
+          {([["showLunarWave","Lunar Wave","12.5 visible cycles of the moon"],["showFyrtarn","8 FyrtÃ¥rn Anchors","The lighthouses of the year"],["showSolarBreath","Solar Breath","Solstice pulse â€” working capacity"],["showMeteorArcs","Meteor Debris Arcs","Perseids, Geminids, Lyrids, Orionids"],["showZodiac","Zodiac Constellations","12 ecliptic sign images"]] as [keyof Settings, string, string][]).map(([k, label, sub]) => (
             <div key={k} style={rowStyle}><div><div style={labelSt}>{label}</div><div style={sublabelSt}>{sub}</div></div><Toggle value={settings[k] as boolean} onToggle={() => set(k, !settings[k])} /></div>
           ))}
         </>)}
@@ -1118,9 +1118,9 @@ function SettingsPanel({ settings, onChange, onClose }: {
   );
 }
 
-// ════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  PANIC GRID VIEW (unchanged)
-// ════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function GridView({ selectedDate, onSelectDate, events }: { selectedDate: Date; onSelectDate: (d: Date) => void; events: CalEvent[] }) {
   const [viewMonth, setViewMonth] = useState(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1));
   const year = viewMonth.getFullYear(), month = viewMonth.getMonth();
@@ -1136,9 +1136,9 @@ function GridView({ selectedDate, onSelectDate, events }: { selectedDate: Date; 
   return (
     <div style={{ flex: 1, padding: "0 20px", overflowY: "auto" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, paddingTop: 8 }}>
-        <button onClick={() => setViewMonth(new Date(year, month - 1, 1))} style={{ background: "none", border: "1px solid rgba(40,65,120,0.3)", borderRadius: 5, color: "rgba(120,160,220,0.6)", cursor: "pointer", padding: "4px 10px", fontSize: 12 }}>‹</button>
+        <button onClick={() => setViewMonth(new Date(year, month - 1, 1))} style={{ background: "none", border: "1px solid rgba(40,65,120,0.3)", borderRadius: 5, color: "rgba(120,160,220,0.6)", cursor: "pointer", padding: "4px 10px", fontSize: 12 }}>â€¹</button>
         <span style={{ fontSize: 14, color: "rgba(190,215,255,0.8)", letterSpacing: "0.5px" }}>{viewMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
-        <button onClick={() => setViewMonth(new Date(year, month + 1, 1))} style={{ background: "none", border: "1px solid rgba(40,65,120,0.3)", borderRadius: 5, color: "rgba(120,160,220,0.6)", cursor: "pointer", padding: "4px 10px", fontSize: 12 }}>›</button>
+        <button onClick={() => setViewMonth(new Date(year, month + 1, 1))} style={{ background: "none", border: "1px solid rgba(40,65,120,0.3)", borderRadius: 5, color: "rgba(120,160,220,0.6)", cursor: "pointer", padding: "4px 10px", fontSize: 12 }}>â€º</button>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 2, marginBottom: 6 }}>
         {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d => <div key={d} style={{ textAlign: "center", fontSize: 9, color: "rgba(80,110,170,0.45)", letterSpacing: "1px", textTransform: "uppercase", paddingBottom: 4 }}>{d}</div>)}
@@ -1162,9 +1162,9 @@ function GridView({ selectedDate, onSelectDate, events }: { selectedDate: Date; 
   );
 }
 
-// ════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  MAIN COMPONENT
-// ════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 export default function EarthMovesCalendar() {
   const [now, setNow] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -1196,7 +1196,7 @@ const [newMilestone, setNewMilestone] = useState({ name: "", description: "", da
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ w: 800, h: 600 });
 
-  // Canvas refs — three layers
+  // Canvas refs â€” three layers
   const cvStarsRef = useRef<HTMLCanvasElement>(null);
   const cvOrbitRef = useRef<HTMLCanvasElement>(null);
   const cvHudRef = useRef<HTMLCanvasElement>(null);
@@ -1215,7 +1215,7 @@ const [newMilestone, setNewMilestone] = useState({ name: "", description: "", da
   const hoverDateRef = useRef<string | null>(null);
   const fyrtarnProximityRef = useRef<Record<string, number>>({});
 
-  // ─── MOUNT ───────────────────────────────────────────────────────
+  // â”€â”€â”€ MOUNT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     setIsMounted(true);
     try {
@@ -1233,7 +1233,7 @@ const [newMilestone, setNewMilestone] = useState({ name: "", description: "", da
     }
   }, []);
 
-  // ─── MOBILE DETECTION ─────────────────────────────────────────────
+  // â”€â”€â”€ MOBILE DETECTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
@@ -1241,7 +1241,7 @@ const [newMilestone, setNewMilestone] = useState({ name: "", description: "", da
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // ─── ZODIAC IMAGE LOADING ────────────────────────────────────────
+  // â”€â”€â”€ ZODIAC IMAGE LOADING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     ZODIAC_SIGNS.forEach(z => {
       if (zodiacImgsRef.current[z.file]) return;
@@ -1265,7 +1265,7 @@ const [newMilestone, setNewMilestone] = useState({ name: "", description: "", da
       .then(res => res.json()).then(data => { const last = data[data.length - 1]; _globalKp = last?.kp_index ?? 0; }).catch(() => {});
   }, [now.getFullYear()]);
 
-  // ─── LIVE SPACE WEATHER ─────────────────────────────────────────
+  // â”€â”€â”€ LIVE SPACE WEATHER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const fetchLiveSpace = () => {
       fetch("https://api.wheretheiss.at/v1/satellites/25544")
@@ -1281,20 +1281,20 @@ const [newMilestone, setNewMilestone] = useState({ name: "", description: "", da
     return () => clearInterval(iv);
   }, []);
 
-  // ─── CLOCK + ODOMETER ────────────────────────────────────────────
+  // â”€â”€â”€ CLOCK + ODOMETER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const t = setInterval(() => { const n = new Date(); setNow(n); setKmTraveled((Date.now() - startTimeRef.current) / 3600000 * 107280); }, 1000);
     return () => clearInterval(t);
   }, []);
 
-  // ─── MOMENT ROTATION ─────────────────────────────────────────────
+  // â”€â”€â”€ MOMENT ROTATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const freq = settings.momentFrequency === "frequent" ? 20000 : settings.momentFrequency === "balanced" ? 45000 : 99999999;
     const t = setInterval(() => setMomentIdx(i => i + 1), freq);
     return () => clearInterval(t);
   }, [settings.momentFrequency]);
 
-  // ─── RESIZE OBSERVER ─────────────────────────────────────────────
+  // â”€â”€â”€ RESIZE OBSERVER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Re-attaches when isMobile toggles (fixes mobile blank canvas + zoom bug)
   useEffect(() => {
     if (!containerRef.current) return;
@@ -1317,13 +1317,13 @@ const [newMilestone, setNewMilestone] = useState({ name: "", description: "", da
     return () => ro.disconnect();
   }, [isMobile]);
 
-// ── ORBITAL GEOMETRY ─────────────────────────────────────────────────
+// â”€â”€ ORBITAL GEOMETRY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const orbitGeometry = useMemo(() => {
   const { w, h } = containerSize;
   const PAD = 60;
   // Scale so Mars orbit + month labels + zodiac images all fit
   let maxR = (Math.min(w, h) / 2 - PAD);
-  const aR = Math.max(85, maxR / 2.1); // ← minimum 85px on mobile — never negative, never tiny
+  const aR = Math.max(85, maxR / 2.1); // â† minimum 85px on mobile â€” never negative, never tiny
   const bR = aR * Math.sqrt(1 - ECCENTRICITY * ECCENTRICITY);
   const focusOffset = aR * ECCENTRICITY;
   const cx = w / 2;
@@ -1379,7 +1379,7 @@ const orbitGeometry = useMemo(() => {
     });
   }, [now]);
 
-  // ─── CANVAS LAYERS (unchanged orbital rendering) ─────────────────
+  // â”€â”€â”€ CANVAS LAYERS (unchanged orbital rendering) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const drawStarLayer = useCallback(() => {
     const cv = cvStarsRef.current; if (!cv) return;
     const { w, h } = containerSize; cv.width = w; cv.height = h;
@@ -1412,7 +1412,7 @@ const orbitGeometry = useMemo(() => {
     if (settings.showZodiac) {
       const { cx, cy, aR, bR } = orbitGeometry;
       const zodiacR = aR * 1.85; // beyond Mars orbit + month labels
-      const imgSize = Math.max(34, Math.min(58, aR * 0.192)); // +20% per design spec — grand celestial bezel
+      const imgSize = Math.max(34, Math.min(58, aR * 0.192)); // +20% per design spec â€” grand celestial bezel
       const solData = solar(now);
       const nightRa = ((solData.orbitalAngle / 360) * 24 + 12) % 24;
 
@@ -1428,7 +1428,7 @@ const orbitGeometry = useMemo(() => {
         const isActive = raDiff < 2;
         const alpha = isActive ? 1.0 : 0.88;   // boosted brilliance per design spec
 
-        // Draw image if loaded (white-on-black PNG — use "screen" blending)
+        // Draw image if loaded (white-on-black PNG â€” use "screen" blending)
         const img = zodiacImgsRef.current[z.file];
         if (img && img.complete) {
           c.save();
@@ -1444,14 +1444,14 @@ const orbitGeometry = useMemo(() => {
           c.fillStyle = `rgba(255,255,255,${alpha})`; c.fill();
         }
 
-        // Label below image — pure white
+        // Label below image â€” pure white
         c.fillStyle = `rgba(255,255,255,${isActive ? 0.95 : 0.75})`;
         c.font = `${isActive ? 500 : 400} ${Math.max(7, imgSize * 0.22)}px 'DM Mono',monospace`;
         c.textAlign = "center"; c.textBaseline = "top";
         c.fillText(z.name, zx, zy + imgSize / 2 + 3);
       });
 
-      // ── "TOWARDS MILKY WAY CORE" arrow near Sagittarius ──
+      // â”€â”€ "TOWARDS MILKY WAY CORE" arrow near Sagittarius â”€â”€
       const sagIdx = ZODIAC_SIGNS.findIndex(z => z.name === "Sagittarius");
       if (sagIdx >= 0) {
         const sagAngle = ((ZODIAC_SIGNS[sagIdx].midDay / 365) * 360 - 90) * DEG;
@@ -1484,7 +1484,7 @@ const orbitGeometry = useMemo(() => {
         c.font = "6px 'DM Mono',monospace";
         c.textAlign = "center"; c.textBaseline = "middle";
         c.save(); c.translate(lbx, lby); c.rotate(sagAngle + Math.PI / 2);
-        c.fillText("MILKY WAY CORE →", 0, 0);
+        c.fillText("MILKY WAY CORE â†’", 0, 0);
         c.restore();
       }
     }
@@ -1511,7 +1511,7 @@ const orbitGeometry = useMemo(() => {
       Object.entries(PLANET_DATA).forEach(([name, data]) => {
         const pOrbitR = orbitGeometry.aR * data.a;
 
-                // Draw Orbit Path — Mars gets visible rust ring, others gossamer (safe for mobile)
+                // Draw Orbit Path â€” Mars gets visible rust ring, others gossamer (safe for mobile)
         const pxR = Math.max(1, pOrbitR);
         const pyR = Math.max(1, pOrbitR * (bR / aR));
         c.beginPath();
@@ -1557,7 +1557,7 @@ const orbitGeometry = useMemo(() => {
       });
     }
 
-    // ── EARTH'S ORBIT — variable thickness, bold near Earth position ──
+    // â”€â”€ EARTH'S ORBIT â€” variable thickness, bold near Earth position â”€â”€
     const earthDoy = Math.floor((Number(now) - Number(new Date(now.getFullYear(), 0, 0))) / 86400000);
     const earthIdx = Math.min(earthDoy - 1, orbitPts.length - 1);
 
@@ -1565,7 +1565,7 @@ const orbitGeometry = useMemo(() => {
     c.beginPath(); orbitPts.forEach((p,i) => { if (i===0) c.moveTo(p.x,p.y); else c.lineTo(p.x,p.y); }); c.closePath();
     c.strokeStyle = "rgba(30,80,180,0.04)"; c.lineWidth = 14; c.stroke();
 
-    // Variable thickness segments — bright near Earth, fading away
+    // Variable thickness segments â€” bright near Earth, fading away
     for (let i = 0; i < orbitPts.length - 1; i++) {
       const p0 = orbitPts[i], p1 = orbitPts[i + 1];
       // Distance from Earth position (wrapping around year)
@@ -1594,7 +1594,7 @@ const orbitGeometry = useMemo(() => {
       c.fillStyle = glowGrad; c.fill();
     }
 
-    // ── GRADUATION MARKS — white ||||| gauge ticks around orbit ──
+    // â”€â”€ GRADUATION MARKS â€” white ||||| gauge ticks around orbit â”€â”€
     {
       const sunX = cx - orbitGeometry.focusOffset;
       const sunY = cy;
@@ -1608,7 +1608,7 @@ const orbitGeometry = useMemo(() => {
       c.lineWidth = 0.4;
       c.stroke();
 
-      // Daily tick marks — every day = one graduation
+      // Daily tick marks â€” every day = one graduation
       for (let d = 0; d < 365; d++) {
         const dayAngle = ((d / 365) * 360 - 90) * DEG;
         const isWeekStart = d % 7 === 0;
@@ -1641,7 +1641,7 @@ const orbitGeometry = useMemo(() => {
       }
     }
 
-    // ── MILESTONE RADIAL LINES TO SUN — white star-like crossing lines ──
+    // â”€â”€ MILESTONE RADIAL LINES TO SUN â€” white star-like crossing lines â”€â”€
     if (settings.showFyrtarn) {
       const sunX2 = cx - orbitGeometry.focusOffset;
       const sunY2 = cy;
@@ -1656,7 +1656,7 @@ const orbitGeometry = useMemo(() => {
         const hexG2 = parseInt(f.color.slice(3, 5), 16);
         const hexB2 = parseInt(f.color.slice(5, 7), 16);
 
-        // Radial line from orbit to sun — gradient white/colored
+        // Radial line from orbit to sun â€” gradient white/colored
         const lineGrad = c.createLinearGradient(p.x, p.y, sunX2, sunY2);
         lineGrad.addColorStop(0, `rgba(${hexR2},${hexG2},${hexB2},0.4)`);
         lineGrad.addColorStop(0.3, `rgba(255,255,255,0.15)`);
@@ -1680,7 +1680,7 @@ const orbitGeometry = useMemo(() => {
       });
     }
 
-    // ── USER MILESTONE WHITE RADIAL LINES ──
+    // â”€â”€ USER MILESTONE WHITE RADIAL LINES â”€â”€
     {
       const sunX3 = cx - orbitGeometry.focusOffset;
       const sunY3 = cy;
@@ -1726,7 +1726,7 @@ const orbitGeometry = useMemo(() => {
       });
     }
 
-            // ── ORBITAL MOTION ARROW — shows direction of Earth's movement ──
+            // â”€â”€ ORBITAL MOTION ARROW â€” shows direction of Earth's movement â”€â”€
     {
       const arrowIdx = Math.min(earthIdx + 15, orbitPts.length - 1);
       const arrowPrev = orbitPts[Math.max(0, arrowIdx - 2)];
@@ -1739,7 +1739,7 @@ const orbitGeometry = useMemo(() => {
         const tipY = arrowTip.y;
         const wingLen = 8;
 
-        // Arrow head — subtle white, reduced opacity per spec
+        // Arrow head â€” subtle white, reduced opacity per spec
         c.save();
         c.globalAlpha = 0.55;
         c.beginPath();
@@ -1752,19 +1752,19 @@ const orbitGeometry = useMemo(() => {
         c.lineCap = "round";
         c.stroke();
 
-        // "→ ORBIT" label — subdued white
+        // "â†’ ORBIT" label â€” subdued white
         c.globalAlpha = 0.45;
         c.fillStyle = "#ffffff";
         c.font = "600 7px 'DM Mono',monospace";
         c.textAlign = "center"; c.textBaseline = "middle";
         const labelOff = 17;
         const perpAngle = arrowAngle + Math.PI / 2;
-        c.fillText("→ ORBIT", tipX + labelOff * Math.cos(perpAngle), tipY + labelOff * Math.sin(perpAngle));
+        c.fillText("â†’ ORBIT", tipX + labelOff * Math.cos(perpAngle), tipY + labelOff * Math.sin(perpAngle));
         c.restore();
       }
     }
 
-    // ── FADED ARC PATCHES — milestones as spectral glows on the orbit path
+    // â”€â”€ FADED ARC PATCHES â€” milestones as spectral glows on the orbit path
     if (settings.showFyrtarn) {
       const todayDoyForFyt = Math.floor((Number(now)-Number(new Date(now.getFullYear(),0,0)))/86400000);
       const sunX = orbitGeometry.cx-orbitGeometry.focusOffset; const sunY = orbitGeometry.cy;
@@ -1782,7 +1782,7 @@ const orbitGeometry = useMemo(() => {
         const hexG = parseInt(f.color.slice(3,5),16);
         const hexB = parseInt(f.color.slice(5,7),16);
 
-        // Draw faded arc patch: ···::||::··· on orbit path (~10 days each side)
+        // Draw faded arc patch: Â·Â·Â·::||::Â·Â·Â· on orbit path (~10 days each side)
         const SPREAD = 12; // days each side
         for (let d = -SPREAD; d <= SPREAD; d++) {
           const idx = Math.min(Math.max(0, ptIdx + d), orbitPts.length - 2);
@@ -1814,7 +1814,7 @@ const orbitGeometry = useMemo(() => {
           c.strokeStyle = beamGrad; c.lineWidth = 0.7; c.stroke();
         }
 
-        // Label — always visible, small caps, offset outward from orbit
+        // Label â€” always visible, small caps, offset outward from orbit
         const p = orbitPts[ptIdx];
         const lAngle = Math.atan2(p.y-cy,p.x-cx);
         const labelDist = 18 + 6 * proximity;
@@ -1839,12 +1839,12 @@ const orbitGeometry = useMemo(() => {
       c.lineTo(cx + (marsOrbitR + 14) * Math.cos(tickAngle), cy + (marsOrbitR + 14) * Math.sin(tickAngle));
       c.strokeStyle = "rgba(80,110,165,0.2)"; c.lineWidth = 0.7; c.stroke();
     }
-    // Month labels — positioned on single circular axis
+    // Month labels â€” positioned on single circular axis
     for (let m = 0; m < 12; m++) { const midAngle = ((m*30+15)-90)*DEG; const lx = cx+monthLabelR*Math.cos(midAngle); const ly = cy+monthLabelR*Math.sin(midAngle); c.save(); c.translate(lx,ly); c.rotate(midAngle+Math.PI/2); const isCur = m===now.getMonth(); c.fillStyle = isCur ? "rgba(220,235,255,0.88)" : "rgba(160,180,220,0.6)"; c.font = `${isCur?500:300} ${isCur?11:10}px 'DM Sans',system-ui`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(months[m],0,0); c.restore(); }
 
-    // Meeting blobs removed per v4 spec — orbital view is purely astronomical
+    // Meeting blobs removed per v4 spec â€” orbital view is purely astronomical
 
-    // Fyrtårn dots removed — replaced by arc patches above
+    // FyrtÃ¥rn dots removed â€” replaced by arc patches above
 
     { const p = selectedPos; c.beginPath(); c.arc(p.x,p.y,5,0,TAU); c.strokeStyle = "rgba(200,220,255,0.6)"; c.lineWidth = 1.5; c.stroke(); c.beginPath(); c.arc(p.x,p.y,2,0,TAU); c.fillStyle = "rgba(200,220,255,0.8)"; c.fill(); }
 
@@ -1876,13 +1876,13 @@ const orbitGeometry = useMemo(() => {
     const earthGlow = c.createRadialGradient(p.x,p.y,0,p.x,p.y,glowBreath); earthGlow.addColorStop(0,`rgba(96,165,250,${0.45+0.2*speedFactor})`); earthGlow.addColorStop(0.5,"rgba(50,120,220,0.2)"); earthGlow.addColorStop(1,"rgba(30,80,200,0)"); c.beginPath(); c.arc(p.x,p.y,glowBreath,0,TAU); c.fillStyle = earthGlow; c.fill();
     c.beginPath(); c.arc(p.x,p.y,7,0,TAU); const earthCore = c.createRadialGradient(p.x-2,p.y-2,0,p.x,p.y,7); earthCore.addColorStop(0,"#60A5FA"); earthCore.addColorStop(0.5,"#2563EB"); earthCore.addColorStop(1,"#1E40AF"); c.fillStyle = earthCore; c.fill(); c.strokeStyle = "rgba(200,230,255,0.4)"; c.lineWidth = 0.8; c.stroke();
 
-    // Tiny moon circling Earth dot — KEPT VISIBLE
+    // Tiny moon circling Earth dot â€” KEPT VISIBLE
     const lunAngle = lun.phase*TAU-Math.PI/2; const lunOrbitR = 14; const lx = p.x+lunOrbitR*Math.cos(lunAngle); const ly = p.y+lunOrbitR*Math.sin(lunAngle); c.beginPath(); c.arc(lx,ly,2.5,0,TAU); c.fillStyle = `rgba(200,210,230,${0.4+0.4*lun.illum})`; c.fill();
 
     const sunX = orbitGeometry.cx-orbitGeometry.focusOffset; const sunY = orbitGeometry.cy;
     { const windNorm = Math.max(0,Math.min(1,(_solarWindSpeed-300)/500)); const coronaR = 14+14*windNorm; const pulseRate = 1200-400*windNorm; const coronaPulse = 0.8+0.2*Math.sin(t/pulseRate); const coronaAlpha = windNorm<0.3?0.45*coronaPulse:windNorm<0.7?0.52*coronaPulse:0.62*coronaPulse; const sunGlow = c.createRadialGradient(sunX,sunY,0,sunX,sunY,coronaR); sunGlow.addColorStop(0,`rgba(255,240,180,${coronaAlpha})`); sunGlow.addColorStop(0.5,`rgba(255,200,80,${coronaAlpha*0.28})`); sunGlow.addColorStop(1,"rgba(255,180,60,0)"); c.beginPath(); c.arc(sunX,sunY,coronaR,0,TAU); c.fillStyle = sunGlow; c.fill(); c.beginPath(); c.arc(sunX,sunY,5,0,TAU); c.fillStyle = "rgba(255,240,180,0.75)"; c.fill(); }
 
-    // Solar flare flash — expanding ring across entire canvas
+    // Solar flare flash â€” expanding ring across entire canvas
     if (_lastFlareFlashMs > 0) {
       const flareAge = (t - _lastFlareFlashMs) / 1000; // seconds
       if (flareAge < 4.0) {
@@ -1902,7 +1902,7 @@ const orbitGeometry = useMemo(() => {
     if (settings.labelDensity !== "minimal") { c.fillStyle = "rgba(160,200,255,0.55)"; c.font = "9px 'DM Mono',monospace"; c.textAlign = "center"; c.fillText("NOW",p.x,p.y+24); }
   }, [now, lun, containerSize, orbitGeometry, orbitPts, earthPos, settings.labelDensity]);
 
-  // ─── RAF LOOP ────────────────────────────────────────────────────
+  // â”€â”€â”€ RAF LOOP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const draw = useCallback(() => {
     if (containerSize.w < 10 || containerSize.h < 10) { afRef.current = requestAnimationFrame(draw); return; }
     if (starsBuiltRef.current?.w !== containerSize.w) drawStarLayer();
@@ -1938,9 +1938,9 @@ const orbitGeometry = useMemo(() => {
 
   const moonPhaseText = useMemo(() => {
     const p = lun.phase;
-    if (p<0.03||p>0.97) return "🌑 New Moon"; if (p<0.22) return "🌒 Waxing Crescent"; if (p<0.28) return "🌓 First Quarter";
-    if (p<0.47) return "🌔 Waxing Gibbous"; if (p<0.53) return "🌕 Full Moon"; if (p<0.72) return "🌖 Waning Gibbous";
-    if (p<0.78) return "🌗 Last Quarter"; return "🌘 Waning Crescent";
+    if (p<0.03||p>0.97) return "ðŸŒ‘ New Moon"; if (p<0.22) return "ðŸŒ’ Waxing Crescent"; if (p<0.28) return "ðŸŒ“ First Quarter";
+    if (p<0.47) return "ðŸŒ” Waxing Gibbous"; if (p<0.53) return "ðŸŒ• Full Moon"; if (p<0.72) return "ðŸŒ– Waning Gibbous";
+    if (p<0.78) return "ðŸŒ— Last Quarter"; return "ðŸŒ˜ Waning Crescent";
   }, [lun.phase]);
 
   const canvasStyle: React.CSSProperties = { position: "absolute", top: 0, left: 0, width: "100%", height: "100%" };
@@ -1962,16 +1962,16 @@ const orbitGeometry = useMemo(() => {
     transition: "all 0.15s ease",
   });
 
-  // ═══════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   //  RENDER
-  // ═══════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: "#000000", fontFamily: "'DM Sans',system-ui", color: "rgba(200,220,255,0.88)", overflow: "hidden" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-      {/* Header removed per v4 spec — branding moved to orbital view */}
+      {/* Header removed per v4 spec â€” branding moved to orbital view */}
 
-      {/* ── MAIN BODY ───────────────────────────────────────── */}
+      {/* â”€â”€ MAIN BODY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", flex: 1, overflow: isMobile ? "auto" : "hidden" }}>
 
         {/* On mobile, orbital view comes first */}
@@ -1980,7 +1980,7 @@ const orbitGeometry = useMemo(() => {
             {showOnboarding && (
               <div style={{ position: "absolute", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", animation: "onboardFade 4.2s ease forwards" }}>
                 <div style={{ background: "rgba(6,10,22,0.75)", backdropFilter: "blur(12px)", border: "1px solid rgba(50,80,140,0.25)", borderRadius: 12, padding: "12px 20px", display: "flex", gap: 16, alignItems: "center" }}>
-                  {[{ icon: "🌍", label: "Click orbit to navigate" }, { icon: "☉", label: "Planets in motion" }, { icon: "✦", label: "Milestone arcs", color: "rgba(150,170,220,0.5)" }].map(item => (
+                  {[{ icon: "ðŸŒ", label: "Click orbit to navigate" }, { icon: "â˜‰", label: "Planets in motion" }, { icon: "âœ¦", label: "Milestone arcs", color: "rgba(150,170,220,0.5)" }].map(item => (
                     <div key={item.label} style={{ textAlign: "center" }}><div style={{ fontSize: 14, marginBottom: 2, color: item.color || "inherit" }}>{item.icon}</div><div style={{ fontSize: 8, color: "rgba(120,150,200,0.65)", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{item.label}</div></div>
                   ))}
                 </div>
@@ -2000,10 +2000,10 @@ const orbitGeometry = useMemo(() => {
           </div>
         )}
 
-        {/* LEFT PANEL — Date card + Controls (Mini Watch desktop only) */}
+        {/* LEFT PANEL â€” Date card + Controls (Mini Watch desktop only) */}
         <div style={{ width: isMobile ? "100%" : 260, flexShrink: 0, borderRight: isMobile ? "none" : "1px solid rgba(110,140,190,.12)", borderTop: isMobile ? "1px solid rgba(110,140,190,.12)" : "none", display: "flex", flexDirection: "column", background: "rgba(4,8,18,0.7)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", overflowY: "auto", ...(isMobile ? { maxHeight: "none" } : {}) }}>
 
-          {/* Mini Watch — Desktop only */}
+          {/* Mini Watch â€” Desktop only */}
           {!isMobile && (
           <div style={{ padding: "14px 15px 10px", display: "flex", justifyContent: "center", borderBottom: "1px solid rgba(110,140,190,.10)" }}>
             <div style={{ position: "relative" }}>
@@ -2011,7 +2011,7 @@ const orbitGeometry = useMemo(() => {
                 {isMounted ? (
                   <MiniWatch now={now} lat={settings.latitude} lon={settings.longitude} southPole={watchSouthPole} hourMode={watchHourMode} />
                 ) : (
-                  <div style={{ width: 220, height: 220, borderRadius: "50%", background: "#0d2245", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(50,80,140,0.4)", fontSize: 11 }}>Loading…</div>
+                  <div style={{ width: 220, height: 220, borderRadius: "50%", background: "#0d2245", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(50,80,140,0.4)", fontSize: 11 }}>Loadingâ€¦</div>
                 )}
               </div>
               {/* Sapphire halo */}
@@ -2020,11 +2020,11 @@ const orbitGeometry = useMemo(() => {
           </div>
           )}
 
-          {/* Control buttons — Desktop: 2-col grid / Mobile: compact action bar */}
+          {/* Control buttons â€” Desktop: 2-col grid / Mobile: compact action bar */}
           <div style={{ padding: "12px 14px 10px", borderBottom: "1px solid rgba(110,140,190,.10)" }}>
             {isMobile ? (
               <div style={{ display: "flex", gap: 6 }}>
-                <a href="/" target="_blank" rel="noopener noreferrer" style={{ ...wBtnStyle(false), textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minHeight: 40, width: "30%", flexShrink: 0, background: "rgba(8,12,25,.92)", border: "1px solid rgba(110,140,190,.28)", color: "rgba(140,185,255,.75)" }}>Watch <span style={{ fontSize: 11, opacity: 0.7 }}>↗</span></a>
+                <a href="/" target="_blank" rel="noopener noreferrer" style={{ ...wBtnStyle(false), textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minHeight: 40, width: "30%", flexShrink: 0, background: "rgba(8,12,25,.92)", border: "1px solid rgba(110,140,190,.28)", color: "rgba(140,185,255,.75)" }}>Watch <span style={{ fontSize: 11, opacity: 0.7 }}>â†—</span></a>
                 <button onClick={() => setShowMilestonePanel(true)}
                   style={{ ...wBtnStyle(false), flex: 1, textAlign: "center", background: "rgba(8,12,25,.88)", border: "1px solid rgba(110,140,190,.22)", color: "rgba(160,210,255,.7)", padding: "8px 14px", fontSize: 10, minHeight: 40 }}>
                   + Schedule Milestone
@@ -2032,7 +2032,7 @@ const orbitGeometry = useMemo(() => {
               </div>
             ) : (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-                <a href="/" target="_blank" rel="noopener noreferrer" style={{ ...wBtnStyle(false), textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minHeight: 36, background: "rgba(8,12,25,.92)", border: "1px solid rgba(110,140,190,.28)", color: "rgba(140,185,255,.75)" }}>Watch <span style={{ fontSize: 11, opacity: 0.7 }}>↗</span></a>
+                <a href="/" target="_blank" rel="noopener noreferrer" style={{ ...wBtnStyle(false), textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, minHeight: 36, background: "rgba(8,12,25,.92)", border: "1px solid rgba(110,140,190,.28)", color: "rgba(140,185,255,.75)" }}>Watch <span style={{ fontSize: 11, opacity: 0.7 }}>â†—</span></a>
                 <button onClick={() => setShowMilestonePanel(true)}
                   style={{ ...wBtnStyle(false), textAlign: "center", background: "rgba(8,12,25,.88)", border: "1px solid rgba(110,140,190,.22)", color: "rgba(160,210,255,.7)", fontSize: 10, minHeight: 36 }}>
                   + Schedule Milestone
@@ -2056,9 +2056,9 @@ const orbitGeometry = useMemo(() => {
                 <span style={{ fontSize: 13, color: "rgba(100,130,180,0.4)", marginLeft: 4, fontWeight: 300 }}>/ {solTotal}</span>
               </div>
               <div style={{ fontSize: 10, color: "rgba(80,110,165,0.45)", letterSpacing: 0.5, marginTop: 3 }}>
-                {isMounted ? `${selectedDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} — Week ${getISOWeek(selectedDate)}` : ""}
+                {isMounted ? `${selectedDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} â€” Week ${getISOWeek(selectedDate)}` : ""}
               </div>
-              {/* Time readout — DM Sans primary time */}
+              {/* Time readout â€” DM Sans primary time */}
               <div style={{ fontSize: 36, fontWeight: 200, color: "rgba(255,255,255,.88)", letterSpacing: "2px", fontFamily: "'DM Sans',system-ui", marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
                 {isMounted ? now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }) : "--:--"}
               </div>
@@ -2077,7 +2077,7 @@ const orbitGeometry = useMemo(() => {
               </div>
             </div>
 
-            {/* Moon — illumination progress bar */}
+            {/* Moon â€” illumination progress bar */}
             <div style={{ marginBottom: 14 }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "rgba(80,110,165,0.5)", marginBottom: 4, letterSpacing: "1px", textTransform: "uppercase" }}>
                 <span>{moonPhaseText.replace(/[^\w\s]/g, "").trim()}</span>
@@ -2093,7 +2093,7 @@ const orbitGeometry = useMemo(() => {
               </div>
             </div>
 
-            {/* Next Anchor — glassmorphism */}
+            {/* Next Anchor â€” glassmorphism */}
                         {nextFyrtarn && (
               <div style={{ padding: "10px 14px", borderRadius: 12, background: "rgba(8,12,25,.92)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", border: "1px solid rgba(110,140,190,.22)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 20px rgba(0,0,0,0.35)", marginBottom: 14 }}>
                 <div style={{ fontSize: 8.5, color: "rgba(205,220,255,0.9)", textTransform: "uppercase", letterSpacing: "1.8px", marginBottom: 4, fontWeight: 500 }}>Next Anchor</div>
@@ -2102,7 +2102,7 @@ const orbitGeometry = useMemo(() => {
               </div>
             )}
 
-            {/* Next Milestones + User Milestones — glassmorphism */}
+            {/* Next Milestones + User Milestones â€” glassmorphism */}
             <div>
                             <div style={{ fontSize: 8.5, color: "rgba(195,210,245,0.65)", textTransform: "uppercase", letterSpacing: "1.8px", marginBottom: 8, fontFamily: "'DM Sans',system-ui", fontWeight: 500 }}>Upcoming</div>
               {(() => {
@@ -2113,7 +2113,7 @@ const orbitGeometry = useMemo(() => {
                 const milestoneItems = milestones
                   .map(m => {
                     const d = new Date(m.date + "T00:00:00");
-                    return { type: "milestone" as const, name: m.name, glyph: "◇", color: "#ffffff", dateObj: d, daysAway: Math.ceil((d.getTime() - now.getTime()) / 86400000) };
+                    return { type: "milestone" as const, name: m.name, glyph: "â—‡", color: "#ffffff", dateObj: d, daysAway: Math.ceil((d.getTime() - now.getTime()) / 86400000) };
                   })
                   .filter(m => m.daysAway > 0);
                 return [...fyrtarnItems, ...milestoneItems]
@@ -2133,13 +2133,13 @@ const orbitGeometry = useMemo(() => {
           </div>
         </div>
 
-        {/* CENTER — Orbital (desktop only; mobile uses the section above) */}
+        {/* CENTER â€” Orbital (desktop only; mobile uses the section above) */}
                 {!isMobile && (
         <div ref={containerRef} style={{ flex: 1, position: "relative", overflow: "hidden", touchAction: "none" }} onWheel={(e) => e.preventDefault()}>
           {showOnboarding && (
             <div style={{ position: "absolute", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", animation: "onboardFade 4.2s ease forwards" }}>
               <div style={{ background: "rgba(6,10,22,0.75)", backdropFilter: "blur(12px)", border: "1px solid rgba(50,80,140,0.25)", borderRadius: 12, padding: "16px 28px", display: "flex", gap: 28, alignItems: "center" }}>
-                {[{ icon: "🌍", label: "Earth's orbit · click to navigate" }, { icon: "☉", label: "Sun at focus · planets in motion" }, { icon: "✦", label: "Milestones · spectral arcs", color: "rgba(150,170,220,0.5)" }].map(item => (
+                {[{ icon: "ðŸŒ", label: "Earth's orbit Â· click to navigate" }, { icon: "â˜‰", label: "Sun at focus Â· planets in motion" }, { icon: "âœ¦", label: "Milestones Â· spectral arcs", color: "rgba(150,170,220,0.5)" }].map(item => (
                   <div key={item.label} style={{ textAlign: "center" }}><div style={{ fontSize: 18, marginBottom: 4, color: item.color || "inherit" }}>{item.icon}</div><div style={{ fontSize: 9, color: "rgba(120,150,200,0.65)", fontFamily: "'DM Sans',system-ui", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{item.label}</div></div>
                 ))}
               </div>
@@ -2151,7 +2151,7 @@ const orbitGeometry = useMemo(() => {
             <canvas ref={cvOrbitRef} style={{ ...canvasStyle, zIndex: 2 }} />
             <canvas ref={cvHudRef} onClick={handleCanvasClick} style={{ ...canvasStyle, zIndex: 3, cursor: "crosshair" }} />
 
-            {/* Branding — bottom-left engraving */}
+            {/* Branding â€” bottom-left engraving */}
             {isMounted && <div style={{ position: "absolute", bottom: 16, left: 20, zIndex: 10 }}>
               <div style={{ fontSize: 9, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(60,90,140,0.25)" }}>Earth Moves</div>
               <div style={{ fontSize: 7, letterSpacing: "1.5px", color: "rgba(40,65,110,0.18)", marginTop: 1 }}>ORBITAL CALENDAR</div>
@@ -2159,7 +2159,7 @@ const orbitGeometry = useMemo(() => {
 
                         {/* Settings gear removed per request */}
 
-            {/* Bottom-right — info icon + distance */}
+            {/* Bottom-right â€” info icon + distance */}
             {isMounted && <div style={{ position: "absolute", bottom: 16, right: 20, zIndex: 10, display: "flex", alignItems: "flex-end", gap: 12 }}>
               <div style={{ textAlign: "right" }}>
                 <div style={{ fontSize: 9, color: "rgba(96,165,250,0.35)", letterSpacing: "0.3px", fontVariantNumeric: "tabular-nums" }}>{kmFormatted}</div>
@@ -2168,14 +2168,14 @@ const orbitGeometry = useMemo(() => {
               <button 
                 onClick={() => setShowInfoTip(v => !v)}
                 style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(15,25,55,0.4)", border: "1px solid rgba(50,80,140,0.25)", color: "rgba(80,120,200,0.45)", cursor: "pointer", fontSize: 11, display: "flex", alignItems: "center", justifyContent: "center", padding: 0, flexShrink: 0 }}
-              >ⓘ</button>
+              >â“˜</button>
             </div>}
 
             {/* Info tooltip */}
             {showInfoTip && isMounted && (
               <div style={{ position: "absolute", bottom: 48, right: 20, zIndex: 20, maxWidth: 280, padding: "10px 14px", borderRadius: 8, background: "rgba(8,14,30,0.75)", backdropFilter: "blur(16px)", border: "1px solid rgba(50,80,140,0.2)" }}>
                 <div style={{ fontSize: 10, color: "rgba(160,190,240,0.65)", lineHeight: 1.6, letterSpacing: "0.2px", fontStyle: "italic" }}>{momentText}</div>
-                <button onClick={() => setShowInfoTip(false)} style={{ position: "absolute", top: 6, right: 8, background: "none", border: "none", color: "rgba(80,110,165,0.4)", cursor: "pointer", fontSize: 12, padding: 0 }}>×</button>
+                <button onClick={() => setShowInfoTip(false)} style={{ position: "absolute", top: 6, right: 8, background: "none", border: "none", color: "rgba(80,110,165,0.4)", cursor: "pointer", fontSize: 12, padding: 0 }}>Ã—</button>
               </div>
             )}
           </>
@@ -2184,7 +2184,7 @@ const orbitGeometry = useMemo(() => {
         )}
       </div>
 
-      {/* Footer removed per v4 spec — km + tips moved to orbital overlay */}
+      {/* Footer removed per v4 spec â€” km + tips moved to orbital overlay */}
 
             {showEventPanel && <EventPanel event={activeEvent} onClose={() => { setShowEventPanel(false); setActiveEvent(null); }} onSave={ev => setEvents(es => { const existing = es.find(e => e.id===ev.id); return existing ? es.map(e => e.id===ev.id?ev:e) : [...es, ev]; })} onDelete={id => setEvents(es => es.filter(e => e.id!==id))} />}
       {showSettings && <SettingsPanel settings={settings} onChange={setSettings} onClose={() => setShowSettings(false)} />}

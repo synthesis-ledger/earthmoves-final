@@ -2,57 +2,57 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 
-// ═══════════════════════════════════════════════════════════════════════
-// EARTH MOVES v3.5 — "True Black Void + Sharp Earth"
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// EARTH MOVES v3.5 â€” "True Black Void + Sharp Earth"
 // "Time is not numbers on a screen. It is a planet moving through the void."
 //
 // NEW IN v3.5:
-//   • 4× texture resolution (1024×512) — sharper continents + cities
-//   • True deep-black cosmos — no blue tint, fills entire square
-//   • Black Marble night fix — deep navy/black with crisp orange cities
-//   • Earth fills bezel properly (Z.EARTH 0.865) — no thick white rim
-//   • Extended Earth clip (drawR) — texture reaches outer visual limb
-//   • Tidal peak glow dots removed — clean ellipse only
-//   • Silver Veil day-side only — no night-side blue haze
-//   • Balanced brightness boost — strong day, gentle night
-//   • 820 Blue Noise stars + 420 faint distant fill stars
+//   â€¢ 4Ã— texture resolution (1024Ã—512) â€” sharper continents + cities
+//   â€¢ True deep-black cosmos â€” no blue tint, fills entire square
+//   â€¢ Black Marble night fix â€” deep navy/black with crisp orange cities
+//   â€¢ Earth fills bezel properly (Z.EARTH 0.865) â€” no thick white rim
+//   â€¢ Extended Earth clip (drawR) â€” texture reaches outer visual limb
+//   â€¢ Tidal peak glow dots removed â€” clean ellipse only
+//   â€¢ Silver Veil day-side only â€” no night-side blue haze
+//   â€¢ Balanced brightness boost â€” strong day, gentle night
+//   â€¢ 820 Blue Noise stars + 420 faint distant fill stars
 //
 // CARRIED FROM v3.3:
-//   • Chronological Flip — corrected polar bezel mapping (N=CCW, S=CW)
-//   • White Sun + Orbital Vector — minimalist Copernicus iconography
-//   • Digital-Thin Hand — 0.5px pure white chronological needle
-//   • NASA VIIRS Cloud Layer — real-time macro weather screen-blended
-//   • Atmospheric Limb Fresnel — sapphire halo on day-side horizon
-//   • Black Marble stabilization — validated GIBS layer + TIME param
-//   • Live NOAA SWPC space weather (K-index + Bz)
-//   • Meteor shower calendar with visual activation
-//   • Tidal ellipse — continuous gravitational geometry
-//   • Astronaut lens — radial coordinate distortion
-//   • Night floor 0.25 (airglow emulation)
-//   • Blue Noise starfield (Poisson-disk)
+//   â€¢ Chronological Flip â€” corrected polar bezel mapping (N=CCW, S=CW)
+//   â€¢ White Sun + Orbital Vector â€” minimalist Copernicus iconography
+//   â€¢ Digital-Thin Hand â€” 0.5px pure white chronological needle
+//   â€¢ NASA VIIRS Cloud Layer â€” real-time macro weather screen-blended
+//   â€¢ Atmospheric Limb Fresnel â€” sapphire halo on day-side horizon
+//   â€¢ Black Marble stabilization â€” validated GIBS layer + TIME param
+//   â€¢ Live NOAA SWPC space weather (K-index + Bz)
+//   â€¢ Meteor shower calendar with visual activation
+//   â€¢ Tidal ellipse â€” continuous gravitational geometry
+//   â€¢ Astronaut lens â€” radial coordinate distortion
+//   â€¢ Night floor 0.25 (airglow emulation)
+//   â€¢ Blue Noise starfield (Poisson-disk)
 //
 // Z-SPACE ARCHITECTURE (back to front):
 //   Layer 0:  Deep space + Blue Noise starfield + Milky Way haze
-//   Layer 1:  Solar wind (behind bezel, K ≥ 4 only) + meteor streaks
-//   Layer 2:  Earth — NASA texture + cloud blend OR polygon fallback
+//   Layer 1:  Solar wind (behind bezel, K â‰¥ 4 only) + meteor streaks
+//   Layer 2:  Earth â€” NASA texture + cloud blend OR polygon fallback
 //   Layer 3:  City lights (night-side screen composite)
 //   Layer 4:  Aurora borealis/australis (NOAA K-index conditional)
 //   Layer 5:  Silver Veil + noise overlay
-//   Layer 6:  Bézier glass glint (sapphire crystal) + Fresnel limb
+//   Layer 6:  BÃ©zier glass glint (sapphire crystal) + Fresnel limb
 //   Layer 7:  Atmosphere glow + M2/S2 tidal ellipses
 //   Layer 8:  Satellites, location pins, digital-thin hand
 //   Layer 9:  Hour markers, White Sun, Orbital Vector (pole-aware)
 //   Layer 10: Moon (outside bezel)
 //   Layer 11: HUD tooltip
 //   Layer 12: Digital time + status bar
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 const DEG = Math.PI / 180;
 const RAD = 180 / Math.PI;
 const TAU = Math.PI * 2;
 
-// ─── SPATIAL HIERARCHY ────────────────────────────────────────────────
-// v3.5: EARTH enlarged from 0.75 → 0.865 so globe fills bezel properly
+// â”€â”€â”€ SPATIAL HIERARCHY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// v3.5: EARTH enlarged from 0.75 â†’ 0.865 so globe fills bezel properly
 // at higher texture resolutions. ATMOS and BUFFER_IN scaled accordingly.
 const Z = {
   EARTH: 0.82, ATMOS: 0.87, BUFFER_IN: 0.89,
@@ -64,8 +64,8 @@ const CFG = {
   MOON_R: 0.042, ISS_DOT: 3, LOC_DOT: 3.2, COAST_W: 0.55,
   WIND_N: 90, AURORA_SEGMENTS: 60, NOISE_OPACITY: 0.045,
   GLOBE_CACHE_SECS: 30,
-  TEX_W: 2000, TEX_H: 1000,    // v3.6: 2000×1000 matched equirectangular
-  // Fixed physical sizes in pixels — immune to zoom
+  TEX_W: 2000, TEX_H: 1000,    // v3.6: 2000Ã—1000 matched equirectangular
+  // Fixed physical sizes in pixels â€” immune to zoom
   DOT_PX: 4,          // ISS, Tiangong, location pins
   GLOW_PX: 14,        // glow halo radius around dots
   LABEL_PX: 11,       // label font size
@@ -85,9 +85,9 @@ const GIBS_CLOUD_BASE =
 const getGibsCloudsUrl = (date: Date) =>
   `${GIBS_CLOUD_BASE}&LAYERS=VIIRS_SNPP_CorrectedReflectance_TrueColor&WIDTH=${CFG.TEX_W}&HEIGHT=${CFG.TEX_H}&TIME=${date.toISOString().slice(0, 10)}`;
 
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  ASTRONOMY ENGINE
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 function jd(d: Date): number {
   return d.getTime() / 86400000 + 2440587.5;
@@ -137,7 +137,7 @@ function zenith(lat: number, lon: number, sDec: number, sLon: number): number {
     Math.sin(a) * Math.sin(c) + Math.cos(a) * Math.cos(c) * Math.cos(b - d))));
 }
 
-// ─── PERLIN-LIKE NOISE ────────────────────────────────────────────────
+// â”€â”€â”€ PERLIN-LIKE NOISE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function smoothNoise(x: number): number {
   const i = Math.floor(x), f = x - i;
   const a = Math.sin(i * 127.1 + 311.7) * 43758.5453 % 1;
@@ -146,10 +146,10 @@ function smoothNoise(x: number): number {
   return a + (b - a) * t;
 }
 
-// ─── METEOR SHOWERS DATA (update once per year) ──────────────────────
+// â”€â”€â”€ METEOR SHOWERS DATA (update once per year) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const METEOR_SHOWERS = [
   { name: "Lyrids", peak: new Date("2026-04-22"), zhr: 18, active: [4, 30] },
-  { name: "η Aquariids", peak: new Date("2026-05-06"), zhr: 50, active: [4, 28] },
+  { name: "Î· Aquariids", peak: new Date("2026-05-06"), zhr: 50, active: [4, 28] },
   { name: "Perseids", peak: new Date("2026-08-12"), zhr: 100, active: [7, 24] },
   { name: "Draconids", peak: new Date("2026-10-08"), zhr: 10, active: [10, 10] },
   { name: "Orionids", peak: new Date("2026-10-21"), zhr: 20, active: [10, 7] },
@@ -165,7 +165,7 @@ function getNextMeteorShower(now: Date) {
     .find(s => s.days >= -2 && s.days <= 30) || null;
 }
 
-// ─── BLUE NOISE STARFIELD GENERATOR ──────────────────────────────────
+// â”€â”€â”€ BLUE NOISE STARFIELD GENERATOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 interface StarPoint { x: number; y: number; brightness: number; size: number; seed: number; }
 
 function generateBlueNoiseStars(count: number, S: number, bz: number, cx: number, cy: number): StarPoint[] {
@@ -209,13 +209,13 @@ function generateBlueNoiseStars(count: number, S: number, bz: number, cx: number
   return stars;
 }
 
-// ─── INVERSE ASTRONAUT LENS ───────────────────────────────────────────
-// buildGlobeCache warps: warpedRatio = d^(0.82 + 0.12*d²)
+// â”€â”€â”€ INVERSE ASTRONAUT LENS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// buildGlobeCache warps: warpedRatio = d^(0.82 + 0.12*dÂ²)
 // This inverts it: given target (the linear geo ratio), find d (screen ratio)
 function invertWarp(target: number): number {
   if (target <= 0) return 0;
   if (target >= 1) return 1;
-  // Initial guess: inverse of d^0.82 ≈ target^(1/0.82)
+  // Initial guess: inverse of d^0.82 â‰ˆ target^(1/0.82)
   let d = Math.pow(target, 1.0 / 0.82);
   // 4 Newton iterations converge to <0.001% error
   for (let i = 0; i < 4; i++) {
@@ -230,7 +230,7 @@ function invertWarp(target: number): number {
   return d;
 }
 
-// ─── POLE-AWARE PROJECTION ────────────────────────────────────────────
+// â”€â”€â”€ POLE-AWARE PROJECTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function geo2xy(lat: number, lon: number, utcH: number, cx: number, cy: number, eR: number, south = false): { x: number; y: number; r: number } {
   if (south) {
     const linR = Math.max(0, (90 + lat) / 95);
@@ -249,7 +249,7 @@ function hourAngleFor(h: number, south = false): number {
   return south ? h * (Math.PI / 12) : (h - 12) * (Math.PI / 12);
 }
 
-// ─── GLOBE TEXTURE CACHE BUILDER ─────────────────────────────────────
+// â”€â”€â”€ GLOBE TEXTURE CACHE BUILDER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function buildGlobeCache(
   dayPx: Uint8ClampedArray | null,
   nightPx: Uint8ClampedArray | null,
@@ -266,7 +266,7 @@ function buildGlobeCache(
   cache.width = size; cache.height = size;
   const ctx = cache.getContext("2d")!;
 
-  // v3.5: Ocean base — slightly warmer
+  // v3.5: Ocean base â€” slightly warmer
   const oc = ctx.createRadialGradient(eR, eR, 0, eR, eR, eR);
   oc.addColorStop(0, "#1c4868");
   oc.addColorStop(.5, "#1c3f5c");
@@ -353,7 +353,7 @@ function buildGlobeCache(
         }
       }
 
-      // ───── v3.6 Smooth brightness — continuous day→night curve ─────
+      // â”€â”€â”€â”€â”€ v3.6 Smooth brightness â€” continuous dayâ†’night curve â”€â”€â”€â”€â”€
       // Day boost fades smoothly into night lift using the blend factor
       const dayBoost = (1 - blend) * 0.20;   // up to +20% on day side
       const nightLift = blend * 0.65;          // up to +65% on night side (city lights)
@@ -375,7 +375,7 @@ function buildGlobeCache(
   return cache;
 }
 
-// ─── COASTLINE DATA ───────────────────────────────────────────────────
+// â”€â”€â”€ COASTLINE DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const COASTS: Record<string, number[][]> = {
   na: [[83,70],[80,95],[78,110],[76,140],[72,157],[70,165],[68,160],[64,165],[60,165],[55,164],[52,172],[50,170],[48,178],[46,-178],[44,-170],[42,-165],[38,-158],[34,-152],[30,-140],[25,-125],[23,-117],[20,-107],[20,-103],[24,-100],[28,-97],[30,-93],[30,-88],[28,-83],[25,-80],[24,-82],[27,-86],[30,-88],[30,-90],[30,-95],[33,-95],[37,-95],[40,-93],[43,-90],[45,-87],[48,-88],[49,-95],[52,-95],[55,-96],[58,-93],[60,-90],[62,-85],[60,-78],[64,-78],[67,-75],[70,-72],[72,-70],[75,-70],[78,-73],[80,-70],[82,-63],[83,-70],[82,-62],[83,70]],
   eu: [[71,25],[70,30],[67,26],[65,25],[62,22],[60,20],[58,17],[57,12],[55,8],[54,9],[55,12],[54,14],[52,14],[51,12],[50,8],[49,6],[48,5],[47,2],[44,0],[43,-2],[41,-4],[37,-6],[36,-5],[38,-1],[37,0],[38,3],[40,3],[42,5],[43,8],[44,10],[41,14],[40,17],[38,20],[35,24],[36,28],[38,27],[40,25],[42,28],[44,30],[46,30],[48,28],[50,30],[52,24],[54,22],[56,20],[58,22],[60,24],[62,27],[65,28],[68,28],[70,28],[71,25]],
@@ -394,7 +394,7 @@ const LAND_FILL: Record<string, string> = {
   au:"#7c6e3c",gl:"#c8d4de",uk:"#327040",jp:"#327040",nz:"#327040",
 };
 
-// ─── CITY LIGHTS ──────────────────────────────────────────────────────
+// â”€â”€â”€ CITY LIGHTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const CITIES: number[][] = [
   [51.5,-.1,5],[48.9,2.3,4],[40.7,-74,5],[34,-118.2,4],[41.9,-87.6,3],
   [35.7,139.7,5],[37.6,127,4],[39.9,116.4,5],[31.2,121.5,5],[22.3,114.2,4],
@@ -411,7 +411,7 @@ const CITIES: number[][] = [
   [45.1,7.7,1],[40.9,14.3,2],[38.1,13.4,1],[-33.4,-70.7,2],[-34.9,-56.2,1],
 ];
 
-// ─── LOCATION DATA ────────────────────────────────────────────────────
+// â”€â”€â”€ LOCATION DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const LC = ["#5C9CF5","#6BCB77","#F0A04B","#C084FC","#4ECDC4"];
 
 interface LocEntry { name: string; lat: number; lon: number; }
@@ -430,17 +430,17 @@ const LP: LocEntry[] = [
   {name:"Shanghai",lat:31.2304,lon:121.4737},{name:"New York",lat:40.7128,lon:-74.006},
   {name:"Tokyo",lat:35.6762,lon:139.6503},{name:"Sydney",lat:-33.8688,lon:151.2093},
   {name:"Oslo",lat:59.9139,lon:10.7522},{name:"Dubai",lat:25.2048,lon:55.2708},
-  {name:"São Paulo",lat:-23.5505,lon:-46.6333},{name:"Mumbai",lat:19.076,lon:72.8777},
+  {name:"SÃ£o Paulo",lat:-23.5505,lon:-46.6333},{name:"Mumbai",lat:19.076,lon:72.8777},
   {name:"Singapore",lat:1.3521,lon:103.8198},{name:"Los Angeles",lat:34.0522,lon:-118.2437},
   {name:"Paris",lat:48.8566,lon:2.3522},{name:"Berlin",lat:52.52,lon:13.405},
   {name:"Kyiv",lat:50.4501,lon:30.5234},{name:"Cape Town",lat:-33.9249,lon:18.4241},
   {name:"Beijing",lat:39.9042,lon:116.4074},{name:"Mexico City",lat:19.4326,lon:-99.1332},
-  {name:"Cairo",lat:30.0444,lon:31.2357},{name:"Bogotá",lat:4.711,lon:-74.0721},
-  {name:"Stockholm",lat:59.3293,lon:18.0686},{name:"Reykjavík",lat:64.1466,lon:-21.9426},
+  {name:"Cairo",lat:30.0444,lon:31.2357},{name:"BogotÃ¡",lat:4.711,lon:-74.0721},
+  {name:"Stockholm",lat:59.3293,lon:18.0686},{name:"ReykjavÃ­k",lat:64.1466,lon:-21.9426},
   {name:"Buenos Aires",lat:-34.6037,lon:-58.3816},{name:"Nairobi",lat:-1.2921,lon:36.8219},
 ];
 
-// ─── SOLAR WIND ───────────────────────────────────────────────────────
+// â”€â”€â”€ SOLAR WIND â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 interface WindParticle {
   a: number; d: number; v: number; life: number; max: number;
   sz: number; op: number; dr: number;
@@ -466,15 +466,15 @@ function mkNoise(n: number): HTMLCanvasElement {
   x.putImageData(d, 0, 0); return c;
 }
 
-// ─── HUD TOOLTIP TYPE ─────────────────────────────────────────────────
+// â”€â”€â”€ HUD TOOLTIP TYPE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 interface HovInfo {
   type: string; x: number; y: number; lat: number; lon: number;
   extra?: string; spd?: string;
 }
 
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  MAIN COMPONENT
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 export default function EarthMoves() {
   const cvRef = useRef<HTMLCanvasElement>(null);
   const afRef = useRef<number | null>(null);
@@ -539,13 +539,13 @@ export default function EarthMoves() {
     setIsMounted(true);
   }, []);
 
-  // ── Time ticker ──────────────────────────────────────────────────────
+  // â”€â”€ Time ticker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
 
-  // ── Geolocation → hemisphere detection + observer location ────────────
+  // â”€â”€ Geolocation â†’ hemisphere detection + observer location â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
@@ -558,11 +558,11 @@ export default function EarthMoves() {
           setHemisphereAuto(true);
         }
       },
-      () => { /* permission denied — stay default Greenwich */ }
+      () => { /* permission denied â€” stay default Greenwich */ }
     );
   }, []);
 
-  // ── NASA GIBS texture loader ──────────────────────────────────────────
+  // â”€â”€ NASA GIBS texture loader â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     let cancelled = false;
 
@@ -602,10 +602,10 @@ export default function EarthMoves() {
       .then(moon => {
         if (cancelled) return;
         moonPixRef.current = moon;
-        console.log("✅ Moon texture loaded successfully from local storage");
+        console.log("âœ… Moon texture loaded successfully from local storage");
       })
       .catch((err) => {
-        console.error("❌ Moon texture failed to load:", err);
+        console.error("âŒ Moon texture failed to load:", err);
       });
 
     // NASA GIBS cloud layer (real-time weather)
@@ -616,16 +616,16 @@ export default function EarthMoves() {
         cloudReadyRef.current = true;
         globeCacheRef.current = null;
         globeCacheTimeRef.current = 0;
-        console.log("✅ GIBS cloud layer loaded");
+        console.log("âœ… GIBS cloud layer loaded");
       })
       .catch(() => {
-        console.log("NASA GIBS cloud layer unavailable — continuing without clouds");
+        console.log("NASA GIBS cloud layer unavailable â€” continuing without clouds");
       });
 
     return () => { cancelled = true; };
   }, []);
 
-  // ── ISS live position ─────────────────────────────────────────────────
+  // â”€â”€ ISS live position â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const f = async () => {
       try {
@@ -644,7 +644,7 @@ export default function EarthMoves() {
     f(); const iv = setInterval(f, 25000); return () => clearInterval(iv);
   }, []);
 
-// ── Tiangong (CSS) LIVE REAL POSITION — via Next.js proxy
+// â”€â”€ Tiangong (CSS) LIVE REAL POSITION â€” via Next.js proxy
 useEffect(() => {
   const updatePosition = async () => {
     try {
@@ -654,7 +654,7 @@ useEffect(() => {
       if (data.positions?.length > 0) {
         const pos = data.positions[0];
         tgR.current = { lat: pos.satlatitude, lon: pos.satlongitude, ok: true };
-        console.log(`✅ LIVE TIANGONG: ${pos.satlatitude.toFixed(2)}°N ${pos.satlongitude.toFixed(2)}°E`);
+        console.log(`âœ… LIVE TIANGONG: ${pos.satlatitude.toFixed(2)}Â°N ${pos.satlongitude.toFixed(2)}Â°E`);
       }
     } catch (e) {
       console.error("Tiangong fetch failed", e);
@@ -666,7 +666,7 @@ useEffect(() => {
   return () => clearInterval(iv);
 }, []);
 
-  // ── NOAA K-index (LIVE from SWPC) ──────────────────────────────────
+  // â”€â”€ NOAA K-index (LIVE from SWPC) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const fetchSpaceWeather = async () => {
       try {
@@ -683,7 +683,7 @@ useEffect(() => {
         kIndexR.current = Math.round(currentKp);
         setWindHigh(currentKp >= 4 || bz < -5);
       } catch {
-        console.log("NOAA SWPC unavailable — using fallback simulated Kp");
+        console.log("NOAA SWPC unavailable â€” using fallback simulated Kp");
         const simK = Math.random() > 0.7 ? Math.floor(4 + Math.random() * 4) : Math.floor(1 + Math.random() * 3);
         kIndexR.current = simK;
         setWindHigh(simK >= 4);
@@ -695,10 +695,10 @@ useEffect(() => {
     return () => clearInterval(iv);
   }, []);
 
-  // ── Noise texture ─────────────────────────────────────────────────────
+  // â”€â”€ Noise texture â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => { noiseRef.current = mkNoise(256); }, []);
 
-  // ── Meteor shower detection ─────────────────────────────────────────
+  // â”€â”€ Meteor shower detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const checkMeteor = () => {
       const next = getNextMeteorShower(now);
@@ -713,16 +713,16 @@ useEffect(() => {
     return () => clearInterval(iv);
   }, [now]);
 
-  // ── Mouse move ────────────────────────────────────────────────────────
+  // â”€â”€ Mouse move â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const onMM = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const c = cvRef.current; if (!c) return;
     const r = c.getBoundingClientRect();
     setMp({x: e.clientX - r.left, y: e.clientY - r.top});
   }, []);
 
-  // ═════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   //  RENDER LOOP
-  // ═════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   const render = useCallback(() => {
     const cv = cvRef.current; if (!cv) return;
     const c = cv.getContext("2d");
@@ -776,13 +776,13 @@ useEffect(() => {
       globeCacheTimeRef.current = nowSec;
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    //  LAYER 0: DEEP SPACE — True black void + full starfield
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    //  LAYER 0: DEEP SPACE â€” True black void + full starfield
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     c.fillStyle = "#000000";
     c.fillRect(0, 0, W, H);
 
-    // Subtle radial — pure black, no blue tint
+    // Subtle radial â€” pure black, no blue tint
     const bg = c.createRadialGradient(cx, cy, wR * 0.18, cx, cy, Math.max(W, H) * 0.6);
     bg.addColorStop(0, "#060810");
     bg.addColorStop(0.5, "#020306");
@@ -822,7 +822,7 @@ useEffect(() => {
       c.beginPath(); c.arc(star.x, star.y, star.size, 0, TAU); c.fill();
     });
 
-    // v3.5: Extra faint distant stars — fills full viewport
+    // v3.5: Extra faint distant stars â€” fills full viewport
     c.globalAlpha = 0.45;
     for (let i = 0; i < 520; i++) {
       const sx = Math.random() * W;
@@ -833,9 +833,9 @@ useEffect(() => {
     }
     c.globalAlpha = 1;
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     //  LAYER 1: SOLAR WIND
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const showWind = windOn && (windHigh || kIdx >= 4);
     if (showWind) {
       while (wpRef.current.length < CFG.WIND_N) wpRef.current.push(spawnWP(wR));
@@ -855,7 +855,7 @@ useEffect(() => {
       });
     } else { wpRef.current = []; }
 
-    // METEOR SHOWER STREAKS (Layer 1 — behind bezel)
+    // METEOR SHOWER STREAKS (Layer 1 â€” behind bezel)
     if (activeMeteorShower) {
       if (Math.random() < 0.08) {
         const radiantAngle = Math.random() * TAU;
@@ -893,11 +893,11 @@ useEffect(() => {
       meteorStreaksRef.current = [];
     }
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     //  LAYER 2: EARTH GLOBE (NASA texture OR polygon fallback)
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     c.save();
-    // v3.5: Extended clip — pushes texture to the outer visual limb
+    // v3.5: Extended clip â€” pushes texture to the outer visual limb
     const drawR = eR * 1.045;
     c.beginPath(); c.arc(cx, cy, drawR, 0, TAU); c.clip();
 
@@ -905,7 +905,7 @@ useEffect(() => {
       // NASA texture path
       c.drawImage(globeCacheRef.current, cx - eR, cy - eR);
 
-      // v3.3: Atmospheric Limb Fresnel — sapphire halo on day side
+      // v3.3: Atmospheric Limb Fresnel â€” sapphire halo on day side
       const sunAngleOnGlobe = sp
         ? -(utcH + sun.subLon / 15) * (Math.PI / 12)
         : Math.PI - (utcH + sun.subLon / 15) * (Math.PI / 12);
@@ -930,9 +930,9 @@ useEffect(() => {
       c.restore();
     }
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     //  LAYER 4: AURORA
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     if (kIdx >= 4) {
       const auroraR = eR * .12;
       const aIntensity = Math.min(1, (kIdx - 3) / 5);
@@ -953,15 +953,15 @@ useEffect(() => {
       c.restore();
     }
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     //  LAYER 5: SILVER VEIL + NOISE
-    // ═══════════════════════════════════════════════════════════════
-    // v3.5: Silver Veil — day-side only, extended to limb
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // v3.5: Silver Veil â€” day-side only, extended to limb
 
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     //  LAYER 6: GLASS GLINT
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     c.save();
     const gA = Math.PI * (11 / 12);
     const gR = eR * .5;
@@ -983,10 +983,10 @@ useEffect(() => {
 
     c.restore(); // end Earth clip
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     //  LAYER 7: ATMOSPHERE + DUAL TIDAL ELLIPSES
-    // ═══════════════════════════════════════════════════════════════
-    // Atmosphere glow — yellow horizon rim completely removed (much softer sapphire only)
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    // Atmosphere glow â€” yellow horizon rim completely removed (much softer sapphire only)
     const ag2 = c.createRadialGradient(cx, cy, eR - 2, cx, cy, atR + 14);
     ag2.addColorStop(0, "rgba(55,125,250,0)");
     ag2.addColorStop(.42, "rgba(55,125,250,.038)");
@@ -997,11 +997,11 @@ useEffect(() => {
     c.arc(cx, cy, atR + 14, 0, TAU); 
     c.fill();
 
-    // Dynamic Tidal Elliptical Hull — now touches planet edge + visibly larger (blue M2 especially)
+    // Dynamic Tidal Elliptical Hull â€” now touches planet edge + visibly larger (blue M2 especially)
     // v3.5: clean ellipse only
     const drawTidalEllipse = (bodyAngle: number, amplitude: number, colorRgb: string) => {
-      const baseR = eR * 1.004;                    // ← now touches Earth limb (was halfway into atmosphere)
-      const bulgeMax = (atR - eR) * 1.00 * amplitude; // ← ~28% larger overall
+      const baseR = eR * 1.004;                    // â† now touches Earth limb (was halfway into atmosphere)
+      const bulgeMax = (atR - eR) * 1.00 * amplitude; // â† ~28% larger overall
       const segments = 100;                        // smoother curve
 
       c.save();
@@ -1035,18 +1035,18 @@ useEffect(() => {
       c.restore();
     };
 
-    // M2 Lunar tidal ellipse (full amplitude, blue) — hugs planet + larger
+    // M2 Lunar tidal ellipse (full amplitude, blue) â€” hugs planet + larger
     const mWA = sp
       ? -(utcH + mn.lon / 15) * (Math.PI / 12)
       : Math.PI - (utcH + mn.lon / 15) * (Math.PI / 12);
     drawTidalEllipse(mWA, 1.00, "92,198,255");   // brighter cyan-blue for visibility
     
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     //  LAYER 8: SATELLITES + LOCATIONS + CLOCK HAND
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     let hov: HovInfo | null = null;
 
-    // ISS — your iss.png + slight blue dot underneath + light orbital rotation
+    // ISS â€” your iss.png + slight blue dot underneath + light orbital rotation
     if (issR.current.ok && !(sp && issR.current.lat > 5) && !(!sp && issR.current.lat < -5)) {
       const ip = geo2xy(issR.current.lat, issR.current.lon, utcH, cx, cy, eR, sp);
       const id = Math.sqrt((ip.x - cx) ** 2 + (ip.y - cy) ** 2);
@@ -1069,7 +1069,7 @@ useEffect(() => {
         c.shadowBlur = 0; 
         c.globalCompositeOperation = "source-over";
 
-        const iconSize = S * 0.033;   // ← slightly bigger for better visibility (tweak if needed)
+        const iconSize = S * 0.033;   // â† slightly bigger for better visibility (tweak if needed)
 
         // Slight blue dot under the icon (makes it pop in dark space)
         c.fillStyle = "rgba(80, 200, 255, 0.65)";
@@ -1107,7 +1107,7 @@ useEffect(() => {
       }
     }
 
-    // Tiangong (CSS) — your css.png + slight red dot underneath + light orbital rotation
+    // Tiangong (CSS) â€” your css.png + slight red dot underneath + light orbital rotation
     if (tgR.current.ok && !(sp && tgR.current.lat > 5) && !(!sp && tgR.current.lat < -5)) {
       const tp = geo2xy(tgR.current.lat, tgR.current.lon, utcH, cx, cy, eR, sp);
       const td = Math.sqrt((tp.x - cx) ** 2 + (tp.y - cy) ** 2);
@@ -1129,7 +1129,7 @@ useEffect(() => {
         c.shadowBlur = 0; 
         c.globalCompositeOperation = "source-over";
 
-        const iconSize = S * 0.032;   // ← slightly bigger
+        const iconSize = S * 0.032;   // â† slightly bigger
 
         // Slight red dot under the icon
         c.fillStyle = "rgba(255, 110, 80, 0.65)";
@@ -1169,7 +1169,7 @@ useEffect(() => {
 
     // User locations
     locs.forEach((loc) => {
-      // Skip locations not visible from current pole (95° from pole)
+      // Skip locations not visible from current pole (95Â° from pole)
       if (sp && loc.lat > 5) return;    // south pole can't see far north
       if (!sp && loc.lat < -5) return;  // north pole can't see far south
       const p = geo2xy(loc.lat, loc.lon, utcH, cx, cy, eR, sp);
@@ -1230,7 +1230,7 @@ useEffect(() => {
     const lt = new Date(now.toLocaleString("en-US", {timeZone: tz}));
     const lH = lt.getHours() + lt.getMinutes() / 60 + lt.getSeconds() / 3600;
     const hA = -hourAngleFor(lH, sp);
-    // Digital-Thin Hand — "The Chronological Needle"
+    // Digital-Thin Hand â€” "The Chronological Needle"
     c.save();
     c.strokeStyle = "rgba(255,255,255,.55)";
     c.lineWidth = 0.7;
@@ -1245,7 +1245,7 @@ useEffect(() => {
     c.fillStyle = tipG; c.beginPath(); c.arc(tipGx, tipGy, S * .006, 0, TAU); c.fill();
     c.restore();
 
-    // Pole indicator — dark backing circle + letter
+    // Pole indicator â€” dark backing circle + letter
     c.save();
     c.fillStyle = "rgba(18, 22, 28, 0.78)";
     c.beginPath(); c.arc(cx, cy, S * 0.022, 0, TAU); c.fill();
@@ -1263,9 +1263,9 @@ useEffect(() => {
     c.moveTo(cx - cr, cy); c.lineTo(cx + cr, cy);
     c.moveTo(cx, cy - cr); c.lineTo(cx, cy + cr); c.stroke();
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     //  LAYER 9: HOUR MARKERS (Min / Mid / Max modes)
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const hMode = hourMode; // capture for render
 
     c.strokeStyle = "rgba(115,145,195,.18)"; c.lineWidth = .7;
@@ -1304,7 +1304,7 @@ useEffect(() => {
         c.lineTo(cx + tO * Math.cos(a), cy + tO * Math.sin(a)); c.stroke();
       }
 
-      // Sub-quarter ticks (15-min marks) — show in mid/max only
+      // Sub-quarter ticks (15-min marks) â€” show in mid/max only
       if (hMode !== "min") {
         for (let s = 1; s <= 3; s++) {
           const sa = -hourAngleFor(h + s / 4, sp);
@@ -1319,7 +1319,7 @@ useEffect(() => {
       const nx = cx + nR * Math.cos(a), ny = cy + nR * Math.sin(a);
 
       if (h === 12) {
-        // White Sun — always visible in all modes
+        // White Sun â€” always visible in all modes
         const sr = S * .013;
         const sg = c.createRadialGradient(nx, ny, 0, nx, ny, sr * 3);
         sg.addColorStop(0, "rgba(255,255,255,.12)");
@@ -1337,7 +1337,7 @@ useEffect(() => {
           c.stroke();
         }
       } else if (h === 6) {
-        // Orbital Vector — always visible in all modes
+        // Orbital Vector â€” always visible in all modes
         const nLen = S * .026;
         const wingSpan = S * .011;
         
@@ -1366,7 +1366,7 @@ useEffect(() => {
         
         c.restore();
       } else if (showLabel) {
-        // Number labels — size varies by importance
+        // Number labels â€” size varies by importance
         const isMaj = maj;
         const isOdd = !even;
         c.fillStyle = isMaj ? "rgba(210,225,250,.85)"
@@ -1378,9 +1378,9 @@ useEffect(() => {
       }
     }
 
-        // ═══════════════════════════════════════════════════════════════
-    //  LAYER 10: MOON — Real texture + accurate current phase
-    // ═══════════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+    //  LAYER 10: MOON â€” Real texture + accurate current phase
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const mS = S * CFG.MOON_R;
     const mWA2 = sp
       ? -(utcH + mn.lon / 15) * (Math.PI / 12)
@@ -1451,9 +1451,9 @@ useEffect(() => {
     if (Math.sqrt((mp.x - mx) ** 2 + (mp.y - my) ** 2) < mS * 1.8)
       hov = {type: "Moon", x: mx, y: my, lat: mn.lat, lon: mn.lon, extra: `${(mn.illum * 100).toFixed(0)}% illuminated`};
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     //  LAYER 11: HUD TOOLTIP
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     if (hov) {
       const hx = Math.min(hov.x + S * .04, W - S * .17);
       const hy = Math.max(hov.y - S * .03, 8);
@@ -1470,14 +1470,14 @@ useEffect(() => {
       c.fillText(hov.type, hx + 7, hy + 5);
       c.fillStyle = "rgba(135,165,210,.6)";
       c.font = `400 ${S * .011}px 'DM Mono','SF Mono',monospace`;
-      c.fillText(`${Math.abs(hov.lat).toFixed(2)}°${hov.lat >= 0 ? 'N' : 'S'}  ${Math.abs(hov.lon).toFixed(2)}°${hov.lon >= 0 ? 'E' : 'W'}`, hx + 7, hy + 20);
+      c.fillText(`${Math.abs(hov.lat).toFixed(2)}Â°${hov.lat >= 0 ? 'N' : 'S'}  ${Math.abs(hov.lon).toFixed(2)}Â°${hov.lon >= 0 ? 'E' : 'W'}`, hx + 7, hy + 20);
       if (hov.extra) c.fillText(hov.extra, hx + 7, hy + 33);
       if (hov.spd)   c.fillText(hov.spd, hx + 7, hy + 33);
     }
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     //  LAYER 12: DIGITAL TIME + STATUS
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const dH = lt.getHours().toString().padStart(2, "0");
     const dM = lt.getMinutes().toString().padStart(2, "0");
     const tbg = c.createRadialGradient(cx, cy - S * .15, 0, cx, cy - S * .15, S * .09);
@@ -1504,25 +1504,25 @@ useEffect(() => {
     if (showWind) {
       c.fillStyle = "rgba(255,195,75,.4)";
       c.font = `400 ${S * .011}px 'DM Mono','SF Mono',monospace`;
-      c.textAlign = "right"; c.fillText("⚡ SOLAR WIND", chipX, chipY + S * .016);
+      c.textAlign = "right"; c.fillText("âš¡ SOLAR WIND", chipX, chipY + S * .016);
     }
     if (activeMeteorShower) {
       c.fillStyle = "rgba(255,230,150,.45)";
       c.font = `400 ${S * .011}px 'DM Mono','SF Mono',monospace`;
       c.textAlign = "right";
-      c.fillText(`🌠 ${activeMeteorShower}`, chipX, chipY + S * (showWind ? .032 : .016));
+      c.fillText(`ðŸŒ  ${activeMeteorShower}`, chipX, chipY + S * (showWind ? .032 : .016));
     }
     if (texStatus !== "ready") {
       c.fillStyle = texStatus === "loading" ? "rgba(120,160,220,.35)" : "rgba(180,120,80,.35)";
       c.font = `400 ${S * .010}px 'DM Mono','SF Mono',monospace`;
       c.textAlign = "center";
-      c.fillText(texStatus === "loading" ? "⟳ NASA GIBS" : "▲ POLYGON MODE", cx, cy + tO - S * .01);
+      c.fillText(texStatus === "loading" ? "âŸ³ NASA GIBS" : "â–² POLYGON MODE", cx, cy + tO - S * .01);
     }
 
     afRef.current = requestAnimationFrame(render);
   }, [now, locs, windOn, windHigh, mp, southPole, texStatus, activeMeteorShower, userLat, userLon, hourMode]);
 
-  // ─── Load custom ISS & CSS icons (from /public) ─────────────────────
+  // â”€â”€â”€ Load custom ISS & CSS icons (from /public) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useEffect(() => {
     const load = (src: string, ref: React.MutableRefObject<HTMLImageElement | null>) => {
       const img = new Image();
@@ -1552,7 +1552,7 @@ useEffect(() => {
     globeCacheRef.current = null;
     globeCacheTimeRef.current = 0;
   };
-  // ── Status Bar Computations ─────────────────────────────
+  // â”€â”€ Status Bar Computations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const nextMeteor = getNextMeteorShower(now);
   const k = kIndexR.current;
 
@@ -1581,14 +1581,14 @@ useEffect(() => {
         <canvas ref={cvRef} onMouseMove={onMM} style={{width:"100%",height:"100%",cursor:"crosshair",background:"#000000"}}/>
       </div>
 
-      {/* Status bar — clean & beautiful */}
+      {/* Status bar â€” clean & beautiful */}
       <div style={{position:"absolute",bottom:"80px",left:0,right:0,display:"flex",gap:"20px",fontSize:"11px",
         color:"rgba(155,175,205,.68)",letterSpacing:".45px",flexWrap:"wrap",
         justifyContent:"center",fontFamily:"'DM Mono',monospace",alignItems:"center",zIndex:10,pointerEvents:"none"}}>
         
         {/* Your Location */}
         <span style={{color:"#a0c0ff", whiteSpace:"nowrap"}}>
-          📍 Your Location {userLat.toFixed(1)}°{userLat >= 0 ? 'N' : 'S'} {Math.abs(userLon).toFixed(1)}°{userLon >= 0 ? 'E' : 'W'}
+          ðŸ“ Your Location {userLat.toFixed(1)}Â°{userLat >= 0 ? 'N' : 'S'} {Math.abs(userLon).toFixed(1)}Â°{userLon >= 0 ? 'E' : 'W'}
         </span>
 
         {/* Meteor Shower */}
@@ -1607,7 +1607,7 @@ useEffect(() => {
           background:"none",border:"1px solid rgba(110,140,190,.22)",color:"rgba(185,205,235,.65)",
           padding:"6px 20px",borderRadius:"16px",cursor:"pointer",fontSize:"11px",
           letterSpacing:".8px",fontFamily:"'DM Sans',system-ui"}}>
-          {panel ? "Close" : "⚙ Customize"}</button>
+          {panel ? "Close" : "âš™ Customize"}</button>
 
         {panel && (
           <div style={{background:"rgba(8,12,25,.92)",backdropFilter:"blur(16px)",
@@ -1664,13 +1664,13 @@ useEffect(() => {
                     <button onClick={() => setEditing(null)} style={{
                       background:"rgba(170,45,45,.22)",border:"1px solid rgba(170,55,55,.3)",
                       color:"rgba(255,185,185,.65)",padding:"2px 7px",borderRadius:"4px",
-                      cursor:"pointer",fontSize:"9px",fontFamily:"inherit"}}>✕</button>
+                      cursor:"pointer",fontSize:"9px",fontFamily:"inherit"}}>âœ•</button>
                   </div>
                 ) : (
                   <>
                     <span style={{flex:1,fontSize:"12px",color:"rgba(205,220,240,.82)"}}>{l.name}</span>
                     <span style={{fontSize:"9px",color:"rgba(115,135,165,.4)",fontFamily:"'DM Mono',monospace"}}>
-                      {l.lat.toFixed(1)}° {Math.abs(l.lon).toFixed(1)}°</span>
+                      {l.lat.toFixed(1)}Â° {Math.abs(l.lon).toFixed(1)}Â°</span>
                     <button onClick={() => setEditing(i)} style={{
                       background:"none",border:"1px solid rgba(85,115,155,.22)",
                       color:"rgba(145,165,195,.55)",padding:"2px 7px",borderRadius:"4px",
@@ -1681,17 +1681,17 @@ useEffect(() => {
             ))}
 
             <div style={{fontSize:"9px",color:"rgba(95,115,145,.35)",marginTop:"12px",textAlign:"center",lineHeight:"1.6"}}>
-              Tidal ellipses: M2 lunar (blue) · S2 solar (gold, 46%)
-              <br/>Textures: NASA Blue/Black Marble 2000×1000 + VIIRS Cloud Layer
-              <br/>K-index: NOAA SWPC (live) · Fresnel limb · Astronaut lens
-              <br/>v3.5: True black void · Sharp Earth · Balanced brightness
+              Tidal ellipses: M2 lunar (blue) Â· S2 solar (gold, 46%)
+              <br/>Textures: NASA Blue/Black Marble 2000Ã—1000 + VIIRS Cloud Layer
+              <br/>K-index: NOAA SWPC (live) Â· Fresnel limb Â· Astronaut lens
+              <br/>v3.5: True black void Â· Sharp Earth Â· Balanced brightness
             </div>
           </div>
         )}
       </div>
 
       <div style={{position:"absolute",bottom:"6px",left:0,right:0,textAlign:"center",fontSize:"9px",color:"rgba(95,115,140,.28)",letterSpacing:"1.5px",textTransform:"uppercase",zIndex:10,pointerEvents:"none"}}>
-        Earth Moves v3.5 — Brage W. Johansen</div>
+        Earth Moves v3.5 â€” Brage W. Johansen</div>
     </div>
   );
 }

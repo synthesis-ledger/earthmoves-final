@@ -1,8 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════════
-// EphemerisHomeSection — Drop into homepage page.tsx
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// EphemerisHomeSection â€” Drop into homepage page.tsx
 // Shows 3 latest articles in the Earth Moves design language.
 // Import and place between Instruments and Features sections.
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 import Link from "next/link";
 import { getAllArticles, COLUMNS } from "@/lib/ephemeris";
@@ -39,7 +39,7 @@ export default function EphemerisHomeSection() {
                 <span className="eph-home-card-tag" style={{ color: col.color }}>{col.label}</span>
                 <h3>{a.meta.title}</h3>
                 <p>{a.meta.description}</p>
-                <span className="eph-home-card-date">{date} · {a.readingTime} min read</span>
+                <span className="eph-home-card-date">{date} Â· {a.readingTime} min read</span>
               </div>
             </Link>
           );

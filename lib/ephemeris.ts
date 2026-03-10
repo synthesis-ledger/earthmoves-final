@@ -1,14 +1,14 @@
-// ═══════════════════════════════════════════════════════════════════════
-// EARTH MOVES — THE EPHEMERIS ENGINE
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// EARTH MOVES â€” THE EPHEMERIS ENGINE
 // Zero-dependency article system for Next.js App Router
 // Reads .md files from content/ephemeris/, parses frontmatter + markdown,
 // generates Schema.org JSON-LD, Open Graph, RSS, and sitemap data.
-// ═══════════════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 import fs from "fs";
 import path from "path";
 
-// ─── TYPES ────────────────────────────────────────────────────────────
+// â”€â”€â”€ TYPES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type ephemeriscolumn =
   | "sol-report"
@@ -24,7 +24,7 @@ export interface ArticleMeta {
   updated?: string;        // ISO date of last update (AEO freshness signal)
   author: string;
   column: ephemeriscolumn;
-  description: string;     // 150-160 chars — used for meta + OG + AI citation
+  description: string;     // 150-160 chars â€” used for meta + OG + AI citation
   keywords: string[];      // primary keyword first, then secondaries
   instrument?: "watch" | "calendar" | "none";
   image?: string;          // path relative to /public, e.g. "/ephemeris/perihelion.jpg"
@@ -42,21 +42,21 @@ export interface Article {
   wordCount: number;
 }
 
-// ─── COLUMN DISPLAY DATA ──────────────────────────────────────────────
+// â”€â”€â”€ COLUMN DISPLAY DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const COLUMNS: Record<ephemeriscolumn, { label: string; description: string; color: string }> = {
-  "sol-report":       { label: "Sol Report",       description: "Monthly orbit briefing — what's happening in Earth's journey this month", color: "#C9A96E" },
+  "sol-report":       { label: "Sol Report",       description: "Monthly orbit briefing â€” what's happening in Earth's journey this month", color: "#C9A96E" },
   "space-weather":    { label: "Space Weather",    description: "Solar storms, aurora forecasts, and live conditions from NOAA SWPC",      color: "#60A5FA" },
   "natural-time":     { label: "Natural Time",     description: "Essays on reconnecting with astronomical rhythms",                       color: "#6BCB77" },
   "instrument-notes": { label: "Instrument Notes", description: "Technical deep-dives into how the Watch and Calendar work",              color: "#E0A040" },
   "field-notes":      { label: "Field Notes",      description: "Observations, photography, and reports from the field",                  color: "#C084FC" },
 };
 
-// ─── CONTENT DIRECTORY ────────────────────────────────────────────────
+// â”€â”€â”€ CONTENT DIRECTORY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const CONTENT_DIR = path.join(process.cwd(), "content", "ephemeris");
 
-// ─── FRONTMATTER PARSER ───────────────────────────────────────────────
+// â”€â”€â”€ FRONTMATTER PARSER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Parses YAML-like frontmatter between --- delimiters. No js-yaml needed.
 
 function parseFrontmatter(raw: string): { meta: Record<string, unknown>; content: string } {
@@ -159,7 +159,7 @@ function parseFrontmatter(raw: string): { meta: Record<string, unknown>; content
   return { meta, content };
 }
 
-// ─── MARKDOWN → HTML RENDERER ─────────────────────────────────────────
+// â”€â”€â”€ MARKDOWN â†’ HTML RENDERER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Minimal renderer covering: headings, paragraphs, bold, italic, links,
 // images, blockquotes, ordered/unordered lists, horizontal rules, code.
 // No external library needed. Handles the 95% case for editorial content.
@@ -324,14 +324,14 @@ function renderMarkdown(md: string): string {
   return out.join("\n");
 }
 
-// ─── READING TIME ─────────────────────────────────────────────────────
+// â”€â”€â”€ READING TIME â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function calcReadingTime(text: string): { minutes: number; words: number } {
   const words = text.replace(/[#*>\-_\[\](){}|`]/g, " ").split(/\s+/).filter(Boolean).length;
   return { minutes: Math.max(1, Math.ceil(words / 230)), words };
 }
 
-// ─── LOAD SINGLE ARTICLE ─────────────────────────────────────────────
+// â”€â”€â”€ LOAD SINGLE ARTICLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function getArticle(slug: string): Article | null {
   const filePath = path.join(CONTENT_DIR, `${slug}.md`);
@@ -364,7 +364,7 @@ export function getArticle(slug: string): Article | null {
   return { meta, content, html, readingTime: minutes, wordCount: words };
 }
 
-// ─── LOAD ALL ARTICLES ────────────────────────────────────────────────
+// â”€â”€â”€ LOAD ALL ARTICLES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function getAllArticles(includeDrafts = false): Article[] {
   if (!fs.existsSync(CONTENT_DIR)) return [];
@@ -385,13 +385,13 @@ export function getAllArticles(includeDrafts = false): Article[] {
   return articles;
 }
 
-// ─── GET ARTICLES BY COLUMN ───────────────────────────────────────────
+// â”€â”€â”€ GET ARTICLES BY COLUMN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function getArticlesByColumn(column: ephemeriscolumn): Article[] {
   return getAllArticles().filter((a) => a.meta.column === column);
 }
 
-// ─── RELATED ARTICLES ─────────────────────────────────────────────────
+// â”€â”€â”€ RELATED ARTICLES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function getRelatedArticles(current: Article, max = 3): Article[] {
   const all = getAllArticles().filter((a) => a.meta.slug !== current.meta.slug);
@@ -410,7 +410,7 @@ export function getRelatedArticles(current: Article, max = 3): Article[] {
   return scored.slice(0, max).map((s) => s.article);
 }
 
-// ─── SCHEMA.ORG JSON-LD GENERATORS ───────────────────────────────────
+// â”€â”€â”€ SCHEMA.ORG JSON-LD GENERATORS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function generateArticleSchema(article: Article, baseUrl: string): object {
   const url = `${baseUrl}/ephemeris/${article.meta.slug}`;
@@ -463,7 +463,7 @@ export function generateBreadcrumbSchema(article: Article, baseUrl: string): obj
   };
 }
 
-// ─── RSS FEED GENERATOR ──────────────────────────────────────────────
+// â”€â”€â”€ RSS FEED GENERATOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function generateRSS(articles: Article[], baseUrl: string): string {
   const items = articles.slice(0, 30).map((a) => `
@@ -480,7 +480,7 @@ export function generateRSS(articles: Article[], baseUrl: string): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>The Ephemeris — Earth Moves</title>
+    <title>The Ephemeris â€” Earth Moves</title>
     <link>${baseUrl}/ephemeris</link>
     <description>Astronomical briefings, orbital insights, and natural time philosophy from Earth Moves.</description>
     <language>en</language>
@@ -488,7 +488,7 @@ export function generateRSS(articles: Article[], baseUrl: string): string {
     <atom:link href="${baseUrl}/ephemeris/feed.xml" rel="self" type="application/rss+xml" />
     <image>
       <url>${baseUrl}/logo.png</url>
-      <title>The Ephemeris — Earth Moves</title>
+      <title>The Ephemeris â€” Earth Moves</title>
       <link>${baseUrl}/ephemeris</link>
     </image>
     ${items}
@@ -496,7 +496,7 @@ export function generateRSS(articles: Article[], baseUrl: string): string {
 </rss>`;
 }
 
-// ─── SITEMAP ENTRIES ─────────────────────────────────────────────────
+// â”€â”€â”€ SITEMAP ENTRIES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function generateSitemapEntries(baseUrl: string): string {
   const articles = getAllArticles();
