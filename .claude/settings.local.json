@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python /tmp/test_fix.py)",
+      "Read(//c/Users/lohai/AppData/Local/Temp/**)",
+      "Bash(/tmp/fix_calendar.py:*)",
+      "Bash(python /tmp/fix_calendar.py)"
+    ]
+  }
+}
