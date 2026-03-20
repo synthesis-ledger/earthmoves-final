@@ -1,9 +1,2 @@
-﻿node_modules/
-.next/
-.env
-.env.local
-.env*.local
-
-# REMOVE THESE LINES:
-# *.mp4
-# public/ephemeris/
+﻿.next
+node_modules
