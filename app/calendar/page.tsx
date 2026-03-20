@@ -1909,7 +1909,7 @@ const orbitGeometry = useMemo(() => {
     if (starsBuiltRef.current?.w !== containerSize.w) drawStarLayer();
     drawOrbitalLayer(); drawHudLayer();
     afRef.current = requestAnimationFrame(draw);
-  }, [containerSize, drawStarLayer, drawOrbitalLayer, drawHudLayer]);
+  }, [containerSize, drawStarLayer, drawOrbitalLayer, drawHudLayer, zodiacLoaded]);
 
   useEffect(() => {
     if (viewMode !== "orbital") return;
