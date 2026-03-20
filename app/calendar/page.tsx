@@ -1191,6 +1191,7 @@ const [newMilestone, setNewMilestone] = useState({ name: "", description: "", da
   // Odometer
   const startTimeRef = useRef(Date.now());
   const [kmTraveled, setKmTraveled] = useState(0);
+  const [zodiacLoaded, setZodiacLoaded] = useState(0);
 
   // Orbital canvas container
   const containerRef = useRef<HTMLDivElement>(null);
