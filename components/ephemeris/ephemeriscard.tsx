@@ -9,9 +9,10 @@ interface Props {
   article: Article;
   featured?: boolean;
   compact?: boolean;
+  landscape?: boolean;
 }
 
-export default function ephemeriscard({ article, featured, compact }: Props) {
+export default function ephemeriscard({ article, featured, compact, landscape }: Props) {
   const { meta, readingTime } = article;
   const column = COLUMNS[meta.column];
   const date = new Date(meta.date).toLocaleDateString("en-US", {
@@ -42,6 +43,29 @@ export default function ephemeriscard({ article, featured, compact }: Props) {
     );
   }
 
+  if (landscape) {
+    return (
+      <Link href={`/ephemeris/${meta.slug}`} className="eph-card eph-card-landscape">
+        {meta.image && (
+          <div className="eph-card-img-landscape">
+            <img src={meta.image} alt={meta.imageAlt || meta.title} loading="lazy" />
+          </div>
+        )}
+        <div className="eph-card-body-landscape">
+          <span className="eph-card-tag" style={{ color: column.color }}>{column.label}</span>
+          <h3 className="eph-card-title" style={{ fontSize: '1.35rem', marginBottom: '.65rem' }}>{meta.title}</h3>
+          <p className="eph-card-desc">{meta.description}</p>
+          <div className="eph-card-meta">
+            <time>{date}</time>
+            <span className="eph-dot">·</span>
+            <span>{readingTime} min read</span>
+            <span className="eph-card-arrow">→</span>
+          </div>
+        </div>
+      </Link>
+    );
+  }
+
   if (compact) {
     return (
       <Link href={`/ephemeris/${meta.slug}`} className="eph-card eph-card-compact">
@@ -51,6 +75,7 @@ export default function ephemeriscard({ article, featured, compact }: Props) {
           <time>{date}</time>
           <span className="eph-dot">·</span>
           <span>{readingTime} min</span>
+          <span className="eph-card-arrow">→</span>
         </div>
       </Link>
     );
@@ -71,6 +96,7 @@ export default function ephemeriscard({ article, featured, compact }: Props) {
           <time>{date}</time>
           <span className="eph-dot">·</span>
           <span>{readingTime} min read</span>
+          <span className="eph-card-arrow">→</span>
         </div>
       </div>
     </Link>

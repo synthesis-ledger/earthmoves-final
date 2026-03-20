@@ -1,12 +1,30 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Fragment } from "react";
 import { getAllArticles, COLUMNS, ephemeriscolumn } from "@/lib/ephemeris";
 // Casing: Variable name must be Capitalized, Path must be lowercase
 import EphemerisCard from "@/components/ephemeris/ephemeriscard";
 import EmailCapture from "@/components/ephemeris/emailcapture";
 import "../earth-moves.css";
 import "./ephemeris.css";
+
+function SectionDivider() {
+  return (
+    <div className="eph-section-divider">
+      <div className="eph-divider-line" />
+      <Image
+        src="/images/em-logo-white.png"
+        alt=""
+        width={60}
+        height={12}
+        className="eph-divider-logo"
+        aria-hidden
+      />
+      <div className="eph-divider-line" />
+    </div>
+  );
+}
 
 const BASE_URL = "https://earthmoves.space";
 
@@ -38,6 +56,17 @@ export default function EphemerisIndex() {
     byColumn[a.meta.column]!.push(a);
   }
 
+  const activeColumns = (Object.keys(COLUMNS) as ephemeriscolumn[]).filter(
+    (col) => (byColumn[col]?.length ?? 0) > 0
+  );
+
+  const featuredDate = featured
+    ? new Date(featured.meta.date).toLocaleDateString("en-US", {
+        month: "short", day: "numeric", year: "numeric",
+      })
+    : "";
+  const featuredCol = featured ? COLUMNS[featured.meta.column] : null;
+
   return (
     <>
       <div className="stars" />
@@ -68,44 +97,91 @@ export default function EphemerisIndex() {
           </Link>
         </header>
 
+        {/* ── HERO ARTICLE ─────────────────────────────────────────── */}
         {featured && (
-          <section className="eph-featured">
-            <EphemerisCard article={featured} featured />
+          <section className="eph-hero-banner">
+            {featured.meta.image && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={featured.meta.image}
+                alt=""
+                className="eph-hero-bg"
+                aria-hidden
+              />
+            )}
+            <div className="eph-hero-overlay" />
+            <Link href={`/ephemeris/${featured.meta.slug}`} className="eph-hero-content">
+              {featuredCol && (
+                <span className="eph-hero-tag" style={{ color: featuredCol.color }}>
+                  {featuredCol.label}
+                </span>
+              )}
+              <h2 className="eph-hero-title">{featured.meta.title}</h2>
+              <p className="eph-hero-desc">{featured.meta.description}</p>
+              <div className="eph-hero-meta">
+                <time>{featuredDate}</time>
+                <span className="eph-dot">·</span>
+                <span>{featured.readingTime} min read</span>
+                <span className="eph-hero-arrow">→</span>
+              </div>
+            </Link>
           </section>
         )}
 
-        {(Object.keys(COLUMNS) as ephemeriscolumn[]).map((col) => {
-          const colArticles = byColumn[col];
-          if (!colArticles?.length) return null;
+        {/* ── CATEGORY SECTIONS ────────────────────────────────────── */}
+        {activeColumns.map((col, idx) => {
+          const colArticles = byColumn[col]!;
           const colData = COLUMNS[col];
+          const count = colArticles.length;
+          const gridClass =
+            count === 1 ? "eph-column-grid--solo" :
+            count === 2 ? "eph-column-grid--duo" :
+            "eph-column-grid--multi";
 
           return (
-            <section key={col} className="eph-column-section">
-              <div className="eph-column-header">
-                <div className="eph-column-indicator" style={{ background: colData.color }} />
-                <div>
-                  <h2 className="eph-column-name">{colData.label}</h2>
-                  <p className="eph-column-desc">{colData.description}</p>
+            <Fragment key={col}>
+              {idx > 0 && <SectionDivider />}
+              <section className="eph-column-section">
+                <div
+                  className="eph-column-header"
+                  style={{ borderLeft: `4px solid ${colData.color}` }}
+                >
+                  <div>
+                    <h2 className="eph-column-name">{colData.label}</h2>
+                    <p className="eph-column-desc">{colData.description}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="eph-column-grid">
-                {colArticles.slice(0, 4).map((a) => (
-                  <EphemerisCard key={a.meta.slug} article={a} />
-                ))}
-              </div>
-            </section>
+                <div className={gridClass}>
+                  {colArticles.slice(0, 4).map((a) => (
+                    <EphemerisCard
+                      key={a.meta.slug}
+                      article={a}
+                      landscape={count === 1}
+                    />
+                  ))}
+                </div>
+              </section>
+            </Fragment>
           );
         })}
 
-        {rest.length > 4 && (
-          <section className="eph-archive">
-            <h2 className="eph-archive-heading">All Articles</h2>
-            <div className="eph-archive-grid">
-              {articles.map((a) => (
-                <EphemerisCard key={a.meta.slug} article={a} compact />
-              ))}
-            </div>
-          </section>
+        {/* ── ALL ARTICLES MASONRY ──────────────────────────────────── */}
+        {articles.length > 0 && (
+          <>
+            <SectionDivider />
+            <section className="eph-archive">
+              <h2 className="eph-archive-heading">All Articles</h2>
+              <div className="eph-archive-masonry">
+                {articles.map((a, i) => (
+                  <EphemerisCard
+                    key={a.meta.slug}
+                    article={a}
+                    compact={i % 3 !== 0}
+                  />
+                ))}
+              </div>
+            </section>
+          </>
         )}
 
         <EmailCapture />
