@@ -416,9 +416,9 @@ function buildGlobeCacheMini(
 
   // Ocean base
   const oc = ctx.createRadialGradient(eR, eR, 0, eR, eR, eR);
-  oc.addColorStop(0, "#1c4868");
-  oc.addColorStop(.5, "#1c3f5c");
-  oc.addColorStop(1, "#142640");
+  oc.addColorStop(0, "#1e5a80");
+  oc.addColorStop(.5, "#1e4d70");
+  oc.addColorStop(1, "#163050");
   ctx.fillStyle = oc;
   ctx.beginPath(); ctx.arc(eR, eR, eR, 0, TAU); ctx.fill();
 
@@ -482,12 +482,12 @@ function buildGlobeCacheMini(
       }
 
       // Smooth brightness curve
-      const dayBoost = (1 - blend) * 0.20;
-      const nightLift = blend * 0.65;
+      const dayBoost = (1 - blend) * 0.35;
+      const nightLift = blend * 0.45;
       const boostFactor = 1.0 + dayBoost + nightLift;
-      r = Math.min(255, r * boostFactor + (1 - blend) * 14);
-      g = Math.min(255, g * boostFactor * (1 - blend * 0.04) + (1 - blend) * 10);
-      b = Math.min(255, b * boostFactor * (1 + blend * 0.03) + (1 - blend) * 16);
+      r = Math.min(255, r * boostFactor + (1 - blend) * 22);
+      g = Math.min(255, g * boostFactor * (1 - blend * 0.04) + (1 - blend) * 16);
+      b = Math.min(255, b * boostFactor * (1 + blend * 0.03) + (1 - blend) * 20);
 
       const idx = (py * size + px) * 4;
       data[idx] = Math.round(r); data[idx + 1] = Math.round(g);
@@ -706,7 +706,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
 
     // Hairline concentric rings (3 rings, varying opacity)
     [vI, (vI + vO) * 0.5, vO].forEach((r, idx) => {
-      c.strokeStyle = `rgba(100,130,175,${idx === 1 ? 0.06 : 0.1})`;
+      c.strokeStyle = `rgba(100,130,175,${idx === 1 ? 0.06 : 0.22})`;
       c.lineWidth = 0.3;
       c.beginPath(); c.arc(cx, cy, r, 0, TAU); c.stroke();
     });
@@ -717,7 +717,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
     c.beginPath(); c.arc(cx, cy, moonTrackR, 0, TAU); c.stroke();
 
     // Bezel ring (outermost)
-    c.strokeStyle = "rgba(115,145,195,.15)"; c.lineWidth = .6;
+    c.strokeStyle = "rgba(115,145,195,.32)"; c.lineWidth = .6;
     c.beginPath(); c.arc(cx, cy, bz, 0, TAU); c.stroke();
 
     // Fine graduation tick marks — every 15 minutes
@@ -808,7 +808,7 @@ function MiniWatch({ now, lat, lon, southPole, hourMode }: {
         c.restore();
       } else if (showLabel) {
         const isMaj = maj;
-        c.fillStyle = isMaj ? "rgba(210,225,250,.85)" : "rgba(165,185,215,.52)";
+        c.fillStyle = isMaj ? "rgba(225,238,255,.95)" : "rgba(165,185,215,.52)";
         c.font = `${isMaj ? 300 : 200} ${S * (isMaj ? .030 : .022)}px 'DM Sans',system-ui`;
         c.textAlign = "center"; c.textBaseline = "middle";
         c.fillText(h.toString().padStart(2, "0"), nx, ny);
@@ -1192,6 +1192,7 @@ const [newMilestone, setNewMilestone] = useState({ name: "", description: "", da
   const startTimeRef = useRef(Date.now());
   const [kmTraveled, setKmTraveled] = useState(0);
   const [zodiacLoaded, setZodiacLoaded] = useState(0);
+  const [zodiacOn, setZodiacOn] = useState(false);
 
   // Orbital canvas container
   const containerRef = useRef<HTMLDivElement>(null);
@@ -1241,6 +1242,9 @@ const [newMilestone, setNewMilestone] = useState({ name: "", description: "", da
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
+
+  // ─── ZODIAC TOGGLE — invalidate star layer so drawStarLayer re-runs ──
+  useEffect(() => { starsBuiltRef.current = null; }, [zodiacOn]);
 
   // ─── ZODIAC IMAGE LOADING ────────────────────────────────────────
   useEffect(() => {
@@ -1410,7 +1414,7 @@ const orbitGeometry = useMemo(() => {
       if (!_dustInit) { for (let i = 0; i < 40; i++) _dustParticles.push({ angle: Math.random()*TAU, r: aR*(1.15+Math.random()*0.35), speed: 0.00002+Math.random()*0.00003, a: 0.04+Math.random()*0.08 }); _dustInit = true; }
       _dustParticles.forEach(dp => { dp.r += dp.speed; if (dp.r > aR*1.55) dp.r = aR*1.15; const dx = cx+dp.r*Math.cos(dp.angle); const dy = cy+dp.r*Math.sin(dp.angle); c.beginPath(); c.arc(dx,dy,0.5,0,TAU); c.fillStyle = `rgba(160,180,220,${dp.a})`; c.fill(); });
     }
-    if (settings.showZodiac) {
+    if (zodiacOn) {
       const { cx, cy, aR, bR } = orbitGeometry;
       const zodiacR = aR * 1.85; // beyond Mars orbit + month labels
       const imgSize = Math.max(34, Math.min(58, aR * 0.192)); // +20% per design spec — grand celestial bezel
@@ -1489,7 +1493,7 @@ const orbitGeometry = useMemo(() => {
         c.restore();
       }
     }
-  }, [containerSize, settings.showZodiac, orbitGeometry]);
+  }, [containerSize, zodiacOn, orbitGeometry]);
 
   // The orbital layer and HUD layer
   const drawOrbitalLayer = useCallback(() => {
@@ -1520,19 +1524,44 @@ const orbitGeometry = useMemo(() => {
         if (name === "earth") {
           c.strokeStyle = "rgba(96,165,250,0.06)"; c.lineWidth = 0.5;
         } else if (name === "mars") {
-          c.strokeStyle = "rgba(200,130,80,0.18)"; c.lineWidth = 0.8;
+          c.strokeStyle = "rgba(200,130,80,0.36)"; c.lineWidth = 1.2;
           c.stroke();
           // Second pass: faint outer glow for Mars orbit
           c.beginPath();
           c.ellipse(sunX, sunY, pOrbitR, pOrbitR * (bR / aR), 0, 0, TAU);
-          c.strokeStyle = "rgba(200,130,80,0.06)"; c.lineWidth = 4;
+          c.strokeStyle = "rgba(200,130,80,0.12)"; c.lineWidth = 6;
         } else {
-          c.strokeStyle = "rgba(160,170,200,0.06)"; c.lineWidth = 0.4;
+          c.strokeStyle = "rgba(160,170,200,0.12)"; c.lineWidth = 0.6;
         }
         c.stroke();
 
         // EARTH HANDLED BY HUD; SKIP DRAWING BODY HERE
         if (name === "earth") return;
+
+        // Mars orbit label
+        if (name === "mars") {
+          const marsLabelAngle = (-45) * DEG;
+          const marsLabelR = pOrbitR + 12;
+          const mlx = sunX + marsLabelR * Math.cos(marsLabelAngle);
+          const mly = sunY + marsLabelR * (bR/aR) * Math.sin(marsLabelAngle);
+          const tangA2 = marsLabelAngle + Math.PI / 2;
+          const arrowLen = 8;
+          c.save();
+          c.strokeStyle = "rgba(255,120,80,0.80)"; c.lineWidth = 1.2; c.lineCap = "round";
+          c.beginPath();
+          c.moveTo(mlx - arrowLen * Math.cos(tangA2), mly - arrowLen * Math.sin(tangA2));
+          c.lineTo(mlx + arrowLen * Math.cos(tangA2), mly + arrowLen * Math.sin(tangA2));
+          const hL = 6;
+          c.moveTo(mlx + arrowLen * Math.cos(tangA2), mly + arrowLen * Math.sin(tangA2));
+          c.lineTo(mlx + arrowLen * Math.cos(tangA2) - hL * Math.cos(tangA2 - 0.5), mly + arrowLen * Math.sin(tangA2) - hL * Math.sin(tangA2 - 0.5));
+          c.moveTo(mlx + arrowLen * Math.cos(tangA2), mly + arrowLen * Math.sin(tangA2));
+          c.lineTo(mlx + arrowLen * Math.cos(tangA2) - hL * Math.cos(tangA2 + 0.5), mly + arrowLen * Math.sin(tangA2) - hL * Math.sin(tangA2 + 0.5));
+          c.stroke();
+          c.fillStyle = "rgba(255,120,80,0.80)";
+          c.font = "11px 'DM Mono',monospace"; c.textAlign = "center"; c.textBaseline = "middle";
+          c.fillText("MARS ORBIT", mlx, mly + 16);
+          c.restore();
+        }
 
         // Position based on realistic orbital period p
         const angle = (yearFrac / data.p) * TAU - Math.PI / 2;
@@ -1540,21 +1569,24 @@ const orbitGeometry = useMemo(() => {
         const py = sunY + pOrbitR * (bR / aR) * Math.sin(angle);
 
         // Planet Glow & Body
-        const pSize = 2.5;
+        const isMercuryOrVenus = name === "mercury" || name === "venus";
+        const pSize = isMercuryOrVenus ? 3.75 : 2.5;
         const pulse = 0.7 + 0.3 * Math.sin(t / 2000);
         const glow = c.createRadialGradient(px, py, 0, px, py, pSize * 3);
         glow.addColorStop(0, `${data.color}${Math.floor(pulse * 60).toString(16)}`);
         glow.addColorStop(1, "rgba(0,0,0,0)");
-        
+
         c.beginPath(); c.arc(px, py, pSize * 3, 0, TAU);
         c.fillStyle = glow; c.fill();
         c.beginPath(); c.arc(px, py, pSize, 0, TAU);
         c.fillStyle = data.color; c.fill();
 
         // Blueprint Label
-        c.font = "7px 'DM Mono',monospace"; c.textAlign = "center";
-        c.fillStyle = "rgba(200,220,255,0.5)";
-        c.fillText(name.toUpperCase(), px, py + 12);
+        const labelOpacity = isMercuryOrVenus ? 0.90 : 0.5;
+        const labelSize = isMercuryOrVenus ? 12 : 7;
+        c.font = `${labelSize}px 'DM Mono',monospace`; c.textAlign = "center";
+        c.fillStyle = `rgba(200,220,255,${labelOpacity})`;
+        c.fillText(name.toUpperCase(), px, py + pSize + 10);
       });
     }
 
@@ -1640,6 +1672,42 @@ const orbitGeometry = useMemo(() => {
         c.lineWidth = tickWidth;
         c.stroke();
       }
+    }
+
+    // ── EARTH ORBIT ARROW + LABEL (top-right, ~March position) ──
+    { const orbitLabelAngle = (-60) * DEG; // ~top-right March area
+      const arrowR = aR * 1.07;
+      const ax1 = cx + arrowR * Math.cos(orbitLabelAngle - 0.06);
+      const ay1 = cy + arrowR * (bR/aR) * Math.sin(orbitLabelAngle - 0.06);
+      const ax2 = cx + arrowR * Math.cos(orbitLabelAngle + 0.06);
+      const ay2 = cy + arrowR * (bR/aR) * Math.sin(orbitLabelAngle + 0.06);
+      const tangentAngle = Math.atan2(ay2 - ay1, ax2 - ax1);
+      const midX = (ax1 + ax2) / 2; const midY = (ay1 + ay2) / 2;
+      // Arrow
+      c.save();
+      c.strokeStyle = "rgba(255,255,255,0.75)"; c.lineWidth = 1.2; c.lineCap = "round";
+      c.beginPath(); c.moveTo(ax1, ay1); c.lineTo(ax2, ay2); c.stroke();
+      const hLen = 8;
+      c.beginPath();
+      c.moveTo(ax2, ay2);
+      c.lineTo(ax2 - hLen * Math.cos(tangentAngle - 0.5), ay2 - hLen * Math.sin(tangentAngle - 0.5));
+      c.moveTo(ax2, ay2);
+      c.lineTo(ax2 - hLen * Math.cos(tangentAngle + 0.5), ay2 - hLen * Math.sin(tangentAngle + 0.5));
+      c.stroke();
+      // Label
+      const perpA = tangentAngle - Math.PI / 2;
+      const lbx = midX + 14 * Math.cos(perpA); const lby = midY + 14 * Math.sin(perpA);
+      c.fillStyle = "rgba(255,255,255,0.75)";
+      c.font = "11px 'DM Mono',monospace"; c.textAlign = "center"; c.textBaseline = "middle";
+      c.fillText("EARTH ORBIT", lbx, lby);
+      c.restore();
+    }
+
+    // ── SUN LABEL ──
+    { const sunX = cx - orbitGeometry.focusOffset; const sunY = cy;
+      c.fillStyle = "rgba(255,220,100,0.85)";
+      c.font = "11px 'DM Mono',monospace"; c.textAlign = "center"; c.textBaseline = "top";
+      c.fillText("SUN", sunX, sunY + 18);
     }
 
     // ── MILESTONE RADIAL LINES TO SUN — white star-like crossing lines ──
@@ -1769,6 +1837,7 @@ const orbitGeometry = useMemo(() => {
     if (settings.showFyrtarn) {
       const todayDoyForFyt = Math.floor((Number(now)-Number(new Date(now.getFullYear(),0,0)))/86400000);
       const sunX = orbitGeometry.cx-orbitGeometry.focusOffset; const sunY = orbitGeometry.cy;
+      const drawnLabels: {x:number; y:number}[] = [];
 
       fyrtarnDates.forEach(f => {
         const doy = Math.floor((Number(f.dateObj)-Number(new Date(f.dateObj.getFullYear(),0,0)))/86400000);
@@ -1815,15 +1884,27 @@ const orbitGeometry = useMemo(() => {
           c.strokeStyle = beamGrad; c.lineWidth = 0.7; c.stroke();
         }
 
-        // Label — always visible, small caps, offset outward from orbit
+        // Label — collision-prevented, base offset at least aR*0.08
         const p = orbitPts[ptIdx];
         const lAngle = Math.atan2(p.y-cy,p.x-cx);
-        const labelDist = 18 + 6 * proximity;
+        const baseOffset = Math.max(18 + 6 * proximity, aR * 0.08);
+        let labelDist = baseOffset;
+        for (let attempt = 0; attempt < 6; attempt++) {
+          const tlx = p.x + Math.cos(lAngle) * labelDist;
+          const tly = p.y + Math.sin(lAngle) * labelDist;
+          let collision = false;
+          for (const prev of drawnLabels) {
+            if (Math.sqrt((tlx-prev.x)**2+(tly-prev.y)**2) < 28) { collision = true; break; }
+          }
+          if (!collision) break;
+          labelDist += 18;
+        }
         const lx = p.x+Math.cos(lAngle)*labelDist;
         const ly = p.y+Math.sin(lAngle)*labelDist;
-        const labelAlpha = 0.35 + 0.5 * proximity;
+        drawnLabels.push({x: lx, y: ly});
+        const labelAlpha = 0.95;
         c.fillStyle = `rgba(${hexR},${hexG},${hexB},${labelAlpha})`;
-        c.font = `${300 + Math.round(proximity * 200)} ${8+2*proximity}px 'DM Mono',monospace`;
+        c.font = `500 ${Math.round((10+2*proximity)*1.25)}px 'DM Mono',monospace`;
         c.textAlign = "center"; c.textBaseline = "middle";
         c.fillText(f.name.toUpperCase(), lx, ly);
       });
@@ -1841,7 +1922,7 @@ const orbitGeometry = useMemo(() => {
       c.strokeStyle = "rgba(80,110,165,0.2)"; c.lineWidth = 0.7; c.stroke();
     }
     // Month labels — positioned on single circular axis
-    for (let m = 0; m < 12; m++) { const midAngle = ((m*30+15)-90)*DEG; const lx = cx+monthLabelR*Math.cos(midAngle); const ly = cy+monthLabelR*Math.sin(midAngle); c.save(); c.translate(lx,ly); c.rotate(midAngle+Math.PI/2); const isCur = m===now.getMonth(); c.fillStyle = isCur ? "rgba(220,235,255,0.88)" : "rgba(160,180,220,0.6)"; c.font = `${isCur?500:300} ${isCur?11:10}px 'DM Sans',system-ui`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(months[m],0,0); c.restore(); }
+    for (let m = 0; m < 12; m++) { const midAngle = ((m*30+15)-90)*DEG; const lx = cx+monthLabelR*Math.cos(midAngle); const ly = cy+monthLabelR*Math.sin(midAngle); c.save(); c.translate(lx,ly); c.rotate(midAngle+Math.PI/2); const isCur = m===now.getMonth(); c.fillStyle = isCur ? "rgba(220,235,255,0.95)" : "rgba(160,180,220,0.95)"; c.font = `${isCur?500:400} ${isCur?15:14}px 'DM Sans',system-ui`; c.letterSpacing = "2px"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(months[m],0,0); c.restore(); }
 
     // Meeting blobs removed per v4 spec — orbital view is purely astronomical
 
@@ -1879,6 +1960,27 @@ const orbitGeometry = useMemo(() => {
 
     // Tiny moon circling Earth dot — KEPT VISIBLE
     const lunAngle = lun.phase*TAU-Math.PI/2; const lunOrbitR = 14; const lx = p.x+lunOrbitR*Math.cos(lunAngle); const ly = p.y+lunOrbitR*Math.sin(lunAngle); c.beginPath(); c.arc(lx,ly,2.5,0,TAU); c.fillStyle = `rgba(200,210,230,${0.4+0.4*lun.illum})`; c.fill();
+
+    // EARTH label with inward-pointing arrow
+    { const eAngle = Math.atan2(p.y - cy, p.x - cx);
+      const outR = 26; // px from earth dot center, outward
+      const arrowTip = { x: p.x + 9 * Math.cos(eAngle), y: p.y + 9 * Math.sin(eAngle) };
+      const textPt  = { x: p.x + outR * Math.cos(eAngle), y: p.y + outR * Math.sin(eAngle) };
+      c.save();
+      c.strokeStyle = "rgba(120,180,255,0.6)"; c.lineWidth = 1; c.lineCap = "round";
+      c.beginPath(); c.moveTo(textPt.x, textPt.y); c.lineTo(arrowTip.x, arrowTip.y); c.stroke();
+      const hA = Math.atan2(arrowTip.y - textPt.y, arrowTip.x - textPt.x);
+      c.beginPath();
+      c.moveTo(arrowTip.x, arrowTip.y);
+      c.lineTo(arrowTip.x - 5*Math.cos(hA-0.45), arrowTip.y - 5*Math.sin(hA-0.45));
+      c.moveTo(arrowTip.x, arrowTip.y);
+      c.lineTo(arrowTip.x - 5*Math.cos(hA+0.45), arrowTip.y - 5*Math.sin(hA+0.45));
+      c.stroke();
+      c.fillStyle = "rgba(120,180,255,0.6)";
+      c.font = "10px 'DM Mono',monospace"; c.textAlign = "center"; c.textBaseline = "middle";
+      c.fillText("EARTH", textPt.x + 14*Math.cos(eAngle), textPt.y + 14*Math.sin(eAngle));
+      c.restore();
+    }
 
     const sunX = orbitGeometry.cx-orbitGeometry.focusOffset; const sunY = orbitGeometry.cy;
     { const windNorm = Math.max(0,Math.min(1,(_solarWindSpeed-300)/500)); const coronaR = 14+14*windNorm; const pulseRate = 1200-400*windNorm; const coronaPulse = 0.8+0.2*Math.sin(t/pulseRate); const coronaAlpha = windNorm<0.3?0.45*coronaPulse:windNorm<0.7?0.52*coronaPulse:0.62*coronaPulse; const sunGlow = c.createRadialGradient(sunX,sunY,0,sunX,sunY,coronaR); sunGlow.addColorStop(0,`rgba(255,240,180,${coronaAlpha})`); sunGlow.addColorStop(0.5,`rgba(255,200,80,${coronaAlpha*0.28})`); sunGlow.addColorStop(1,"rgba(255,180,60,0)"); c.beginPath(); c.arc(sunX,sunY,coronaR,0,TAU); c.fillStyle = sunGlow; c.fill(); c.beginPath(); c.arc(sunX,sunY,5,0,TAU); c.fillStyle = "rgba(255,240,180,0.75)"; c.fill(); }
@@ -2042,6 +2144,7 @@ const orbitGeometry = useMemo(() => {
                 <button onClick={() => setWatchHourMode("mid")} style={wBtnStyle(watchHourMode === "mid")}>Hours Mid</button>
                 <button onClick={() => setWatchSouthPole(false)} style={wBtnStyle(!watchSouthPole)}>North Pole</button>
                 <button onClick={() => setWatchSouthPole(true)} style={wBtnStyle(watchSouthPole)}>South Pole</button>
+                <button onClick={() => setZodiacOn(v => !v)} style={wBtnStyle(zodiacOn)}>Zodiac {zodiacOn ? "On" : "Off"}</button>
               </div>
             )}
           </div>

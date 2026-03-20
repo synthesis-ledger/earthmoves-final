@@ -260,7 +260,8 @@ function buildGlobeCache(
   sun: { subLon: number },
   utcH: number,
   date: Date,
-  south: boolean
+  south: boolean,
+  cloudsOn: boolean
 ): HTMLCanvasElement {
   const size = Math.ceil(eR * 2);
   const cache = document.createElement("canvas");
@@ -269,9 +270,9 @@ function buildGlobeCache(
 
   // v3.5: Ocean base — slightly warmer
   const oc = ctx.createRadialGradient(eR, eR, 0, eR, eR, eR);
-  oc.addColorStop(0, "#1c4868");
-  oc.addColorStop(.5, "#1c3f5c");
-  oc.addColorStop(1, "#142640");
+  oc.addColorStop(0, "#1e5a80");
+  oc.addColorStop(.5, "#1e4d70");
+  oc.addColorStop(1, "#163050");
   ctx.fillStyle = oc;
   ctx.beginPath(); ctx.arc(eR, eR, eR, 0, TAU); ctx.fill();
 
@@ -340,7 +341,7 @@ function buildGlobeCache(
       const idx = (py * size + px) * 4;
 
       // v3.6: Screen-blend cloud layer over terrain (day-side only, fades with blend)
-      if (cloudPx) {
+      if (cloudsOn && cloudPx) {
         const cIdx = (ty * texW + tx) * 4;
         const cr = cloudPx[cIdx], cg = cloudPx[cIdx + 1], cb = cloudPx[cIdx + 2];
         const cloudVis = 0.55 * (1 - blend);  // fades smoothly into night
@@ -355,12 +356,12 @@ function buildGlobeCache(
 
       // ───── v3.6 Smooth brightness — continuous day→night curve ─────
       // Day boost fades smoothly into night lift using the blend factor
-      const dayBoost = (1 - blend) * 0.20;   // up to +20% on day side
-      const nightLift = blend * 0.65;          // up to +65% on night side (city lights)
+      const dayBoost = (1 - blend) * 0.35;   // up to +35% on day side
+      const nightLift = blend * 0.45;          // up to +45% on night side (city lights)
       const boostFactor = 1.0 + dayBoost + nightLift;
-      const addR = (1 - blend) * 14;
-      const addG = (1 - blend) * 10;
-      const addB = (1 - blend) * 16;
+      const addR = (1 - blend) * 22;
+      const addG = (1 - blend) * 16;
+      const addB = (1 - blend) * 20;
 
       r = Math.min(255, r * boostFactor + addR);
       g = Math.min(255, g * boostFactor * (1 - blend * 0.04) + addG);
@@ -412,7 +413,7 @@ const CITIES: number[][] = [
 ];
 
 // ─── LOCATION DATA ────────────────────────────────────────────────────
-const LC = ["#5C9CF5","#6BCB77","#F0A04B","#C084FC","#4ECDC4"];
+const LC = ["#4ECDC4","#4ECDC4","#4ECDC4","#4ECDC4","#4ECDC4"];
 
 interface LocEntry { name: string; lat: number; lon: number; }
 interface LocEntryWithColor extends LocEntry { color: string; }
@@ -496,6 +497,11 @@ export default function EarthMoves() {
   // NASA texture refs
   const dayPixRef = useRef<Uint8ClampedArray | null>(null);
   const nightPixRef = useRef<Uint8ClampedArray | null>(null);
+  const dayPixSilverRef = useRef<Uint8ClampedArray | null>(null);
+  const nightPixSilverRef = useRef<Uint8ClampedArray | null>(null);
+  const dayPixIceRef = useRef<Uint8ClampedArray | null>(null);
+  const nightPixIceRef = useRef<Uint8ClampedArray | null>(null);
+  const nightModePixRef = useRef<Uint8ClampedArray | null>(null);
   const cloudPixRef = useRef<Uint8ClampedArray | null>(null);
   const moonPixRef = useRef<Uint8ClampedArray | null>(null);
   const cloudReadyRef = useRef<boolean>(false);
@@ -527,6 +533,10 @@ export default function EarthMoves() {
   const [southPole, setSouthPole] = useState(false);
   const [hemisphereAuto, setHemisphereAuto] = useState(true);
   const [hourMode, setHourMode] = useState<"min"|"mid"|"max">("mid");
+  const [cloudsOn, setCloudsOn] = useState(true);
+  const [moonOn, setMoonOn] = useState(true);
+  const [earthSkin, setEarthSkin] = useState<'default'|'silver'|'ice'>('default');
+  const [skinMode, setSkinMode] = useState<'default'|'night'>('default');
   const [texStatus, setTexStatus] = useState<"loading"|"ready"|"fallback">("loading");
 
   const [userLat, setUserLat] = useState(51.4769);
@@ -580,10 +590,21 @@ export default function EarthMoves() {
       img.src = url;
     });
 
+    // Reset state so globe rebuilds with new textures
+    dayPixRef.current = null;
+    nightPixRef.current = null;
+    globeCacheRef.current = null;
+    globeCacheTimeRef.current = 0;
+    texReadyRef.current = false;
+    setTexStatus("loading");
+
     const today = new Date();
     const cloudDate = new Date(today.getTime() - 86400000 * 2);
 
-    Promise.all([loadTex(DAY_TEX), loadTex(NIGHT_TEX)])
+    const dayUrl   = earthSkin === 'ice' ? '/dayice.png'   : DAY_TEX;
+    const nightUrl = earthSkin === 'ice' ? '/nightice.png' : NIGHT_TEX;
+
+    Promise.all([loadTex(dayUrl), loadTex(nightUrl)])
       .then(([day, night]) => {
         if (cancelled) return;
         dayPixRef.current = day;
@@ -596,6 +617,29 @@ export default function EarthMoves() {
       .catch(() => {
         if (!cancelled) setTexStatus("fallback");
       });
+
+// Load night mode texture
+    loadTex("/nightmode.png")
+      .then(nm => { if (cancelled) return; nightModePixRef.current = nm; })
+      .catch(() => {});
+
+// Load silver skin textures
+    Promise.all([loadTex("/daysilver.png"), loadTex("/nightsilver.png")])
+      .then(([daySilver, nightSilver]) => {
+        if (cancelled) return;
+        dayPixSilverRef.current = daySilver;
+        nightPixSilverRef.current = nightSilver;
+      })
+      .catch(() => {});
+
+// Load ice planet skin textures
+    Promise.all([loadTex("/dayice.png"), loadTex("/nightice.png")])
+      .then(([dayIce, nightIce]) => {
+        if (cancelled) return;
+        dayPixIceRef.current = dayIce;
+        nightPixIceRef.current = nightIce;
+      })
+      .catch(() => {});
 
 // Load local Moon texture from public/moon_texture.jpg
     loadTex(MOON_TEX)
@@ -623,7 +667,7 @@ export default function EarthMoves() {
       });
 
     return () => { cancelled = true; };
-  }, []);
+  }, [earthSkin]);
 
   // ── ISS live position ─────────────────────────────────────────────────
   useEffect(() => {
@@ -734,6 +778,8 @@ useEffect(() => {
     cv.width = W * dpr; cv.height = H * dpr; c.scale(dpr, dpr);
 
     const cx = W / 2, cy = H / 2;
+    const night = skinMode === 'night';
+    const nC = (a: number) => `rgba(230,255,0,${a})`;
     const wR = S * .44;
     const eR = wR * Z.EARTH;
     const atR = wR * Z.ATMOS;
@@ -770,8 +816,10 @@ useEffect(() => {
     if (texReadyRef.current &&
         (!globeCacheRef.current || nowSec - globeCacheTimeRef.current >= CFG.GLOBE_CACHE_SECS)) {
       globeCacheRef.current = buildGlobeCache(
-        dayPixRef.current, nightPixRef.current, cloudPixRef.current,
-        CFG.TEX_W, CFG.TEX_H, eR, sun, utcH, now, sp
+        skinMode === 'night' ? nightModePixRef.current : earthSkin === 'silver' ? dayPixSilverRef.current : earthSkin === 'ice' ? dayPixIceRef.current : dayPixRef.current,
+        skinMode === 'night' ? nightModePixRef.current : earthSkin === 'silver' ? nightPixSilverRef.current : earthSkin === 'ice' ? nightPixIceRef.current : nightPixRef.current,
+        cloudPixRef.current,
+        CFG.TEX_W, CFG.TEX_H, eR, sun, utcH, now, sp, cloudsOn
       );
       globeCacheTimeRef.current = nowSec;
     }
@@ -823,8 +871,8 @@ useEffect(() => {
     });
 
     // v3.5: Extra faint distant stars — fills full viewport
-    c.globalAlpha = 0.45;
-    for (let i = 0; i < 520; i++) {
+    c.globalAlpha = 0.25;
+    for (let i = 0; i < 300; i++) {
       const sx = Math.random() * W;
       const sy = Math.random() * H;
       const br = 0.12 + Math.random() * 0.28;
@@ -988,10 +1036,10 @@ useEffect(() => {
     // ═══════════════════════════════════════════════════════════════
     // Atmosphere glow — yellow horizon rim completely removed (much softer sapphire only)
     const ag2 = c.createRadialGradient(cx, cy, eR - 2, cx, cy, atR + 14);
-    ag2.addColorStop(0, "rgba(55,125,250,0)");
-    ag2.addColorStop(.42, "rgba(55,125,250,.038)");
-    ag2.addColorStop(.68, "rgba(45,105,215,.052)");
-    ag2.addColorStop(1, "rgba(25,55,140,0)");
+    ag2.addColorStop(0, night ? nC(0) : "rgba(55,125,250,0)");
+    ag2.addColorStop(.42, night ? nC(.038) : "rgba(55,125,250,.038)");
+    ag2.addColorStop(.68, night ? nC(.052) : "rgba(45,105,215,.052)");
+    ag2.addColorStop(1, night ? nC(0) : "rgba(25,55,140,0)");
     c.fillStyle = ag2; 
     c.beginPath(); 
     c.arc(cx, cy, atR + 14, 0, TAU); 
@@ -1039,7 +1087,7 @@ useEffect(() => {
     const mWA = sp
       ? -(utcH + mn.lon / 15) * (Math.PI / 12)
       : Math.PI - (utcH + mn.lon / 15) * (Math.PI / 12);
-    drawTidalEllipse(mWA, 1.00, "92,198,255");   // brighter cyan-blue for visibility
+    drawTidalEllipse(mWA, 1.00, night ? "230,255,0" : "92,198,255");   // brighter cyan-blue for visibility
     
     // ═══════════════════════════════════════════════════════════════
     //  LAYER 8: SATELLITES + LOCATIONS + CLOCK HAND
@@ -1097,7 +1145,7 @@ useEffect(() => {
         c.restore();
 
         // Blue "ISS" text stays above the icon
-        c.fillStyle = "rgba(120,210,255,.5)";
+        c.fillStyle = night ? nC(.75) : "rgba(120,210,255,.75)";
         c.font = `500 ${S * .013}px 'DM Mono','SF Mono',monospace`; 
         c.textAlign = "center";
         c.fillText("ISS", ip.x, ip.y - S * .02);
@@ -1157,7 +1205,7 @@ useEffect(() => {
         c.restore();
 
         // Red "CSS" text stays above the icon
-        c.fillStyle = "rgba(255,115,95,.45)";
+        c.fillStyle = night ? nC(.70) : "rgba(255,115,95,.70)";
         c.font = `500 ${S * .011}px 'DM Mono','SF Mono',monospace`; 
         c.textAlign = "center";
         c.fillText("CSS", tp.x, tp.y - S * .016);
@@ -1187,7 +1235,7 @@ useEffect(() => {
         c.beginPath(); c.arc(p.x, p.y, CFG.LOC_DOT + 1.3, 0, TAU); c.stroke();
         const la = Math.atan2(p.y - cy, p.x - cx);
         const lx = p.x + Math.cos(la) * S * .026, ly = p.y + Math.sin(la) * S * .026;
-        c.fillStyle = "rgba(255,255,255,.72)";
+        c.fillStyle = night ? nC(.92) : "rgba(255,255,255,.92)";
         c.font = `400 ${S * .016}px 'DM Sans',system-ui`; c.textAlign = "center"; c.textBaseline = "middle";
         c.fillText(loc.name, lx, ly); c.restore();
         if (Math.sqrt((mp.x - p.x) ** 2 + (mp.y - p.y) ** 2) < S * .025)
@@ -1204,19 +1252,19 @@ useEffect(() => {
         c.save();
         const cLen = S * .012;
         // Crosshair arms
-        c.strokeStyle = "rgba(255,255,255,.50)"; c.lineWidth = 0.7;
+        c.strokeStyle = night ? nC(.6) : "rgba(255,255,255,.50)"; c.lineWidth = 0.7;
         c.beginPath();
         c.moveTo(op.x - cLen, op.y); c.lineTo(op.x + cLen, op.y);
         c.moveTo(op.x, op.y - cLen); c.lineTo(op.x, op.y + cLen);
         c.stroke();
         // Center diamond
-        c.fillStyle = "rgba(255,255,255,.70)";
+        c.fillStyle = night ? nC(.7) : "rgba(255,255,255,.70)";
         c.beginPath();
         c.moveTo(op.x, op.y - 3); c.lineTo(op.x + 2.2, op.y);
         c.lineTo(op.x, op.y + 3); c.lineTo(op.x - 2.2, op.y); c.closePath();
         c.fill();
         // Outer ring
-        c.strokeStyle = "rgba(255,255,255,.25)"; c.lineWidth = 0.5;
+        c.strokeStyle = night ? nC(.25) : "rgba(255,255,255,.25)"; c.lineWidth = 0.5;
         c.beginPath(); c.arc(op.x, op.y, S * .016, 0, TAU); c.stroke();
         c.restore();
         if (Math.sqrt((mp.x - op.x) ** 2 + (mp.y - op.y) ** 2) < S * .025)
@@ -1230,7 +1278,7 @@ useEffect(() => {
     const hA = -hourAngleFor(lH, sp);
     // Digital-Thin Hand — "The Chronological Needle"
     c.save();
-    c.strokeStyle = "rgba(255,255,255,.55)";
+    c.strokeStyle = night ? nC(.9) : "rgba(255,255,255,.55)";
     c.lineWidth = 0.7;
     c.beginPath();
     c.moveTo(cx + S * .015 * Math.cos(hA), cy + S * .015 * Math.sin(hA));
@@ -1266,9 +1314,9 @@ useEffect(() => {
     // ═══════════════════════════════════════════════════════════════
     const hMode = hourMode; // capture for render
 
-    c.strokeStyle = "rgba(115,145,195,.18)"; c.lineWidth = .7;
+    c.strokeStyle = night ? nC(.3) : "rgba(115,145,195,.32)"; c.lineWidth = .7;
     c.beginPath(); c.arc(cx, cy, bz, 0, TAU); c.stroke();
-    c.strokeStyle = "rgba(100,130,175,.1)"; c.lineWidth = .5;
+    c.strokeStyle = night ? nC(.18) : "rgba(100,130,175,.22)"; c.lineWidth = .5;
     c.beginPath(); c.arc(cx, cy, bfI, 0, TAU); c.stroke();
 
     for (let h = 0; h < 24; h++) {
@@ -1293,9 +1341,9 @@ useEffect(() => {
       // Tick lines
       if (showTick) {
         const tI = maj ? bfI - S * .007 : bfI;
-        c.strokeStyle = maj ? "rgba(175,195,230,.5)"
-          : even ? "rgba(135,160,195,.25)"
-          : "rgba(115,140,175,.15)";
+        c.strokeStyle = night
+          ? (maj ? nC(.5) : even ? nC(.25) : nC(.15))
+          : (maj ? "rgba(175,195,230,.5)" : even ? "rgba(135,160,195,.25)" : "rgba(115,140,175,.15)");
         c.lineWidth = maj ? 1.5 : even ? .9 : .5;
         c.beginPath();
         c.moveTo(cx + tI * Math.cos(a), cy + tI * Math.sin(a));
@@ -1306,7 +1354,7 @@ useEffect(() => {
       if (hMode !== "min") {
         for (let s = 1; s <= 3; s++) {
           const sa = -hourAngleFor(h + s / 4, sp);
-          c.strokeStyle = "rgba(95,115,145,.1)"; c.lineWidth = .3;
+          c.strokeStyle = night ? nC(.1) : "rgba(95,115,145,.1)"; c.lineWidth = .3;
           c.beginPath();
           c.moveTo(cx + (bfI + (tO - bfI) * .35) * Math.cos(sa), cy + (bfI + (tO - bfI) * .35) * Math.sin(sa));
           c.lineTo(cx + (tO - S * .004) * Math.cos(sa), cy + (tO - S * .004) * Math.sin(sa)); c.stroke();
@@ -1326,7 +1374,7 @@ useEffect(() => {
         c.fillStyle = sg; c.beginPath(); c.arc(nx, ny, sr * 3, 0, TAU); c.fill();
         c.strokeStyle = "rgba(255,255,255,.85)"; c.lineWidth = 1.2;
         c.beginPath(); c.arc(nx, ny, sr, 0, TAU); c.stroke();
-        c.strokeStyle = "rgba(255,255,255,.55)"; c.lineWidth = 0.6;
+        c.strokeStyle = night ? nC(.9) : "rgba(255,255,255,.55)"; c.lineWidth = 0.6;
         for (let r = 0; r < 8; r++) {
           const ra = r * Math.PI / 4;
           c.beginPath();
@@ -1367,9 +1415,9 @@ useEffect(() => {
         // Number labels — size varies by importance
         const isMaj = maj;
         const isOdd = !even;
-        c.fillStyle = isMaj ? "rgba(210,225,250,.85)"
-          : isOdd ? "rgba(145,165,200,.38)"
-          : "rgba(165,185,215,.52)";
+        c.fillStyle = night
+          ? (isMaj ? nC(.95) : isOdd ? nC(.38) : nC(.52))
+          : (isMaj ? "rgba(225,238,255,.95)" : isOdd ? "rgba(145,165,200,.38)" : "rgba(165,185,215,.52)");
         c.font = `${isMaj ? 300 : 200} ${S * (isMaj ? .035 : isOdd ? .022 : .027)}px 'DM Sans',system-ui`;
         c.textAlign = "center"; c.textBaseline = "middle";
         c.fillText(h.toString().padStart(2, "0"), nx, ny);
@@ -1379,6 +1427,7 @@ useEffect(() => {
         // ═══════════════════════════════════════════════════════════════
     //  LAYER 10: MOON — Real texture + accurate current phase
     // ═══════════════════════════════════════════════════════════════
+    if (moonOn) {
     const mS = S * CFG.MOON_R;
     const mWA2 = sp
       ? -(utcH + mn.lon / 15) * (Math.PI / 12)
@@ -1446,6 +1495,7 @@ useEffect(() => {
 
     if (Math.sqrt((mp.x - mx) ** 2 + (mp.y - my) ** 2) < mS * 1.8)
       hov = {type: "Moon", x: mx, y: my, lat: mn.lat, lon: mn.lon, extra: `${(mn.illum * 100).toFixed(0)}% illuminated`};
+    } // end moonOn
 
     // ═══════════════════════════════════════════════════════════════
     //  LAYER 11: HUD TOOLTIP
@@ -1480,13 +1530,13 @@ useEffect(() => {
     tbg.addColorStop(0, "rgba(0,4,12,.4)"); tbg.addColorStop(1, "rgba(0,4,12,0)");
     c.fillStyle = tbg; c.beginPath(); c.arc(cx, cy - S * .15, S * .09, 0, TAU); c.fill();
 
-    c.fillStyle = "rgba(255,255,255,.9)";
+    c.fillStyle = night ? nC(.95) : "rgba(255,255,255,.9)";
     c.font = `200 ${S * .068}px 'DM Sans',system-ui`;
     c.textAlign = "center"; c.textBaseline = "middle";
     c.fillText(`${dH}:${dM}`, cx, cy - S * .17);
 
     const ds = now.toLocaleDateString("en-US", {weekday:"long", month:"short", day:"numeric"});
-    c.fillStyle = "rgba(185,205,235,.55)";
+    c.fillStyle = night ? nC(.7) : "rgba(185,205,235,.55)";
     c.font = `300 ${S * .019}px 'DM Sans',system-ui`;
     c.fillText(ds, cx, cy - S * .125);
 
@@ -1516,7 +1566,7 @@ useEffect(() => {
     }
 
     afRef.current = requestAnimationFrame(render);
-  }, [now, locs, windOn, windHigh, mp, southPole, texStatus, activeMeteorShower, userLat, userLon, hourMode]);
+  }, [now, locs, windOn, windHigh, mp, southPole, texStatus, activeMeteorShower, userLat, userLon, hourMode, cloudsOn, moonOn, earthSkin, skinMode]);
 
   // ─── Load custom ISS & CSS icons (from /public) ─────────────────────
   useEffect(() => {
@@ -1535,6 +1585,11 @@ useEffect(() => {
     afRef.current = requestAnimationFrame(render);
     return () => { if (afRef.current) cancelAnimationFrame(afRef.current); };
   }, [render]);
+
+  useEffect(() => {
+    globeCacheRef.current = null;
+    globeCacheTimeRef.current = 0;
+  }, [earthSkin, skinMode]);
 
   const updLoc = (i: number, p: LocEntry) => {
     setLocs(l => l.map((x, j) => j === i ? {...x, name: p.name, lat: p.lat, lon: p.lon} : x));
@@ -1579,11 +1634,11 @@ useEffect(() => {
 
       {/* Status bar — clean & beautiful */}
       <div style={{position:"absolute",bottom:"80px",left:0,right:0,display:"flex",gap:"20px",fontSize:"11px",
-        color:"rgba(155,175,205,.68)",letterSpacing:".45px",flexWrap:"wrap",
+        color:skinMode==='night' ? "#e6ff00" : "rgba(175,200,235,.85)",letterSpacing:".45px",flexWrap:"wrap",
         justifyContent:"center",fontFamily:"'DM Mono',monospace",alignItems:"center",zIndex:10,pointerEvents:"none"}}>
-        
+
         {/* Your Location */}
-        <span style={{color:"#a0c0ff", whiteSpace:"nowrap"}}>
+        <span style={{color:skinMode==='night' ? "#e6ff00" : "#a0c0ff", whiteSpace:"nowrap"}}>
           📍 Your Location {userLat.toFixed(1)}°{userLat >= 0 ? 'N' : 'S'} {Math.abs(userLon).toFixed(1)}°{userLon >= 0 ? 'E' : 'W'}
         </span>
 
@@ -1600,7 +1655,9 @@ useEffect(() => {
       {/* Customize panel */}
       <div style={{position:"absolute",bottom:"24px",left:"50%",transform:"translateX(-50%)",display:"flex",flexDirection:"column-reverse",alignItems:"center",gap:"8px",width:"100%",maxWidth:"440px",padding:"0 16px",zIndex:10}}>
         <button onClick={() => setPanel(!panel)} style={{
-          background:"none",border:"1px solid rgba(110,140,190,.22)",color:"rgba(185,205,235,.65)",
+          background:"none",
+          border: skinMode==='night' ? "1px solid rgba(230,255,0,.5)" : "1px solid rgba(110,140,190,.22)",
+          color: skinMode==='night' ? "#e6ff00" : "rgba(185,205,235,.65)",
           padding:"6px 20px",borderRadius:"16px",cursor:"pointer",fontSize:"11px",
           letterSpacing:".8px",fontFamily:"'DM Sans',system-ui"}}>
           {panel ? "Close" : "⚙ Customize"}</button>
@@ -1608,6 +1665,31 @@ useEffect(() => {
         {panel && (
           <div style={{background:"rgba(8,12,25,.92)",backdropFilter:"blur(16px)",
             border:"1px solid rgba(65,85,125,.18)",borderRadius:"12px",padding:"16px",width:"100%",maxHeight:"50vh",overflowY:"auto"}}>
+
+            {/* Earth Skin toggle */}
+            <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
+              letterSpacing:"2px",marginBottom:"8px"}}>Earth Skin</div>
+            <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
+              {([
+                {label:"Classic",    skin:"default" as const, mode:"default" as const},
+                {label:"Silver",     skin:"silver"  as const, mode:"default" as const},
+                {label:"Ice Age",    skin:"ice"     as const, mode:"default" as const},
+                {label:"Night",      skin:"default" as const, mode:"night"   as const},
+              ]).map(opt => {
+                const isActive = opt.mode === 'night' ? skinMode === 'night' : earthSkin === opt.skin && skinMode !== 'night';
+                const isNightBtn = opt.mode === 'night';
+                return (
+                  <button key={opt.label} onClick={() => { setEarthSkin(opt.skin); setSkinMode(opt.mode); globeCacheRef.current = null; globeCacheTimeRef.current = 0; }}
+                    style={{flex:1,padding:"6px",borderRadius:"6px",cursor:"pointer",fontSize:"10px",
+                      fontFamily:"inherit",letterSpacing:".4px",
+                      background: isActive ? (isNightBtn ? "rgba(180,220,0,.18)" : "rgba(80,130,220,.22)") : "rgba(22,28,45,.5)",
+                      border: isActive ? (isNightBtn ? "1px solid rgba(230,255,0,.55)" : "1px solid rgba(80,150,255,.45)") : "1px solid rgba(55,75,105,.22)",
+                      color: isActive ? (isNightBtn ? "#e6ff00" : "rgba(160,200,255,.9)") : "rgba(140,160,190,.5)"}}>
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
 
             {/* Hour density toggle */}
             <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
@@ -1625,6 +1707,22 @@ useEffect(() => {
               ))}
             </div>
 
+            {/* Moon toggle */}
+            <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
+              letterSpacing:"2px",marginBottom:"8px"}}>Moon</div>
+            <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
+              {([{label:"On",val:true},{label:"Off",val:false}]).map(opt => (
+                <button key={String(opt.val)} onClick={() => setMoonOn(opt.val)}
+                  style={{flex:1,padding:"6px",borderRadius:"6px",cursor:"pointer",fontSize:"10px",
+                    fontFamily:"inherit",letterSpacing:".4px",
+                    background: moonOn === opt.val ? "rgba(80,130,220,.22)" : "rgba(22,28,45,.5)",
+                    border: moonOn === opt.val ? "1px solid rgba(80,150,255,.45)" : "1px solid rgba(55,75,105,.22)",
+                    color: moonOn === opt.val ? "rgba(160,200,255,.9)" : "rgba(140,160,190,.5)"}}>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
             {/* Pole perspective toggle */}
             <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
               letterSpacing:"2px",marginBottom:"8px"}}>Perspective</div>
@@ -1637,6 +1735,22 @@ useEffect(() => {
                     border: southPole === opt.val ? "1px solid rgba(80,150,255,.45)" : "1px solid rgba(55,75,105,.22)",
                     color: southPole === opt.val ? "rgba(160,200,255,.9)" : "rgba(140,160,190,.5)"}}>
                   {opt.label}{hemisphereAuto && southPole === opt.val ? " (auto)" : ""}
+                </button>
+              ))}
+            </div>
+
+            {/* Cloud toggle */}
+            <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
+              letterSpacing:"2px",marginBottom:"8px"}}>Clouds</div>
+            <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
+              {([{label:"On",val:true},{label:"Off",val:false}]).map(opt => (
+                <button key={String(opt.val)} onClick={() => { setCloudsOn(opt.val); globeCacheRef.current = null; globeCacheTimeRef.current = 0; }}
+                  style={{flex:1,padding:"6px",borderRadius:"6px",cursor:"pointer",fontSize:"10px",
+                    fontFamily:"inherit",letterSpacing:".4px",
+                    background: cloudsOn === opt.val ? "rgba(80,130,220,.22)" : "rgba(22,28,45,.5)",
+                    border: cloudsOn === opt.val ? "1px solid rgba(80,150,255,.45)" : "1px solid rgba(55,75,105,.22)",
+                    color: cloudsOn === opt.val ? "rgba(160,200,255,.9)" : "rgba(140,160,190,.5)"}}>
+                  {opt.label}
                 </button>
               ))}
             </div>
