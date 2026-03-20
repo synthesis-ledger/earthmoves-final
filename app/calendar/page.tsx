@@ -1249,7 +1249,7 @@ const [newMilestone, setNewMilestone] = useState({ name: "", description: "", da
       const img = new Image();
       img.crossOrigin = "anonymous";
       img.src = `/${z.file}.png`;
-      img.onload = () => { zodiacImgsRef.current[z.file] = img; };
+      img.onload = () => { zodiacImgsRef.current[z.file] = img; setZodiacLoaded(n => n + 1); };
     });
   }, []);
 
