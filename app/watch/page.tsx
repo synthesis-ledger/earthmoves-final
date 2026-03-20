@@ -1401,7 +1401,7 @@ useEffect(() => {
           const tmp = document.createElement("canvas");
           tmp.width = CFG.TEX_W; tmp.height = CFG.TEX_H;
           const tCtx = tmp.getContext("2d")!;
-          const moonData = new ImageData(moonPix, CFG.TEX_W, CFG.TEX_H);
+          const moonData = new ImageData(moonPix as Uint8ClampedArray<ArrayBuffer>, CFG.TEX_W, CFG.TEX_H);
           
           tCtx.putImageData(moonData, 0, 0);
           return tmp;
