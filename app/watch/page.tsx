@@ -533,7 +533,7 @@ export default function EarthMoves() {
   const [southPole, setSouthPole] = useState(false);
   const [hemisphereAuto, setHemisphereAuto] = useState(true);
   const [hourMode, setHourMode] = useState<"min"|"mid"|"max">("mid");
-  const [cloudsOn, setCloudsOn] = useState(true);
+  const [cloudsOn, setCloudsOn] = useState(false);
   const [moonOn, setMoonOn] = useState(true);
   const [earthSkin, setEarthSkin] = useState<'default'|'silver'|'ice'>('default');
   const [skinMode, setSkinMode] = useState<'default'|'night'>('default');
