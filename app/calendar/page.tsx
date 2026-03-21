@@ -1481,37 +1481,30 @@ const orbitGeometry = useMemo(() => {
         const tox = jan1.x + 10 * Math.cos(jan1Angle), toy = jan1.y + 10 * Math.sin(jan1Angle);
         c.beginPath(); c.moveTo(tix, tiy); c.lineTo(tox, toy);
         c.strokeStyle = "rgba(255,255,255,0.50)"; c.lineWidth = 1; c.lineCap = "butt"; c.stroke();
-        // Label 14px past tick end (10 + 14 = 24px from orbit point)
-        const lx = jan1.x + 24 * Math.cos(jan1Angle);
-        const ly = jan1.y + 24 * Math.sin(jan1Angle);
-        c.fillStyle = "rgba(255,255,255,0.50)";
-        c.font = "9px 'DM Mono',monospace"; c.textAlign = "center"; c.textBaseline = "middle";
+        // CCW direction chevron at tick end
+        const prevPt = orbitPts[364]; const nextPt = orbitPts[1];
+        if (prevPt && nextPt) {
+          const dx = nextPt.x - prevPt.x; const dy = nextPt.y - prevPt.y;
+          const travelAngle = Math.atan2(dy, dx);
+          const chevLen = 8;
+          c.save();
+          c.beginPath();
+          c.moveTo(tox - chevLen * Math.cos(travelAngle - 0.4), toy - chevLen * Math.sin(travelAngle - 0.4));
+          c.lineTo(tox, toy);
+          c.lineTo(tox - chevLen * Math.cos(travelAngle + 0.4), toy - chevLen * Math.sin(travelAngle + 0.4));
+          c.strokeStyle = "rgba(255,255,255,0.60)"; c.lineWidth = 1.1; c.lineCap = "round"; c.lineJoin = "round";
+          c.stroke();
+          c.restore();
+        }
+        // Label: 26px from orbit point, 10px font, rgba(255,255,255,0.55)
+        const lx = jan1.x + 26 * Math.cos(jan1Angle);
+        const ly = jan1.y + 26 * Math.sin(jan1Angle);
+        c.fillStyle = "rgba(255,255,255,0.55)";
+        c.font = "10px 'DM Mono',monospace"; c.textAlign = "center"; c.textBaseline = "middle";
         c.fillText("Jan 1", lx, ly);
       }
     }
 
-    // ── EARTH ORBIT ARROW + LABEL (top-right, ~March position) ──
-    { const orbitLabelAngle = (-60) * DEG; // ~top-right March area
-      const arrowR = aR * 1.07;
-      const ax1 = cx + arrowR * Math.cos(orbitLabelAngle - 0.06);
-      const ay1 = cy + arrowR * (bR/aR) * Math.sin(orbitLabelAngle - 0.06);
-      const ax2 = cx + arrowR * Math.cos(orbitLabelAngle + 0.06);
-      const ay2 = cy + arrowR * (bR/aR) * Math.sin(orbitLabelAngle + 0.06);
-      const tangentAngle = Math.atan2(ay2 - ay1, ax2 - ax1);
-      const midX = (ax1 + ax2) / 2; const midY = (ay1 + ay2) / 2;
-      // Arrow
-      c.save();
-      c.strokeStyle = "rgba(255,255,255,0.75)"; c.lineWidth = 1.2; c.lineCap = "round";
-      c.beginPath(); c.moveTo(ax1, ay1); c.lineTo(ax2, ay2); c.stroke();
-      const hLen = 8;
-      c.beginPath();
-      c.moveTo(ax2, ay2);
-      c.lineTo(ax2 - hLen * Math.cos(tangentAngle - 0.5), ay2 - hLen * Math.sin(tangentAngle - 0.5));
-      c.moveTo(ax2, ay2);
-      c.lineTo(ax2 - hLen * Math.cos(tangentAngle + 0.5), ay2 - hLen * Math.sin(tangentAngle + 0.5));
-      c.stroke();
-      c.restore();
-    }
 
     // ── ORBIT OF EARTH LABEL — subtle, ~4 o'clock position ──
     {
@@ -2209,8 +2202,8 @@ const orbitGeometry = useMemo(() => {
       {isMounted && (
         <button
           onClick={() => setShowMilestoneModal(true)}
-          style={{ position: "fixed", bottom: 24, right: 24, width: 48, height: 48, borderRadius: "50%", background: "rgba(8,12,25,0.92)", border: "1px solid rgba(90,130,195,0.4)", color: "rgba(175,205,255,0.9)", fontSize: 24, cursor: "pointer", zIndex: 20, display: "flex", alignItems: "center", justifyContent: "center", padding: 0, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}
-        >+</button>
+          style={{ position: "fixed", bottom: 24, right: 24, height: 40, padding: "0 20px", borderRadius: 20, background: "rgba(8,12,25,0.92)", border: "1px solid rgba(90,130,195,0.4)", color: "rgba(175,205,255,0.9)", fontSize: 12, letterSpacing: "0.8px", cursor: "pointer", zIndex: 20, display: "flex", alignItems: "center", gap: 8, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", fontFamily: "'DM Sans',system-ui" }}
+        >＋ Your Milestones</button>
       )}
 
       {/* ── ADD MILESTONE MODAL ── */}
