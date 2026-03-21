@@ -261,7 +261,8 @@ function buildGlobeCache(
   utcH: number,
   date: Date,
   south: boolean,
-  cloudsOn: boolean
+  cloudsOn: boolean,
+  skinMode: string
 ): HTMLCanvasElement {
   const size = Math.ceil(eR * 2);
   const cache = document.createElement("canvas");
@@ -356,8 +357,8 @@ function buildGlobeCache(
 
       // ───── v3.6 Smooth brightness — continuous day→night curve ─────
       // Day boost fades smoothly into night lift using the blend factor
-      const dayBoost = (1 - blend) * 0.35;   // up to +35% on day side
-      const nightLift = blend * 0.45;          // up to +45% on night side (city lights)
+      const dayBoost = (1 - blend) * (skinMode === 'night' ? 0.27 : 0.35);
+      const nightLift = blend * (skinMode === 'night' ? 0.35 : 0.45);
       const boostFactor = 1.0 + dayBoost + nightLift;
       const addR = (1 - blend) * 22;
       const addG = (1 - blend) * 16;
@@ -473,10 +474,29 @@ interface HovInfo {
   extra?: string; spd?: string;
 }
 
+// ─── DISPLAY MODE PROPS ───────────────────────────────────────────────
+export interface WatchProps {
+  displayMode?: boolean;
+  initLocs?: LocEntry[];
+  initCloudsOn?: boolean;
+  initSouthPole?: boolean;
+  initSkin?: 'default' | 'silver' | 'ice';
+  customLabel?: string;
+  accentColor?: string;
+}
+
 // ═══════════════════════════════════════════════════════════════════════
 //  MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════════
-export default function EarthMoves() {
+export default function EarthMoves({
+  displayMode = false,
+  initLocs,
+  initCloudsOn = false,
+  initSouthPole = false,
+  initSkin = 'default',
+  customLabel,
+  accentColor = '#60a5fa',
+}: WatchProps = {}) {
   const cvRef = useRef<HTMLCanvasElement>(null);
   const afRef = useRef<number | null>(null);
   const noiseRef = useRef<HTMLCanvasElement | null>(null);
@@ -512,7 +532,7 @@ export default function EarthMoves() {
   const lastSizeRef = useRef<{w:number,h:number}>({w:0,h:0});
 
   const [now, setNow] = useState(new Date());
-  const [locs, setLocs] = useState<LocEntryWithColor[]>(L0.map((l, i) => ({...l, color: LC[i]})));
+  const [locs, setLocs] = useState<LocEntryWithColor[]>((initLocs || L0).map((l, i) => ({...l, color: LC[i % LC.length]})));
   const [panel, setPanel] = useState(false);
   const [editing, setEditing] = useState<number | null>(null);
   const [windOn, setWindOn] = useState(true);
@@ -530,12 +550,14 @@ export default function EarthMoves() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _sunDeclination = sunDeclination;
 
-  const [southPole, setSouthPole] = useState(false);
+  const [southPole, setSouthPole] = useState(initSouthPole);
   const [hemisphereAuto, setHemisphereAuto] = useState(true);
   const [hourMode, setHourMode] = useState<"min"|"mid"|"max">("mid");
-  const [cloudsOn, setCloudsOn] = useState(false);
+  const [cloudsOn, setCloudsOn] = useState(initCloudsOn);
+  const [stationsOn, setStationsOn] = useState(true);
+  const [sunriseSunsetOn, setSunriseSunsetOn] = useState(false);
   const [moonOn, setMoonOn] = useState(true);
-  const [earthSkin, setEarthSkin] = useState<'default'|'silver'|'ice'>('default');
+  const [earthSkin, setEarthSkin] = useState<'default'|'silver'|'ice'>(initSkin);
   const [skinMode, setSkinMode] = useState<'default'|'night'>('default');
   const [texStatus, setTexStatus] = useState<"loading"|"ready"|"fallback">("loading");
 
@@ -779,7 +801,7 @@ useEffect(() => {
 
     const cx = W / 2, cy = H / 2;
     const night = skinMode === 'night';
-    const nC = (a: number) => `rgba(230,255,0,${a})`;
+    const nC = (a: number) => `rgba(0,255,65,${a})`;
     const wR = S * .44;
     const eR = wR * Z.EARTH;
     const atR = wR * Z.ATMOS;
@@ -819,7 +841,7 @@ useEffect(() => {
         skinMode === 'night' ? nightModePixRef.current : earthSkin === 'silver' ? dayPixSilverRef.current : earthSkin === 'ice' ? dayPixIceRef.current : dayPixRef.current,
         skinMode === 'night' ? nightModePixRef.current : earthSkin === 'silver' ? nightPixSilverRef.current : earthSkin === 'ice' ? nightPixIceRef.current : nightPixRef.current,
         cloudPixRef.current,
-        CFG.TEX_W, CFG.TEX_H, eR, sun, utcH, now, sp, cloudsOn
+        CFG.TEX_W, CFG.TEX_H, eR, sun, utcH, now, sp, cloudsOn, skinMode
       );
       globeCacheTimeRef.current = nowSec;
     }
@@ -1001,6 +1023,29 @@ useEffect(() => {
       c.restore();
     }
 
+    // ─── SUNRISE/SUNSET TERMINATOR LINE ──────────────────────────
+    if (sunriseSunsetOn) {
+      c.save();
+      c.strokeStyle = 'rgba(255, 200, 100, 0.55)';
+      c.lineWidth = 1.2;
+      c.setLineDash([3, 4]);
+      c.beginPath();
+      let termFirst = true;
+      for (let i = 0; i <= 360; i++) {
+        const H = (i - 180) * DEG;
+        const tLat = Math.atan2(-Math.cos(sun.dec * DEG) * Math.cos(H), Math.sin(sun.dec * DEG)) * RAD;
+        const tLon = ((sun.subLon + (i - 180)) % 360 + 540) % 360 - 180;
+        const tp2 = geo2xy(tLat, tLon, utcH, cx, cy, eR, sp);
+        if (tp2.r < eR * 0.98) {
+          if (termFirst) { c.moveTo(tp2.x, tp2.y); termFirst = false; }
+          else c.lineTo(tp2.x, tp2.y);
+        } else { termFirst = true; }
+      }
+      c.stroke();
+      c.setLineDash([]);
+      c.restore();
+    }
+
     // ═══════════════════════════════════════════════════════════════
     //  LAYER 5: SILVER VEIL + NOISE
     // ═══════════════════════════════════════════════════════════════
@@ -1087,7 +1132,7 @@ useEffect(() => {
     const mWA = sp
       ? -(utcH + mn.lon / 15) * (Math.PI / 12)
       : Math.PI - (utcH + mn.lon / 15) * (Math.PI / 12);
-    drawTidalEllipse(mWA, 1.00, night ? "230,255,0" : "92,198,255");   // brighter cyan-blue for visibility
+    drawTidalEllipse(mWA, 1.00, night ? "0,255,65" : "92,198,255");   // brighter cyan-blue for visibility
     
     // ═══════════════════════════════════════════════════════════════
     //  LAYER 8: SATELLITES + LOCATIONS + CLOCK HAND
@@ -1095,7 +1140,7 @@ useEffect(() => {
     let hov: HovInfo | null = null;
 
     // ISS — your iss.png + slight blue dot underneath + light orbital rotation
-    if (issR.current.ok && !(sp && issR.current.lat > 5) && !(!sp && issR.current.lat < -5)) {
+    if (stationsOn && issR.current.ok && !(sp && issR.current.lat > 5) && !(!sp && issR.current.lat < -5)) {
       const ip = geo2xy(issR.current.lat, issR.current.lon, utcH, cx, cy, eR, sp);
       const id = Math.sqrt((ip.x - cx) ** 2 + (ip.y - cy) ** 2);
       if (id < eR * 1.03) {
@@ -1156,7 +1201,7 @@ useEffect(() => {
     }
 
     // Tiangong (CSS) — your css.png + slight red dot underneath + light orbital rotation
-    if (tgR.current.ok && !(sp && tgR.current.lat > 5) && !(!sp && tgR.current.lat < -5)) {
+    if (stationsOn && tgR.current.ok && !(sp && tgR.current.lat > 5) && !(!sp && tgR.current.lat < -5)) {
       const tp = geo2xy(tgR.current.lat, tgR.current.lon, utcH, cx, cy, eR, sp);
       const td = Math.sqrt((tp.x - cx) ** 2 + (tp.y - cy) ** 2);
       if (td < eR * 1.03) {
@@ -1243,29 +1288,19 @@ useEffect(() => {
       }
     });
 
-    // Observer location pin (white crosshair + diamond)
+    // Observer location pin (red dot + white ring)
     {
       if (!(sp && userLat > 5) && !(!sp && userLat < -5)) {
       const op = geo2xy(userLat, userLon, utcH, cx, cy, eR, sp);
       const od = Math.sqrt((op.x - cx) ** 2 + (op.y - cy) ** 2);
       if (od < eR) {
         c.save();
-        const cLen = S * .012;
-        // Crosshair arms
-        c.strokeStyle = night ? nC(.6) : "rgba(255,255,255,.50)"; c.lineWidth = 0.7;
-        c.beginPath();
-        c.moveTo(op.x - cLen, op.y); c.lineTo(op.x + cLen, op.y);
-        c.moveTo(op.x, op.y - cLen); c.lineTo(op.x, op.y + cLen);
-        c.stroke();
-        // Center diamond
-        c.fillStyle = night ? nC(.7) : "rgba(255,255,255,.70)";
-        c.beginPath();
-        c.moveTo(op.x, op.y - 3); c.lineTo(op.x + 2.2, op.y);
-        c.lineTo(op.x, op.y + 3); c.lineTo(op.x - 2.2, op.y); c.closePath();
-        c.fill();
-        // Outer ring
-        c.strokeStyle = night ? nC(.25) : "rgba(255,255,255,.25)"; c.lineWidth = 0.5;
-        c.beginPath(); c.arc(op.x, op.y, S * .016, 0, TAU); c.stroke();
+        // Red filled circle
+        c.fillStyle = "rgba(220,60,60,0.9)";
+        c.beginPath(); c.arc(op.x, op.y, CFG.LOC_DOT, 0, TAU); c.fill();
+        // White ring
+        c.strokeStyle = "rgba(255,255,255,0.85)"; c.lineWidth = 1;
+        c.beginPath(); c.arc(op.x, op.y, CFG.LOC_DOT + 1, 0, TAU); c.stroke();
         c.restore();
         if (Math.sqrt((mp.x - op.x) ** 2 + (mp.y - op.y) ** 2) < S * .025)
           hov = {type: `Observer (${observerCity})`, x: op.x, y: op.y, lat: userLat, lon: userLon};
@@ -1314,9 +1349,9 @@ useEffect(() => {
     // ═══════════════════════════════════════════════════════════════
     const hMode = hourMode; // capture for render
 
-    c.strokeStyle = night ? nC(.3) : "rgba(115,145,195,.32)"; c.lineWidth = .7;
+    c.strokeStyle = night ? nC(.3) : "rgba(115,145,195,.32)"; c.lineWidth = night ? 1.2 : .7;
     c.beginPath(); c.arc(cx, cy, bz, 0, TAU); c.stroke();
-    c.strokeStyle = night ? nC(.18) : "rgba(100,130,175,.22)"; c.lineWidth = .5;
+    c.strokeStyle = night ? nC(.18) : "rgba(100,130,175,.22)"; c.lineWidth = night ? 0.9 : .5;
     c.beginPath(); c.arc(cx, cy, bfI, 0, TAU); c.stroke();
 
     for (let h = 0; h < 24; h++) {
@@ -1344,7 +1379,7 @@ useEffect(() => {
         c.strokeStyle = night
           ? (maj ? nC(.5) : even ? nC(.25) : nC(.15))
           : (maj ? "rgba(175,195,230,.5)" : even ? "rgba(135,160,195,.25)" : "rgba(115,140,175,.15)");
-        c.lineWidth = maj ? 1.5 : even ? .9 : .5;
+        c.lineWidth = night ? (maj ? 2.4 : even ? 1.4 : 0.8) : (maj ? 1.5 : even ? .9 : .5);
         c.beginPath();
         c.moveTo(cx + tI * Math.cos(a), cy + tI * Math.sin(a));
         c.lineTo(cx + tO * Math.cos(a), cy + tO * Math.sin(a)); c.stroke();
@@ -1354,7 +1389,7 @@ useEffect(() => {
       if (hMode !== "min") {
         for (let s = 1; s <= 3; s++) {
           const sa = -hourAngleFor(h + s / 4, sp);
-          c.strokeStyle = night ? nC(.1) : "rgba(95,115,145,.1)"; c.lineWidth = .3;
+          c.strokeStyle = night ? nC(.1) : "rgba(95,115,145,.1)"; c.lineWidth = night ? 0.5 : .3;
           c.beginPath();
           c.moveTo(cx + (bfI + (tO - bfI) * .35) * Math.cos(sa), cy + (bfI + (tO - bfI) * .35) * Math.sin(sa));
           c.lineTo(cx + (tO - S * .004) * Math.cos(sa), cy + (tO - S * .004) * Math.sin(sa)); c.stroke();
@@ -1368,11 +1403,11 @@ useEffect(() => {
         // White Sun — always visible in all modes
         const sr = S * .013;
         const sg = c.createRadialGradient(nx, ny, 0, nx, ny, sr * 3);
-        sg.addColorStop(0, "rgba(255,255,255,.12)");
-        sg.addColorStop(.5, "rgba(255,255,255,.04)");
-        sg.addColorStop(1, "rgba(255,255,255,0)");
+        sg.addColorStop(0, night ? nC(.12) : "rgba(255,255,255,.12)");
+        sg.addColorStop(.5, night ? nC(.04) : "rgba(255,255,255,.04)");
+        sg.addColorStop(1, night ? nC(0) : "rgba(255,255,255,0)");
         c.fillStyle = sg; c.beginPath(); c.arc(nx, ny, sr * 3, 0, TAU); c.fill();
-        c.strokeStyle = "rgba(255,255,255,.85)"; c.lineWidth = 1.2;
+        c.strokeStyle = night ? nC(0.9) : "rgba(255,255,255,.85)"; c.lineWidth = 1.2;
         c.beginPath(); c.arc(nx, ny, sr, 0, TAU); c.stroke();
         c.strokeStyle = night ? nC(.9) : "rgba(255,255,255,.55)"; c.lineWidth = 0.6;
         for (let r = 0; r < 8; r++) {
@@ -1391,22 +1426,22 @@ useEffect(() => {
         c.translate(nx, ny);
         c.rotate(a);
         
-        c.strokeStyle = "rgba(255,255,255,.85)";
+        c.strokeStyle = night ? nC(0.9) : "rgba(255,255,255,.85)";
         c.lineWidth = 1.2;
         c.lineCap = "round";
         c.lineJoin = "round";
-        
+
         c.beginPath();
         c.moveTo(-wingSpan, -nLen * 0.25);
-        c.lineTo(nLen * 0.5, 0); 
+        c.lineTo(nLen * 0.5, 0);
         c.lineTo(-wingSpan, nLen * 0.25);
         c.moveTo(-nLen * 0.4, 0);
         c.lineTo(nLen * 0.5, 0);
         c.stroke();
-        
+
         const arrowGlow = c.createRadialGradient(0, 0, 0, 0, 0, nLen);
-        arrowGlow.addColorStop(0, "rgba(255,255,255,0.12)");
-        arrowGlow.addColorStop(1, "rgba(255,255,255,0)");
+        arrowGlow.addColorStop(0, night ? nC(0.12) : "rgba(255,255,255,0.12)");
+        arrowGlow.addColorStop(1, night ? nC(0) : "rgba(255,255,255,0)");
         c.fillStyle = arrowGlow;
         c.beginPath(); c.arc(0, 0, nLen, 0, TAU); c.fill();
         
@@ -1418,7 +1453,7 @@ useEffect(() => {
         c.fillStyle = night
           ? (isMaj ? nC(.95) : isOdd ? nC(.38) : nC(.52))
           : (isMaj ? "rgba(225,238,255,.95)" : isOdd ? "rgba(145,165,200,.38)" : "rgba(165,185,215,.52)");
-        c.font = `${isMaj ? 300 : 200} ${S * (isMaj ? .035 : isOdd ? .022 : .027)}px 'DM Sans',system-ui`;
+        c.font = `${isMaj ? 300 : 200} ${S * (isMaj ? (night ? .042 : .035) : isOdd ? (night ? .0264 : .022) : (night ? .0324 : .027))}px 'DM Sans',system-ui`;
         c.textAlign = "center"; c.textBaseline = "middle";
         c.fillText(h.toString().padStart(2, "0"), nx, ny);
       }
@@ -1465,6 +1500,12 @@ useEffect(() => {
       c.fillStyle = ms; c.beginPath(); c.arc(mx, my, mS, 0, TAU); c.fill();
     }
 
+    // Night mode darkening overlay
+    if (night) {
+      c.fillStyle = "rgba(0,0,0,0.25)";
+      c.beginPath(); c.arc(mx, my, mS, 0, TAU); c.fill();
+    }
+
     // Accurate phase shadow (real terminator based on current lunar phase)
     const ph = mn.phase;
     const pg = ph < .5
@@ -1492,6 +1533,13 @@ useEffect(() => {
     c.strokeStyle = "rgba(255,255,255,.25)";
     c.lineWidth = .8;
     c.beginPath(); c.arc(mx, my, mS, 0, TAU); c.stroke();
+
+    // Night mode tactical ring
+    if (night) {
+      c.strokeStyle = nC(0.45);
+      c.lineWidth = 1.2;
+      c.beginPath(); c.arc(mx, my, mS + 3, 0, TAU); c.stroke();
+    }
 
     if (Math.sqrt((mp.x - mx) ** 2 + (mp.y - my) ** 2) < mS * 1.8)
       hov = {type: "Moon", x: mx, y: my, lat: mn.lat, lon: mn.lon, extra: `${(mn.illum * 100).toFixed(0)}% illuminated`};
@@ -1540,33 +1588,8 @@ useEffect(() => {
     c.font = `300 ${S * .019}px 'DM Sans',system-ui`;
     c.fillText(ds, cx, cy - S * .125);
 
-    const chipY = cy - tO + S * .015;
-    const chipX = cx + tO - S * .012;
-    if (kIdx >= 4) {
-      c.fillStyle = "rgba(100,220,140,.5)";
-      c.font = `400 ${S * .012}px 'DM Mono','SF Mono',monospace`;
-      c.textAlign = "right"; c.fillText(`K${kIdx} AURORA`, chipX, chipY);
-    }
-    if (showWind) {
-      c.fillStyle = "rgba(255,195,75,.4)";
-      c.font = `400 ${S * .011}px 'DM Mono','SF Mono',monospace`;
-      c.textAlign = "right"; c.fillText("⚡ SOLAR WIND", chipX, chipY + S * .016);
-    }
-    if (activeMeteorShower) {
-      c.fillStyle = "rgba(255,230,150,.45)";
-      c.font = `400 ${S * .011}px 'DM Mono','SF Mono',monospace`;
-      c.textAlign = "right";
-      c.fillText(`🌠 ${activeMeteorShower}`, chipX, chipY + S * (showWind ? .032 : .016));
-    }
-    if (texStatus !== "ready") {
-      c.fillStyle = texStatus === "loading" ? "rgba(120,160,220,.35)" : "rgba(180,120,80,.35)";
-      c.font = `400 ${S * .010}px 'DM Mono','SF Mono',monospace`;
-      c.textAlign = "center";
-      c.fillText(texStatus === "loading" ? "⟳ NASA GIBS" : "▲ POLYGON MODE", cx, cy + tO - S * .01);
-    }
-
     afRef.current = requestAnimationFrame(render);
-  }, [now, locs, windOn, windHigh, mp, southPole, texStatus, activeMeteorShower, userLat, userLon, hourMode, cloudsOn, moonOn, earthSkin, skinMode]);
+  }, [now, locs, windOn, windHigh, mp, southPole, texStatus, activeMeteorShower, userLat, userLon, hourMode, cloudsOn, moonOn, earthSkin, skinMode, stationsOn, sunriseSunsetOn]);
 
   // ─── Load custom ISS & CSS icons (from /public) ─────────────────────
   useEffect(() => {
@@ -1606,6 +1629,8 @@ useEffect(() => {
   // ── Status Bar Computations ─────────────────────────────
   const nextMeteor = getNextMeteorShower(now);
   const k = kIndexR.current;
+  const utcOffset = -new Date().getTimezoneOffset() / 60;
+  const utcLabel = `UTC${utcOffset >= 0 ? "+" : ""}${utcOffset}`;
 
   const solarStrength = k >= 7 ? "Extreme" : k >= 5 ? "Strong" : k >= 4 ? "Medium" : "Weak";
 
@@ -1632,14 +1657,24 @@ useEffect(() => {
         <canvas ref={cvRef} onMouseMove={onMM} style={{width:"100%",height:"100%",cursor:"crosshair",background:"#000000"}}/>
       </div>
 
+      {/* Custom label — display mode only */}
+      {displayMode && customLabel && (
+        <div style={{position:"absolute",bottom:"28px",left:0,right:0,textAlign:"center",
+          fontSize:"12px",color:accentColor ? accentColor + "bb" : "rgba(160,190,230,.7)",
+          letterSpacing:"2.5px",fontFamily:"'DM Sans',system-ui",fontWeight:300,
+          textTransform:"uppercase",zIndex:10,pointerEvents:"none"}}>
+          {customLabel}
+        </div>
+      )}
+
       {/* Status bar — clean & beautiful */}
-      <div style={{position:"absolute",bottom:"80px",left:0,right:0,display:"flex",gap:"20px",fontSize:"11px",
-        color:skinMode==='night' ? "#e6ff00" : "rgba(175,200,235,.85)",letterSpacing:".45px",flexWrap:"wrap",
+      {!displayMode && <div style={{position:"absolute",bottom:"80px",left:0,right:0,display:"flex",gap:"20px",fontSize:"11px",
+        color:skinMode==='night' ? "#00ff41" : "rgba(175,200,235,.85)",letterSpacing:".45px",flexWrap:"wrap",
         justifyContent:"center",fontFamily:"'DM Mono',monospace",alignItems:"center",zIndex:10,pointerEvents:"none"}}>
 
-        {/* Your Location */}
-        <span style={{color:skinMode==='night' ? "#e6ff00" : "#a0c0ff", whiteSpace:"nowrap"}}>
-          📍 Your Location {userLat.toFixed(1)}°{userLat >= 0 ? 'N' : 'S'} {Math.abs(userLon).toFixed(1)}°{userLon >= 0 ? 'E' : 'W'}
+        {/* Your Position */}
+        <span style={{color:skinMode==='night' ? "#00ff41" : "#a0c0ff", whiteSpace:"nowrap"}}>
+          Your Position {userLat.toFixed(1)}°{userLat >= 0 ? 'N' : 'S'} {Math.abs(userLon).toFixed(1)}°{userLon >= 0 ? 'E' : 'W'} — Timezone: {utcLabel}
         </span>
 
         {/* Meteor Shower */}
@@ -1650,14 +1685,14 @@ useEffect(() => {
           Solar Wind {solarStrength} (K{k})
           {auroraText && <span style={{marginLeft:"10px", color:"#b0e0ff"}}>{auroraText}</span>}
         </span>
-      </div>
+      </div>}
 
-      {/* Customize panel */}
-      <div style={{position:"absolute",bottom:"24px",left:"50%",transform:"translateX(-50%)",display:"flex",flexDirection:"column-reverse",alignItems:"center",gap:"8px",width:"100%",maxWidth:"440px",padding:"0 16px",zIndex:10}}>
+      {/* Customize panel — hidden in display mode */}
+      {!displayMode && <div style={{position:"absolute",bottom:"24px",left:"50%",transform:"translateX(-50%)",display:"flex",flexDirection:"column-reverse",alignItems:"center",gap:"8px",width:"100%",maxWidth:"440px",padding:"0 16px",zIndex:10}}>
         <button onClick={() => setPanel(!panel)} style={{
           background:"none",
-          border: skinMode==='night' ? "1px solid rgba(230,255,0,.5)" : "1px solid rgba(110,140,190,.22)",
-          color: skinMode==='night' ? "#e6ff00" : "rgba(185,205,235,.65)",
+          border: skinMode==='night' ? "1px solid rgba(0,255,65,.5)" : "1px solid rgba(110,140,190,.22)",
+          color: skinMode==='night' ? "#00ff41" : "rgba(185,205,235,.65)",
           padding:"6px 20px",borderRadius:"16px",cursor:"pointer",fontSize:"11px",
           letterSpacing:".8px",fontFamily:"'DM Sans',system-ui"}}>
           {panel ? "Close" : "⚙ Customize"}</button>
@@ -1683,8 +1718,8 @@ useEffect(() => {
                     style={{flex:1,padding:"6px",borderRadius:"6px",cursor:"pointer",fontSize:"10px",
                       fontFamily:"inherit",letterSpacing:".4px",
                       background: isActive ? (isNightBtn ? "rgba(180,220,0,.18)" : "rgba(80,130,220,.22)") : "rgba(22,28,45,.5)",
-                      border: isActive ? (isNightBtn ? "1px solid rgba(230,255,0,.55)" : "1px solid rgba(80,150,255,.45)") : "1px solid rgba(55,75,105,.22)",
-                      color: isActive ? (isNightBtn ? "#e6ff00" : "rgba(160,200,255,.9)") : "rgba(140,160,190,.5)"}}>
+                      border: isActive ? (isNightBtn ? "1px solid rgba(0,255,65,.55)" : "1px solid rgba(80,150,255,.45)") : "1px solid rgba(55,75,105,.22)",
+                      color: isActive ? (isNightBtn ? "#00ff41" : "rgba(160,200,255,.9)") : "rgba(140,160,190,.5)"}}>
                     {opt.label}
                   </button>
                 );
@@ -1695,7 +1730,7 @@ useEffect(() => {
             <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
               letterSpacing:"2px",marginBottom:"8px"}}>Hours</div>
             <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
-              {([{label:"Min",val:"min" as const},{label:"Mid",val:"mid" as const},{label:"Max",val:"max" as const}]).map(opt => (
+              {([{label:"4h",val:"min" as const},{label:"12h",val:"mid" as const},{label:"24h",val:"max" as const}]).map(opt => (
                 <button key={opt.val} onClick={() => setHourMode(opt.val)}
                   style={{flex:1,padding:"6px",borderRadius:"6px",cursor:"pointer",fontSize:"10px",
                     fontFamily:"inherit",letterSpacing:".4px",
@@ -1755,6 +1790,54 @@ useEffect(() => {
               ))}
             </div>
 
+            {/* Solar Wind / Aurora toggle */}
+            <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
+              letterSpacing:"2px",marginBottom:"8px"}}>Solar Wind / Aurora</div>
+            <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
+              {([{label:"On",val:true},{label:"Off",val:false}]).map(opt => (
+                <button key={String(opt.val)} onClick={() => setWindOn(opt.val)}
+                  style={{flex:1,padding:"6px",borderRadius:"6px",cursor:"pointer",fontSize:"10px",
+                    fontFamily:"inherit",letterSpacing:".4px",
+                    background: windOn === opt.val ? "rgba(80,130,220,.22)" : "rgba(22,28,45,.5)",
+                    border: windOn === opt.val ? "1px solid rgba(80,150,255,.45)" : "1px solid rgba(55,75,105,.22)",
+                    color: windOn === opt.val ? "rgba(160,200,255,.9)" : "rgba(140,160,190,.5)"}}>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Space Stations ISS/CSS toggle */}
+            <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
+              letterSpacing:"2px",marginBottom:"8px"}}>Space Stations ISS/CSS</div>
+            <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
+              {([{label:"On",val:true},{label:"Off",val:false}]).map(opt => (
+                <button key={String(opt.val)} onClick={() => setStationsOn(opt.val)}
+                  style={{flex:1,padding:"6px",borderRadius:"6px",cursor:"pointer",fontSize:"10px",
+                    fontFamily:"inherit",letterSpacing:".4px",
+                    background: stationsOn === opt.val ? "rgba(80,130,220,.22)" : "rgba(22,28,45,.5)",
+                    border: stationsOn === opt.val ? "1px solid rgba(80,150,255,.45)" : "1px solid rgba(55,75,105,.22)",
+                    color: stationsOn === opt.val ? "rgba(160,200,255,.9)" : "rgba(140,160,190,.5)"}}>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Sunrise/Sunset lines toggle */}
+            <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
+              letterSpacing:"2px",marginBottom:"8px"}}>Sunrise/Sunset Lines</div>
+            <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
+              {([{label:"On",val:true},{label:"Off",val:false}]).map(opt => (
+                <button key={String(opt.val)} onClick={() => setSunriseSunsetOn(opt.val)}
+                  style={{flex:1,padding:"6px",borderRadius:"6px",cursor:"pointer",fontSize:"10px",
+                    fontFamily:"inherit",letterSpacing:".4px",
+                    background: sunriseSunsetOn === opt.val ? "rgba(80,130,220,.22)" : "rgba(22,28,45,.5)",
+                    border: sunriseSunsetOn === opt.val ? "1px solid rgba(80,150,255,.45)" : "1px solid rgba(55,75,105,.22)",
+                    color: sunriseSunsetOn === opt.val ? "rgba(160,200,255,.9)" : "rgba(140,160,190,.5)"}}>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
             {/* Empathy Locations */}
             <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",letterSpacing:"2px",marginBottom:"12px"}}>
               EMPATHY LOCATIONS</div>
@@ -1798,10 +1881,10 @@ useEffect(() => {
             </div>
           </div>
         )}
-      </div>
+      </div>}
 
-      <div style={{position:"absolute",bottom:"6px",left:0,right:0,textAlign:"center",fontSize:"9px",color:"rgba(95,115,140,.28)",letterSpacing:"1.5px",textTransform:"uppercase",zIndex:10,pointerEvents:"none"}}>
-        Earth Moves v3.5 — Brage W. Johansen</div>
+      {!displayMode && <div style={{position:"absolute",bottom:"6px",left:0,right:0,textAlign:"center",fontSize:"9px",color:"rgba(95,115,140,.28)",letterSpacing:"1.5px",textTransform:"uppercase",zIndex:10,pointerEvents:"none"}}>
+        Earth Moves v3.5 — Brage W. Johansen</div>}
     </div>
   );
 }

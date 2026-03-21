@@ -5,7 +5,12 @@
       "Read(//c/Users/lohai/AppData/Local/Temp/**)",
       "Bash(/tmp/fix_calendar.py:*)",
       "Bash(python /tmp/fix_calendar.py)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(cat /c/Users/lohai/Desktop/doxed.no/app/bedrift/[orgnr]/page.tsx)",
+      "Read(//c/Users/lohai/Desktop/doxed.no/**)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(echo \"TSC EXIT $?\")"
     ]
   }
 }

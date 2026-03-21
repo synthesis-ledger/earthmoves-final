@@ -1,0 +1,85 @@
+{
+  "schiphol": {
+    "customLabel": "Amsterdam Airport Schiphol — Earth Moves",
+    "accentColor": "#60a5fa",
+    "cloudsOn": false,
+    "southPole": false,
+    "skinName": "default",
+    "locationPins": [
+      {
+        "name": "Amsterdam",
+        "lat": 52.3676,
+        "lon": 4.9041
+      },
+      {
+        "name": "London",
+        "lat": 51.5074,
+        "lon": -0.1278
+      },
+      {
+        "name": "New York",
+        "lat": 40.7128,
+        "lon": -74.006
+      },
+      {
+        "name": "Dubai",
+        "lat": 25.2048,
+        "lon": 55.2708
+      },
+      {
+        "name": "Tokyo",
+        "lat": 35.6762,
+        "lon": 139.6503
+      },
+      {
+        "name": "Singapore",
+        "lat": 1.3521,
+        "lon": 103.8198
+      },
+      {
+        "name": "Mumbai",
+        "lat": 19.076,
+        "lon": 72.8777
+      },
+      {
+        "name": "Oslo",
+        "lat": 59.9139,
+        "lon": 10.7522
+      }
+    ]
+  },
+  "demo": {
+    "customLabel": "Earth Moves — Live Orbital Display",
+    "accentColor": "#c9a96e",
+    "cloudsOn": false,
+    "southPole": false,
+    "skinName": "default",
+    "locationPins": [
+      {
+        "name": "London",
+        "lat": 51.5074,
+        "lon": -0.1278
+      },
+      {
+        "name": "New York",
+        "lat": 40.7128,
+        "lon": -74.006
+      },
+      {
+        "name": "Tokyo",
+        "lat": 35.6762,
+        "lon": 139.6503
+      },
+      {
+        "name": "Sydney",
+        "lat": -33.8688,
+        "lon": 151.2093
+      },
+      {
+        "name": "São Paulo",
+        "lat": -23.5505,
+        "lon": -46.6333
+      }
+    ]
+  }
+}
