@@ -165,6 +165,51 @@ function getNextMeteorShower(now: Date) {
     .find(s => s.days >= -2 && s.days <= 30) || null;
 }
 
+// ─── ARTEMIS II TRAJECTORY ────────────────────────────────────────
+const ARTEMIS_LAUNCH_UTC = new Date("2026-04-01T22:35:12Z");
+interface ArtWP { met: number; distE: number; distM: number; phase: string; }
+const ARTEMIS_WP: ArtWP[] = [
+  { met:   0.0, distE:      0, distM: 384400, phase: "launch"           },
+  { met:   0.5, distE:    200, distM: 384200, phase: "earth_orbit"      },
+  { met:  12.0, distE:   3575, distM: 380825, phase: "earth_orbit"      },
+  { met:  25.2, distE:   3575, distM: 380825, phase: "tli"              },
+  { met:  26.0, distE:   5000, distM: 379400, phase: "outbound"         },
+  { met:  36.0, distE:  40000, distM: 344400, phase: "outbound"         },
+  { met:  48.0, distE:  80000, distM: 304400, phase: "outbound"         },
+  { met:  60.0, distE: 120000, distM: 264400, phase: "outbound"         },
+  { met:  72.0, distE: 160000, distM: 224400, phase: "outbound"         },
+  { met:  84.0, distE: 200000, distM: 184400, phase: "outbound"         },
+  { met:  96.0, distE: 250000, distM: 134400, phase: "outbound"         },
+  { met: 108.0, distE: 310000, distM:  74400, phase: "outbound"         },
+  { met: 114.0, distE: 350000, distM:  34400, phase: "outbound"         },
+  { met: 118.0, distE: 380000, distM:  10000, phase: "lunar_approach"   },
+  { met: 120.4, distE: 400336, distM:   6545, phase: "closest_approach" },
+  { met: 121.0, distE: 406771, distM:  10000, phase: "far_side"         },
+  { met: 123.0, distE: 400000, distM:  15000, phase: "far_side"         },
+  { met: 126.0, distE: 385000, distM:  30000, phase: "return"           },
+  { met: 132.0, distE: 350000, distM:  60000, phase: "return"           },
+  { met: 144.0, distE: 300000, distM: 110000, phase: "return"           },
+  { met: 156.0, distE: 250000, distM: 160000, phase: "return"           },
+  { met: 168.0, distE: 200000, distM: 210000, phase: "return"           },
+  { met: 180.0, distE: 150000, distM: 260000, phase: "return"           },
+  { met: 192.0, distE: 100000, distM: 310000, phase: "return"           },
+  { met: 204.0, distE:  50000, distM: 360000, phase: "return"           },
+  { met: 212.0, distE:  10000, distM: 380000, phase: "reentry_prep"     },
+  { met: 216.0, distE:   1000, distM: 383400, phase: "reentry"          },
+  { met: 217.5, distE:      0, distM: 384400, phase: "splashdown"       },
+];
+function artemisInterp(met: number): ArtWP | null {
+  if (met < 0 || met > 217.5) return null;
+  for (let i = 1; i < ARTEMIS_WP.length; i++) {
+    const a = ARTEMIS_WP[i - 1], b = ARTEMIS_WP[i];
+    if (met <= b.met) {
+      const t = (met - a.met) / (b.met - a.met);
+      return { met, distE: a.distE + (b.distE - a.distE) * t, distM: a.distM + (b.distM - a.distM) * t, phase: t < 0.5 ? a.phase : b.phase };
+    }
+  }
+  return ARTEMIS_WP[ARTEMIS_WP.length - 1];
+}
+
 // ─── BLUE NOISE STARFIELD GENERATOR ──────────────────────────────────
 interface StarPoint { x: number; y: number; brightness: number; size: number; seed: number; }
 
@@ -471,7 +516,7 @@ function mkNoise(n: number): HTMLCanvasElement {
 // ─── HUD TOOLTIP TYPE ─────────────────────────────────────────────────
 interface HovInfo {
   type: string; x: number; y: number; lat: number; lon: number;
-  extra?: string; spd?: string;
+  extra?: string; spd?: string; noCoords?: boolean;
 }
 
 // ─── DISPLAY MODE PROPS ───────────────────────────────────────────────
@@ -480,7 +525,8 @@ export interface WatchProps {
   initLocs?: LocEntry[];
   initCloudsOn?: boolean;
   initSouthPole?: boolean;
-  initSkin?: 'default' | 'silver' | 'ice';
+  initSkin?: 'default' | 'silver' | 'ice' | 'blue';
+  initSkinMode?: 'default' | 'night';
   customLabel?: string;
   accentColor?: string;
 }
@@ -494,6 +540,7 @@ export default function EarthMoves({
   initCloudsOn = false,
   initSouthPole = false,
   initSkin = 'default',
+  initSkinMode = 'default',
   customLabel,
   accentColor = '#60a5fa',
 }: WatchProps = {}) {
@@ -521,6 +568,8 @@ export default function EarthMoves({
   const nightPixSilverRef = useRef<Uint8ClampedArray | null>(null);
   const dayPixIceRef = useRef<Uint8ClampedArray | null>(null);
   const nightPixIceRef = useRef<Uint8ClampedArray | null>(null);
+  const dayPixBlueRef = useRef<Uint8ClampedArray | null>(null);
+  const nightPixBlueRef = useRef<Uint8ClampedArray | null>(null);
   const nightModePixRef = useRef<Uint8ClampedArray | null>(null);
   const cloudPixRef = useRef<Uint8ClampedArray | null>(null);
   const moonPixRef = useRef<Uint8ClampedArray | null>(null);
@@ -555,10 +604,11 @@ export default function EarthMoves({
   const [hourMode, setHourMode] = useState<"min"|"mid"|"max">("mid");
   const [cloudsOn, setCloudsOn] = useState(initCloudsOn);
   const [stationsOn, setStationsOn] = useState(true);
+  const [artemisOn, setArtemisOn] = useState(true);
   const [sunriseSunsetOn, setSunriseSunsetOn] = useState(false);
   const [moonOn, setMoonOn] = useState(true);
-  const [earthSkin, setEarthSkin] = useState<'default'|'silver'|'ice'>(initSkin);
-  const [skinMode, setSkinMode] = useState<'default'|'night'>('default');
+  const [earthSkin, setEarthSkin] = useState<'default'|'silver'|'ice'|'blue'>(initSkin);
+  const [skinMode, setSkinMode] = useState<'default'|'night'>(initSkinMode);
   const [texStatus, setTexStatus] = useState<"loading"|"ready"|"fallback">("loading");
 
   const [userLat, setUserLat] = useState(51.4769);
@@ -623,8 +673,8 @@ export default function EarthMoves({
     const today = new Date();
     const cloudDate = new Date(today.getTime() - 86400000 * 2);
 
-    const dayUrl   = earthSkin === 'ice' ? '/dayice.png'   : DAY_TEX;
-    const nightUrl = earthSkin === 'ice' ? '/nightice.png' : NIGHT_TEX;
+    const dayUrl   = earthSkin === 'ice' ? '/dayice.png'   : earthSkin === 'blue' ? '/dayblue.png'   : DAY_TEX;
+    const nightUrl = earthSkin === 'ice' ? '/nightice.png' : earthSkin === 'blue' ? '/nightblue.png' : NIGHT_TEX;
 
     Promise.all([loadTex(dayUrl), loadTex(nightUrl)])
       .then(([day, night]) => {
@@ -660,6 +710,15 @@ export default function EarthMoves({
         if (cancelled) return;
         dayPixIceRef.current = dayIce;
         nightPixIceRef.current = nightIce;
+      })
+      .catch(() => {});
+
+// Load blue skin textures
+    Promise.all([loadTex("/dayblue.png"), loadTex("/nightblue.png")])
+      .then(([dayBlue, nightBlue]) => {
+        if (cancelled) return;
+        dayPixBlueRef.current = dayBlue;
+        nightPixBlueRef.current = nightBlue;
       })
       .catch(() => {});
 
@@ -743,11 +802,20 @@ useEffect(() => {
         const kpData = await kpRes.json();
         const magData = await magRes.json();
 
-        const currentKp = parseFloat(kpData[kpData.length - 1][1]);
-        const bz = parseFloat(magData[magData.length - 1][3]);
+        // Scan backwards — the last NOAA entry is often an unfilled future slot (NaN)
+        let currentKp = NaN;
+        for (let i = kpData.length - 1; i >= 1; i--) {
+          const val = parseFloat(kpData[i][1]);
+          if (!isNaN(val) && val >= 0) { currentKp = val; break; }
+        }
+        let bz = NaN;
+        for (let i = magData.length - 1; i >= 1; i--) {
+          const val = parseFloat(magData[i][3]);
+          if (!isNaN(val)) { bz = val; break; }
+        }
 
-        kIndexR.current = Math.round(currentKp);
-        setWindHigh(currentKp >= 4 || bz < -5);
+        if (!isNaN(currentKp)) kIndexR.current = Math.round(currentKp);
+        setWindHigh((!isNaN(currentKp) && currentKp >= 4) || (!isNaN(bz) && bz < -5));
       } catch {
         console.log("NOAA SWPC unavailable — using fallback simulated Kp");
         const simK = Math.random() > 0.7 ? Math.floor(4 + Math.random() * 4) : Math.floor(1 + Math.random() * 3);
@@ -838,8 +906,8 @@ useEffect(() => {
     if (texReadyRef.current &&
         (!globeCacheRef.current || nowSec - globeCacheTimeRef.current >= CFG.GLOBE_CACHE_SECS)) {
       globeCacheRef.current = buildGlobeCache(
-        skinMode === 'night' ? nightModePixRef.current : earthSkin === 'silver' ? dayPixSilverRef.current : earthSkin === 'ice' ? dayPixIceRef.current : dayPixRef.current,
-        skinMode === 'night' ? nightModePixRef.current : earthSkin === 'silver' ? nightPixSilverRef.current : earthSkin === 'ice' ? nightPixIceRef.current : nightPixRef.current,
+        skinMode === 'night' ? nightModePixRef.current : earthSkin === 'silver' ? dayPixSilverRef.current : earthSkin === 'ice' ? dayPixIceRef.current : earthSkin === 'blue' ? dayPixBlueRef.current : dayPixRef.current,
+        skinMode === 'night' ? nightModePixRef.current : earthSkin === 'silver' ? nightPixSilverRef.current : earthSkin === 'ice' ? nightPixIceRef.current : earthSkin === 'blue' ? nightPixBlueRef.current : nightPixRef.current,
         cloudPixRef.current,
         CFG.TEX_W, CFG.TEX_H, eR, sun, utcH, now, sp, cloudsOn, skinMode
       );
@@ -1308,13 +1376,100 @@ useEffect(() => {
       }
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    //  LAYER 8.5: ARTEMIS II — Orion trajectory + live position
+    // ═══════════════════════════════════════════════════════════════
+    {
+      const artMet = (now.getTime() - ARTEMIS_LAUNCH_UTC.getTime()) / 3600000;
+      if (artemisOn && artMet >= 0 && artMet <= 220) {
+        const artPos = artemisInterp(artMet);
+        if (artPos) {
+          // Project along the current Moon–Earth axis
+          const moonA = sp
+            ? -(utcH + mn.lon / 15) * (Math.PI / 12)
+            : Math.PI - (utcH + mn.lon / 15) * (Math.PI / 12);
+          // ratio 0 = Earth center, 1 = max distance (406,771 km) → Moon orbit ring
+          const ratio = artPos.distE / 406771;
+          const orR = ratio * mO;
+          const orX = cx + orR * Math.cos(moonA);
+          const orY = cy + orR * Math.sin(moonA);
+          const moonX = cx + mO * Math.cos(moonA);
+          const moonY = cy + mO * Math.sin(moonA);
+
+          c.save();
+          c.lineCap = "round";
+
+          // Past trail — solid gold thread from Earth to Orion
+          c.strokeStyle = "rgba(255,210,60,0.50)";
+          c.lineWidth = 1.2;
+          c.beginPath(); c.moveTo(cx, cy); c.lineTo(orX, orY); c.stroke();
+
+          // Future path — dashed faint gold from Orion to Moon orbit
+          c.strokeStyle = "rgba(255,210,60,0.15)";
+          c.lineWidth = 0.8;
+          c.setLineDash([3, 5]);
+          c.beginPath(); c.moveTo(orX, orY); c.lineTo(moonX, moonY); c.stroke();
+          c.setLineDash([]);
+
+          // Glow halo
+          const og = c.createRadialGradient(orX, orY, 0, orX, orY, S * .016);
+          og.addColorStop(0, "rgba(255,210,60,0.28)");
+          og.addColorStop(1, "rgba(255,210,60,0)");
+          c.fillStyle = og; c.beginPath(); c.arc(orX, orY, S * .016, 0, TAU); c.fill();
+
+          // Spacecraft dot
+          c.fillStyle = "rgba(255,255,255,0.95)";
+          c.beginPath(); c.arc(orX, orY, S * .007, 0, TAU); c.fill();
+          c.strokeStyle = "rgba(255,210,60,0.75)"; c.lineWidth = 0.8;
+          c.beginPath(); c.arc(orX, orY, S * .007 + 1.5, 0, TAU); c.stroke();
+
+          // "Orion" label offset radially
+          const la = Math.atan2(orY - cy, orX - cx);
+          const lx = orX + Math.cos(la) * S * .024;
+          const ly = orY + Math.sin(la) * S * .024;
+          c.fillStyle = "rgba(255,210,60,0.72)";
+          c.font = `400 ${S * .013}px 'DM Mono','SF Mono',monospace`;
+          c.textAlign = "center"; c.textBaseline = "middle";
+          c.fillText("Orion", lx, ly);
+
+          c.restore();
+
+          // Hover tooltip
+          if (Math.sqrt((mp.x - orX) ** 2 + (mp.y - orY) ** 2) < S * .025) {
+            const day = Math.floor(artMet / 24) + 1;
+            const phLbl = artPos.phase === "earth_orbit" ? "Earth Orbit" :
+              artPos.phase === "tli" ? "TLI Burn" :
+              artPos.phase === "outbound" ? `Outbound · Day ${day}` :
+              artPos.phase === "lunar_approach" ? "Lunar Approach" :
+              artPos.phase === "closest_approach" ? "Lunar Flyby" :
+              artPos.phase === "far_side" ? "Far Side" :
+              artPos.phase === "return" ? `Return · Day ${day}` :
+              artPos.phase === "reentry_prep" ? "Reentry Prep" :
+              artPos.phase === "reentry" ? "Reentry" : "Splashdown";
+            hov = { type: "Artemis II — Orion", x: orX, y: orY, lat: 0, lon: 0,
+              extra: `${phLbl} · ${Math.round(artPos.distE / 1000).toLocaleString()}k km from Earth`,
+              noCoords: true };
+          }
+        }
+      }
+    }
+
     // Clock hand
     const lH = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
     const hA = -hourAngleFor(lH, sp);
     // Digital-Thin Hand — "The Chronological Needle"
     c.save();
-    c.strokeStyle = night ? nC(.9) : "rgba(255,255,255,.55)";
-    c.lineWidth = 0.7;
+    c.lineCap = "butt";
+    // Shadow pass
+    c.strokeStyle = "rgba(0,0,0,0.4)";
+    c.lineWidth = 2.5;
+    c.beginPath();
+    c.moveTo(cx + S * .015 * Math.cos(hA), cy + S * .015 * Math.sin(hA));
+    c.lineTo(cx + tO * .98 * Math.cos(hA), cy + tO * .98 * Math.sin(hA));
+    c.stroke();
+    // White hand on top
+    c.strokeStyle = night ? nC(.9) : "rgba(255,255,255,.85)";
+    c.lineWidth = 1.0;
     c.beginPath();
     c.moveTo(cx + S * .015 * Math.cos(hA), cy + S * .015 * Math.sin(hA));
     c.lineTo(cx + tO * .98 * Math.cos(hA), cy + tO * .98 * Math.sin(hA));
@@ -1401,7 +1556,7 @@ useEffect(() => {
 
       if (h === 12) {
         // White Sun — always visible in all modes
-        const sr = S * .013;
+        const sr = S * .017;
         const sg = c.createRadialGradient(nx, ny, 0, nx, ny, sr * 3);
         sg.addColorStop(0, night ? nC(.12) : "rgba(255,255,255,.12)");
         sg.addColorStop(.5, night ? nC(.04) : "rgba(255,255,255,.04)");
@@ -1506,7 +1661,7 @@ useEffect(() => {
       c.beginPath(); c.arc(mx, my, mS, 0, TAU); c.fill();
     }
 
-    // Accurate phase shadow (real terminator based on current lunar phase)
+    // Phase shadow — dark on left (toward Earth center), lit on right
     const ph = mn.phase;
     const pg = ph < .5
       ? (() => {
@@ -1517,7 +1672,7 @@ useEffect(() => {
           return g2;
         })()
       : (() => {
-          const g2 = c.createLinearGradient(mx - mS, my, mx + mS * (ph * 2 - 1), my);
+          const g2 = c.createLinearGradient(mx + mS, my, mx - mS * (ph * 2 - 1), my);
           g2.addColorStop(0, "rgba(0,0,0,0)");
           g2.addColorStop(.4, `rgba(0,0,8,${(ph * 2 - 1) * .4})`);
           g2.addColorStop(1, `rgba(0,0,8,0.95)`);
@@ -1551,7 +1706,10 @@ useEffect(() => {
     if (hov) {
       const hx = Math.min(hov.x + S * .04, W - S * .17);
       const hy = Math.max(hov.y - S * .03, 8);
-      const bw = S * .16, bh = S * (hov.extra ? .062 : .048);
+      const bw = S * .16;
+      const bh = hov.noCoords
+        ? S * (hov.extra ? .048 : .034)
+        : S * (hov.extra ? .062 : .048);
       c.fillStyle = "rgba(6,10,22,.88)";
       c.strokeStyle = "rgba(90,130,195,.3)"; c.lineWidth = .7;
       c.beginPath();
@@ -1564,9 +1722,11 @@ useEffect(() => {
       c.fillText(hov.type, hx + 7, hy + 5);
       c.fillStyle = "rgba(135,165,210,.6)";
       c.font = `400 ${S * .011}px 'DM Mono','SF Mono',monospace`;
-      c.fillText(`${Math.abs(hov.lat).toFixed(2)}°${hov.lat >= 0 ? 'N' : 'S'}  ${Math.abs(hov.lon).toFixed(2)}°${hov.lon >= 0 ? 'E' : 'W'}`, hx + 7, hy + 20);
-      if (hov.extra) c.fillText(hov.extra, hx + 7, hy + 33);
-      if (hov.spd)   c.fillText(hov.spd, hx + 7, hy + 33);
+      if (!hov.noCoords)
+        c.fillText(`${Math.abs(hov.lat).toFixed(2)}°${hov.lat >= 0 ? 'N' : 'S'}  ${Math.abs(hov.lon).toFixed(2)}°${hov.lon >= 0 ? 'E' : 'W'}`, hx + 7, hy + 20);
+      const extraY = hov.noCoords ? hy + 20 : hy + 33;
+      if (hov.extra) c.fillText(hov.extra, hx + 7, extraY);
+      if (hov.spd)   c.fillText(hov.spd,   hx + 7, extraY);
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -1589,7 +1749,7 @@ useEffect(() => {
     c.fillText(ds, cx, cy - S * .125);
 
     afRef.current = requestAnimationFrame(render);
-  }, [now, locs, windOn, windHigh, mp, southPole, texStatus, activeMeteorShower, userLat, userLon, hourMode, cloudsOn, moonOn, earthSkin, skinMode, stationsOn, sunriseSunsetOn]);
+  }, [now, locs, windOn, windHigh, mp, southPole, texStatus, activeMeteorShower, userLat, userLon, hourMode, cloudsOn, moonOn, earthSkin, skinMode, stationsOn, artemisOn, sunriseSunsetOn]);
 
   // ─── Load custom ISS & CSS icons (from /public) ─────────────────────
   useEffect(() => {
@@ -1632,7 +1792,7 @@ useEffect(() => {
   const utcOffset = -new Date().getTimezoneOffset() / 60;
   const utcLabel = `UTC${utcOffset >= 0 ? "+" : ""}${utcOffset}`;
 
-  const solarStrength = k >= 7 ? "Extreme" : k >= 5 ? "Strong" : k >= 4 ? "Medium" : "Weak";
+  const solarStrength = isNaN(k) ? "—" : k >= 7 ? "Extreme" : k >= 5 ? "Strong" : k >= 4 ? "Medium" : "Weak";
 
   let meteorText = "";
   if (activeMeteorShower) {
@@ -1682,7 +1842,7 @@ useEffect(() => {
 
         {/* Solar Wind + Aurora */}
         <span style={{whiteSpace:"nowrap"}}>
-          Solar Wind {solarStrength} (K{k})
+          Solar Wind {solarStrength}{!isNaN(k) && ` (K${k})`}
           {auroraText && <span style={{marginLeft:"10px", color:"#b0e0ff"}}>{auroraText}</span>}
         </span>
       </div>}
@@ -1698,32 +1858,50 @@ useEffect(() => {
           {panel ? "Close" : "⚙ Customize"}</button>
 
         {panel && (
-          <div style={{background:"rgba(8,12,25,.92)",backdropFilter:"blur(16px)",
-            border:"1px solid rgba(65,85,125,.18)",borderRadius:"12px",padding:"16px",width:"100%",maxHeight:"50vh",overflowY:"auto"}}>
+          <>
+          <style>{`.em-customize::-webkit-scrollbar{width:4px}.em-customize::-webkit-scrollbar-track{background:transparent}.em-customize::-webkit-scrollbar-thumb{background:rgba(100,140,200,.25);border-radius:2px}.em-customize::-webkit-scrollbar-thumb:hover{background:rgba(100,140,200,.4)}`}</style>
+          <div className="em-customize" style={{background:"rgba(8,12,25,.92)",backdropFilter:"blur(16px)",
+            border:"1px solid rgba(65,85,125,.18)",borderRadius:"12px",padding:"16px",width:"100%",maxHeight:"50vh",overflowY:"auto",
+            scrollbarWidth:"thin",scrollbarColor:"rgba(100,140,200,.25) transparent"}}>
 
             {/* Earth Skin toggle */}
             <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
               letterSpacing:"2px",marginBottom:"8px"}}>Earth Skin</div>
             <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
               {([
-                {label:"Classic",    skin:"default" as const, mode:"default" as const},
-                {label:"Silver",     skin:"silver"  as const, mode:"default" as const},
-                {label:"Ice Age",    skin:"ice"     as const, mode:"default" as const},
-                {label:"Night",      skin:"default" as const, mode:"night"   as const},
+                {label:"Classic",  skin:"default" as const},
+                {label:"Silver",   skin:"silver"  as const},
+                {label:"Ice Age",  skin:"ice"     as const},
+                {label:"Blue",     skin:"blue"    as const},
               ]).map(opt => {
-                const isActive = opt.mode === 'night' ? skinMode === 'night' : earthSkin === opt.skin && skinMode !== 'night';
-                const isNightBtn = opt.mode === 'night';
+                const isActive = earthSkin === opt.skin;
                 return (
-                  <button key={opt.label} onClick={() => { setEarthSkin(opt.skin); setSkinMode(opt.mode); globeCacheRef.current = null; globeCacheTimeRef.current = 0; }}
+                  <button key={opt.label} onClick={() => { setEarthSkin(opt.skin); globeCacheRef.current = null; globeCacheTimeRef.current = 0; }}
                     style={{flex:1,padding:"6px",borderRadius:"6px",cursor:"pointer",fontSize:"10px",
                       fontFamily:"inherit",letterSpacing:".4px",
-                      background: isActive ? (isNightBtn ? "rgba(180,220,0,.18)" : "rgba(80,130,220,.22)") : "rgba(22,28,45,.5)",
-                      border: isActive ? (isNightBtn ? "1px solid rgba(0,255,65,.55)" : "1px solid rgba(80,150,255,.45)") : "1px solid rgba(55,75,105,.22)",
-                      color: isActive ? (isNightBtn ? "#00ff41" : "rgba(160,200,255,.9)") : "rgba(140,160,190,.5)"}}>
+                      background: isActive ? "rgba(80,130,220,.22)" : "rgba(22,28,45,.5)",
+                      border: isActive ? "1px solid rgba(80,150,255,.45)" : "1px solid rgba(55,75,105,.22)",
+                      color: isActive ? "rgba(160,200,255,.9)" : "rgba(140,160,190,.5)"}}>
                     {opt.label}
                   </button>
                 );
               })}
+            </div>
+
+            {/* Night mode toggle */}
+            <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
+              letterSpacing:"2px",marginBottom:"8px"}}>Night</div>
+            <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
+              {([{label:"On",val:"night" as const},{label:"Off",val:"default" as const}]).map(opt => (
+                <button key={opt.val} onClick={() => { setSkinMode(opt.val); globeCacheRef.current = null; globeCacheTimeRef.current = 0; }}
+                  style={{flex:1,padding:"6px",borderRadius:"6px",cursor:"pointer",fontSize:"10px",
+                    fontFamily:"inherit",letterSpacing:".4px",
+                    background: skinMode === opt.val ? (opt.val === 'night' ? "rgba(180,220,0,.18)" : "rgba(80,130,220,.22)") : "rgba(22,28,45,.5)",
+                    border: skinMode === opt.val ? (opt.val === 'night' ? "1px solid rgba(0,255,65,.55)" : "1px solid rgba(80,150,255,.45)") : "1px solid rgba(55,75,105,.22)",
+                    color: skinMode === opt.val ? (opt.val === 'night' ? "#00ff41" : "rgba(160,200,255,.9)") : "rgba(140,160,190,.5)"}}>
+                  {opt.label}
+                </button>
+              ))}
             </div>
 
             {/* Hour density toggle */}
@@ -1822,6 +2000,22 @@ useEffect(() => {
               ))}
             </div>
 
+            {/* Artemis II toggle */}
+            <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
+              letterSpacing:"2px",marginBottom:"8px"}}>Artemis II</div>
+            <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
+              {([{label:"On",val:true},{label:"Off",val:false}]).map(opt => (
+                <button key={String(opt.val)} onClick={() => setArtemisOn(opt.val)}
+                  style={{flex:1,padding:"6px",borderRadius:"6px",cursor:"pointer",fontSize:"10px",
+                    fontFamily:"inherit",letterSpacing:".4px",
+                    background: artemisOn === opt.val ? "rgba(80,130,220,.22)" : "rgba(22,28,45,.5)",
+                    border: artemisOn === opt.val ? "1px solid rgba(80,150,255,.45)" : "1px solid rgba(55,75,105,.22)",
+                    color: artemisOn === opt.val ? "rgba(160,200,255,.9)" : "rgba(140,160,190,.5)"}}>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
             {/* Sunrise/Sunset lines toggle */}
             <div style={{fontSize:"9px",color:"rgba(125,145,180,.45)",textTransform:"uppercase",
               letterSpacing:"2px",marginBottom:"8px"}}>Sunrise/Sunset Lines</div>
@@ -1880,6 +2074,7 @@ useEffect(() => {
               <br/>v3.5: True black void · Sharp Earth · Balanced brightness
             </div>
           </div>
+          </>
         )}
       </div>}
 

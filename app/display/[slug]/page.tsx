@@ -9,7 +9,14 @@ type Configs = Record<string, {
   cloudsOn: boolean;
   southPole: boolean;
   skinName: string;
+  skinMode?: string;
   locationPins: { name: string; lat: number; lon: number }[];
+  aspectRatio?: string;
+  displayScale?: number;
+  refreshMinutes?: number;
+  labelVisible?: boolean;
+  showLogo?: boolean;
+  brandingLayout?: string;
 }>;
 
 const configs = rawConfigs as Configs;

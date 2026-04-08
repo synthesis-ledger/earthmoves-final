@@ -10,7 +10,11 @@
       "Read(//c/Users/lohai/Desktop/doxed.no/**)",
       "Bash(npx tsc:*)",
       "Bash(npm run:*)",
-      "Bash(echo \"TSC EXIT $?\")"
+      "Bash(echo \"TSC EXIT $?\")",
+      "Bash(ls /c/earthmovesfinal/*.docx /c/earthmovesfinal/*.doc /c/earthmovesfinal/*Carrington* /c/earthmovesfinal/*Brage*)",
+      "Bash(mammoth:*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)"
     ]
   }
 }

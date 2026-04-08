@@ -4,6 +4,10 @@ import './earth-moves.css'
 export const metadata: Metadata = {
   title: 'Earth Moves — Connecting Nature, Space and Time',
   description: 'Experience time as Earth. A 24-hour chronometer and orbital calendar by Brage W. Johansen.',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/images/em-logo-white.png',
+  },
 }
 
 export default function RootLayout({

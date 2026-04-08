@@ -5,6 +5,7 @@
     "cloudsOn": false,
     "southPole": false,
     "skinName": "default",
+    "skinMode": "default",
     "locationPins": [
       {
         "name": "Amsterdam",
@@ -46,14 +47,21 @@
         "lat": 59.9139,
         "lon": 10.7522
       }
-    ]
+    ],
+    "aspectRatio": "auto",
+    "displayScale": 1,
+    "refreshMinutes": 30,
+    "labelVisible": true,
+    "showLogo": true,
+    "brandingLayout": "logo_and_label"
   },
   "demo": {
-    "customLabel": "Earth Moves — Live Orbital Display",
+    "customLabel": "Amsterdam Airport Schiphol",
     "accentColor": "#c9a96e",
     "cloudsOn": false,
     "southPole": false,
-    "skinName": "default",
+    "skinName": "blue",
+    "skinMode": "default",
     "locationPins": [
       {
         "name": "London",
@@ -80,6 +88,12 @@
         "lat": -23.5505,
         "lon": -46.6333
       }
-    ]
+    ],
+    "aspectRatio": "auto",
+    "displayScale": 1,
+    "refreshMinutes": 30,
+    "labelVisible": true,
+    "showLogo": true,
+    "brandingLayout": "logo_and_label"
   }
 }

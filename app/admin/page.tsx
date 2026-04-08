@@ -1,33 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
-// ─── CITY POOL (same as watch page LP array) ─────────────────────────
+// ─── CITY POOL ────────────────────────────────────────────────────────
 const CITY_POOL = [
-  { name: "London",       lat: 51.5074,  lon: -0.1278  },
-  { name: "Houston",      lat: 29.7604,  lon: -95.3584 },
-  { name: "Shanghai",     lat: 31.2304,  lon: 121.4737 },
-  { name: "New York",     lat: 40.7128,  lon: -74.006  },
-  { name: "Tokyo",        lat: 35.6762,  lon: 139.6503 },
-  { name: "Sydney",       lat: -33.8688, lon: 151.2093 },
-  { name: "Oslo",         lat: 59.9139,  lon: 10.7522  },
-  { name: "Dubai",        lat: 25.2048,  lon: 55.2708  },
-  { name: "São Paulo",    lat: -23.5505, lon: -46.6333 },
-  { name: "Mumbai",       lat: 19.076,   lon: 72.8777  },
-  { name: "Singapore",    lat: 1.3521,   lon: 103.8198 },
-  { name: "Los Angeles",  lat: 34.0522,  lon: -118.2437},
-  { name: "Paris",        lat: 48.8566,  lon: 2.3522   },
-  { name: "Berlin",       lat: 52.52,    lon: 13.405   },
-  { name: "Kyiv",         lat: 50.4501,  lon: 30.5234  },
-  { name: "Cape Town",    lat: -33.9249, lon: 18.4241  },
-  { name: "Beijing",      lat: 39.9042,  lon: 116.4074 },
-  { name: "Mexico City",  lat: 19.4326,  lon: -99.1332 },
-  { name: "Cairo",        lat: 30.0444,  lon: 31.2357  },
-  { name: "Amsterdam",    lat: 52.3676,  lon: 4.9041   },
-  { name: "Stockholm",    lat: 59.3293,  lon: 18.0686  },
-  { name: "Reykjavík",    lat: 64.1466,  lon: -21.9426 },
-  { name: "Buenos Aires", lat: -34.6037, lon: -58.3816 },
-  { name: "Nairobi",      lat: -1.2921,  lon: 36.8219  },
+  { name: "London",       lat: 51.5074,  lon: -0.1278   },
+  { name: "Houston",      lat: 29.7604,  lon: -95.3584  },
+  { name: "Shanghai",     lat: 31.2304,  lon: 121.4737  },
+  { name: "New York",     lat: 40.7128,  lon: -74.006   },
+  { name: "Tokyo",        lat: 35.6762,  lon: 139.6503  },
+  { name: "Sydney",       lat: -33.8688, lon: 151.2093  },
+  { name: "Oslo",         lat: 59.9139,  lon: 10.7522   },
+  { name: "Dubai",        lat: 25.2048,  lon: 55.2708   },
+  { name: "São Paulo",    lat: -23.5505, lon: -46.6333  },
+  { name: "Mumbai",       lat: 19.076,   lon: 72.8777   },
+  { name: "Singapore",    lat: 1.3521,   lon: 103.8198  },
+  { name: "Los Angeles",  lat: 34.0522,  lon: -118.2437 },
+  { name: "Paris",        lat: 48.8566,  lon: 2.3522    },
+  { name: "Berlin",       lat: 52.52,    lon: 13.405    },
+  { name: "Kyiv",         lat: 50.4501,  lon: 30.5234   },
+  { name: "Cape Town",    lat: -33.9249, lon: 18.4241   },
+  { name: "Beijing",      lat: 39.9042,  lon: 116.4074  },
+  { name: "Mexico City",  lat: 19.4326,  lon: -99.1332  },
+  { name: "Cairo",        lat: 30.0444,  lon: 31.2357   },
+  { name: "Amsterdam",    lat: 52.3676,  lon: 4.9041    },
+  { name: "Stockholm",    lat: 59.3293,  lon: 18.0686   },
+  { name: "Reykjavík",    lat: 64.1466,  lon: -21.9426  },
+  { name: "Buenos Aires", lat: -34.6037, lon: -58.3816  },
+  { name: "Nairobi",      lat: -1.2921,  lon: 36.8219   },
 ];
 
 // ─── TYPES ────────────────────────────────────────────────────────────
@@ -38,101 +39,154 @@ interface DisplayConfig {
   cloudsOn: boolean;
   southPole: boolean;
   skinName: string;
+  skinMode: string;
   locationPins: Pin[];
+  aspectRatio: string;
+  displayScale: number;
+  refreshMinutes: number;
+  labelVisible: boolean;
+  showLogo: boolean;
+  brandingLayout: string;
 }
 type Configs = Record<string, DisplayConfig>;
 
-// ─── STYLES ───────────────────────────────────────────────────────────
-const S = {
-  page: {
-    minHeight: "100vh", background: "#050810",
-    fontFamily: "'DM Sans', system-ui, sans-serif",
-    color: "#d0daf0", padding: "0",
-  } as React.CSSProperties,
-  gate: {
-    display: "flex", flexDirection: "column" as const,
-    alignItems: "center", justifyContent: "center",
-    minHeight: "100vh", gap: "20px",
-  },
-  input: {
-    background: "rgba(14,20,40,.9)", border: "1px solid rgba(80,110,170,.3)",
-    borderRadius: "8px", color: "#d0daf0", padding: "10px 16px",
-    fontSize: "14px", outline: "none", width: "280px",
-    fontFamily: "inherit",
-  } as React.CSSProperties,
-  btn: (accent = false) => ({
-    background: accent ? "rgba(80,130,220,.18)" : "rgba(20,28,50,.8)",
-    border: `1px solid ${accent ? "rgba(80,150,255,.4)" : "rgba(60,80,130,.25)"}`,
-    borderRadius: "8px", color: accent ? "#a0c8ff" : "#8090b0",
-    padding: "8px 20px", cursor: "pointer", fontSize: "12px",
-    letterSpacing: ".6px", fontFamily: "inherit",
-    transition: "all .2s",
-  } as React.CSSProperties),
-  card: {
-    background: "rgba(10,15,30,.7)", border: "1px solid rgba(50,70,120,.2)",
-    borderRadius: "12px", padding: "20px 24px", marginBottom: "12px",
-  } as React.CSSProperties,
-  label: {
-    fontSize: "10px", color: "rgba(100,120,170,.6)",
-    textTransform: "uppercase" as const, letterSpacing: "1.5px",
-    display: "block", marginBottom: "6px",
-  },
-  field: {
-    background: "rgba(14,20,40,.9)", border: "1px solid rgba(60,80,130,.25)",
-    borderRadius: "6px", color: "#d0daf0", padding: "8px 12px",
-    fontSize: "13px", outline: "none", width: "100%",
-    fontFamily: "inherit", boxSizing: "border-box" as const,
-  } as React.CSSProperties,
-  toggle: (on: boolean) => ({
-    width: "40px", height: "22px", borderRadius: "11px", cursor: "pointer",
-    background: on ? "rgba(80,180,100,.4)" : "rgba(40,50,80,.5)",
-    border: `1px solid ${on ? "rgba(80,200,100,.4)" : "rgba(60,80,120,.3)"}`,
-    position: "relative" as const, transition: "all .25s", flexShrink: 0,
-  }),
-  dot: (on: boolean) => ({
-    position: "absolute" as const, top: "3px",
-    left: on ? "20px" : "3px", width: "14px", height: "14px",
-    borderRadius: "50%", background: on ? "#6bcb77" : "#4a5a7a",
-    transition: "all .25s",
-  }),
-  tagBtn: (active: boolean) => ({
-    padding: "3px 9px", borderRadius: "4px", cursor: "pointer",
-    fontSize: "10px", fontFamily: "inherit",
-    background: active ? "rgba(80,130,220,.22)" : "rgba(20,28,50,.6)",
-    border: `1px solid ${active ? "rgba(80,150,255,.4)" : "rgba(50,70,110,.2)"}`,
-    color: active ? "#a0c8ff" : "#5a6a8a",
-  } as React.CSSProperties),
+function withDefaults(cfg: Partial<DisplayConfig>): DisplayConfig {
+  return {
+    customLabel:    cfg.customLabel    ?? "",
+    accentColor:    cfg.accentColor    ?? "#60a5fa",
+    cloudsOn:       cfg.cloudsOn       ?? false,
+    southPole:      cfg.southPole      ?? false,
+    skinName:       cfg.skinName       ?? "default",
+    skinMode:       cfg.skinMode       ?? "default",
+    locationPins:   cfg.locationPins   ?? [],
+    aspectRatio:    cfg.aspectRatio    ?? "auto",
+    displayScale:   cfg.displayScale   ?? 1.0,
+    refreshMinutes: cfg.refreshMinutes ?? 30,
+    labelVisible:   cfg.labelVisible   ?? true,
+    showLogo:       cfg.showLogo       ?? true,
+    brandingLayout: cfg.brandingLayout ?? "logo_and_label",
+  };
+}
+
+// ─── PULSING DOT ANIMATION ────────────────────────────────────────────
+const pulseCSS = `
+@keyframes em-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.4); }
+}
+@keyframes em-fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.em-card { animation: em-fadein 0.4s ease both; }
+.em-field:focus {
+  border-color: rgba(96,165,250,.4) !important;
+  box-shadow: 0 0 14px rgba(96,165,250,.07) !important;
+  outline: none !important;
+}
+`;
+
+// ─── DESIGN TOKENS ────────────────────────────────────────────────────
+const T = {
+  gold:     "rgba(201,169,110,.75)",
+  goldDim:  "rgba(201,169,110,.4)",
+  blue:     "rgba(96,165,250,.9)",
+  blueDim:  "rgba(96,165,250,.45)",
+  text:     "#e8ecf4",
+  textDim:  "rgba(148,168,210,.6)",
+  border:   "rgba(255,255,255,.07)",
+  borderHi: "rgba(255,255,255,.14)",
+  bg:       "#030508",
+  bgCard:   "rgba(8,12,24,.85)",
+  bgField:  "rgba(6,10,20,.9)",
 };
 
-// ─── MAIN ADMIN PAGE ──────────────────────────────────────────────────
+const sec: React.CSSProperties = {
+  fontSize: "9px", color: T.gold,
+  textTransform: "uppercase", letterSpacing: "2.5px",
+  display: "block", marginBottom: "10px",
+  fontFamily: "'DM Sans', system-ui",
+};
+
+const field: React.CSSProperties = {
+  background: T.bgField,
+  border: `1px solid ${T.border}`,
+  borderRadius: "6px", color: T.text,
+  padding: "9px 13px", fontSize: "13px",
+  fontFamily: "'DM Mono', monospace",
+  boxSizing: "border-box", width: "100%",
+};
+
+function TagBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button onClick={onClick} style={{
+      padding: "5px 12px", borderRadius: "5px", cursor: "pointer",
+      fontSize: "11px", fontFamily: "'DM Sans', system-ui", letterSpacing: ".3px",
+      background: active ? "rgba(80,130,220,.22)" : "rgba(12,18,36,.7)",
+      border: `1px solid ${active ? "rgba(80,150,255,.4)" : T.border}`,
+      color: active ? T.blue : T.textDim, transition: "all .18s",
+    }}>{children}</button>
+  );
+}
+
+function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label?: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}
+      onClick={() => onChange(!on)}>
+      <div style={{
+        width: "38px", height: "20px", borderRadius: "10px",
+        background: on ? "rgba(96,165,250,.25)" : "rgba(20,28,50,.6)",
+        border: `1px solid ${on ? T.blueDim : T.border}`,
+        position: "relative", transition: "all .22s", flexShrink: 0,
+      }}>
+        <div style={{
+          position: "absolute", top: "3px",
+          left: on ? "19px" : "3px", width: "12px", height: "12px",
+          borderRadius: "50%",
+          background: on ? "#60a5fa" : "rgba(80,100,150,.6)",
+          transition: "all .22s",
+        }} />
+      </div>
+      {label && <span style={{ fontSize: "12px", color: on ? T.blue : T.textDim }}>{label}</span>}
+    </div>
+  );
+}
+
+// ─── MAIN ─────────────────────────────────────────────────────────────
 export default function AdminPage() {
-  const [authed, setAuthed] = useState(false);
-  const [password, setPassword] = useState("");
-  const [pwErr, setPwErr] = useState(false);
-
-  const [configs, setConfigs] = useState<Configs>({});
-  const [loading, setLoading] = useState(false);
-  const [editSlug, setEditSlug] = useState<string | null>(null);
+  const [authed, setAuthed]       = useState(false);
+  const [password, setPassword]   = useState("");
+  const [pwErr, setPwErr]         = useState(false);
+  const [configs, setConfigs]     = useState<Configs>({});
+  const [loading, setLoading]     = useState(false);
+  const [editSlug, setEditSlug]   = useState<string | null>(null);
   const [editState, setEditState] = useState<DisplayConfig | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [saveMsg, setSaveMsg] = useState("");
+  const [saving, setSaving]       = useState(false);
+  const [saveMsg, setSaveMsg]     = useState("");
+  const [setupOpen, setSetupOpen] = useState<string | null>(null);
+  const [copied, setCopied]       = useState(false);
 
-  // Fetch configs on auth
+  const BASE_URL = typeof window !== "undefined"
+    ? window.location.origin
+    : "https://earthmoves.space";
+
   useEffect(() => {
     if (!authed) return;
     setLoading(true);
     fetch("/api/display-config")
       .then(r => r.json())
-      .then(data => { setConfigs(data); setLoading(false); })
+      .then((data: Record<string, Partial<DisplayConfig>>) => {
+        const normalized: Configs = {};
+        for (const [k, v] of Object.entries(data)) normalized[k] = withDefaults(v);
+        setConfigs(normalized);
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, [authed]);
 
   function login() {
-    if (password === "earthmoves2026") {
-      setAuthed(true); setPwErr(false);
-    } else {
-      setPwErr(true);
-    }
+    if (password === "earthmoves2026") { setAuthed(true); setPwErr(false); }
+    else setPwErr(true);
   }
 
   function startEdit(slug: string) {
@@ -145,8 +199,7 @@ export default function AdminPage() {
 
   async function saveEdit() {
     if (!editSlug || !editState) return;
-    setSaving(true);
-    setSaveMsg("");
+    setSaving(true); setSaveMsg("");
     try {
       const res = await fetch("/api/display-config", {
         method: "POST",
@@ -157,249 +210,398 @@ export default function AdminPage() {
         setConfigs(prev => ({ ...prev, [editSlug]: editState }));
         setSaveMsg("Saved ✓");
         setTimeout(() => setSaveMsg(""), 2500);
-      } else {
-        setSaveMsg("Error saving");
-      }
-    } catch {
-      setSaveMsg("Error saving");
-    }
+      } else setSaveMsg("Error saving");
+    } catch { setSaveMsg("Error saving"); }
     setSaving(false);
   }
 
   function togglePin(city: Pin) {
     if (!editState) return;
-    const existing = editState.locationPins.findIndex(p => p.name === city.name);
-    if (existing >= 0) {
+    const has = editState.locationPins.findIndex(p => p.name === city.name);
+    if (has >= 0)
       setEditState({ ...editState, locationPins: editState.locationPins.filter(p => p.name !== city.name) });
-    } else {
+    else
       setEditState({ ...editState, locationPins: [...editState.locationPins, city] });
-    }
   }
 
-  // ── Password gate ──────────────────────────────────────────────────
+  async function copyUrl(url: string) {
+    try { await navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 2000); }
+    catch { /* ignore */ }
+  }
+
+  // ── Login screen ──────────────────────────────────────────────────
   if (!authed) {
     return (
-      <div style={S.page}>
-        <div style={S.gate}>
-          <div style={{ fontSize: "22px", fontWeight: 300, letterSpacing: "3px", color: "#8090c0", textTransform: "uppercase", marginBottom: "8px" }}>
-            Earth Moves Admin
-          </div>
-          <div style={{ fontSize: "11px", color: "rgba(80,100,150,.6)", letterSpacing: "1.5px", marginBottom: "24px" }}>
-            Display Configuration
-          </div>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={e => { setPassword(e.target.value); setPwErr(false); }}
-            onKeyDown={e => e.key === "Enter" && login()}
-            style={{ ...S.input, borderColor: pwErr ? "rgba(200,80,80,.5)" : "rgba(80,110,170,.3)" }}
-            autoFocus
-          />
-          {pwErr && (
-            <div style={{ fontSize: "11px", color: "rgba(220,100,100,.8)", letterSpacing: ".5px" }}>
-              Incorrect password
-            </div>
-          )}
-          <button onClick={login} style={S.btn(true)}>Enter</button>
+      <div style={{ minHeight: "100vh", background: T.bg, display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center", gap: "20px",
+        fontFamily: "'DM Sans', system-ui",
+        backgroundImage: "radial-gradient(ellipse at 50% 110%, rgba(30,70,130,.12) 0%, transparent 65%)" }}>
+        <style>{pulseCSS}</style>
+        <Image src="/images/em-logo-white.png" alt="Earth Moves" width={160} height={32}
+          style={{ height: "28px", width: "auto", opacity: 0.85, marginBottom: "4px" }} />
+        <div style={{ fontSize: "11px", color: T.gold, letterSpacing: "3px", textTransform: "uppercase" }}>
+          Mission Control
         </div>
+        <div style={{ height: "1px", width: "160px", background: `linear-gradient(to right, transparent, ${T.border}, transparent)` }} />
+        <input
+          type="password" placeholder="Access code"
+          value={password}
+          onChange={e => { setPassword(e.target.value); setPwErr(false); }}
+          onKeyDown={e => e.key === "Enter" && login()}
+          className="em-field"
+          style={{ ...field, width: "260px", textAlign: "center",
+            borderColor: pwErr ? "rgba(220,80,80,.45)" : T.border }}
+          autoFocus
+        />
+        {pwErr && <div style={{ fontSize: "11px", color: "rgba(220,100,100,.8)", letterSpacing: ".5px" }}>
+          Incorrect access code
+        </div>}
+        <button onClick={login} style={{
+          background: "rgba(80,130,220,.18)", border: "1px solid rgba(80,150,255,.35)",
+          borderRadius: "7px", color: T.blue, padding: "9px 28px",
+          cursor: "pointer", fontSize: "12px", letterSpacing: "1px",
+          fontFamily: "inherit", transition: "all .2s",
+        }}>Enter</button>
       </div>
     );
   }
 
-  // ── Main dashboard ─────────────────────────────────────────────────
+  // ── Dashboard ─────────────────────────────────────────────────────
   return (
-    <div style={S.page}>
-      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+    <div style={{ minHeight: "100vh", background: T.bg, color: T.text,
+      fontFamily: "'DM Sans', system-ui",
+      backgroundImage: "radial-gradient(ellipse at 50% 110%, rgba(20,55,110,.10) 0%, transparent 60%)" }}>
+      <style>{pulseCSS}</style>
 
       {/* Header */}
-      <div style={{ borderBottom: "1px solid rgba(50,70,120,.2)", padding: "20px 40px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div>
-          <div style={{ fontSize: "18px", fontWeight: 300, letterSpacing: "2px", color: "#a0b0d0" }}>
-            Earth Moves — Display Admin
-          </div>
-          <div style={{ fontSize: "11px", color: "rgba(80,100,150,.5)", letterSpacing: "1px", marginTop: "2px" }}>
-            Manage airport &amp; institution displays
+      <div style={{ borderBottom: `1px solid ${T.border}`, padding: "18px 40px",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        background: "rgba(4,7,16,.6)", backdropFilter: "blur(8px)",
+        position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          <Image src="/images/em-logo-white.png" alt="Earth Moves" width={130} height={26}
+            style={{ height: "22px", width: "auto", opacity: 0.9 }} />
+          <div style={{ width: "1px", height: "22px", background: T.border }} />
+          <div>
+            <div style={{ fontSize: "13px", color: T.text, letterSpacing: "1px", fontWeight: 300 }}>
+              Display Control
+            </div>
+            <div style={{ fontSize: "9px", color: T.gold, letterSpacing: "2px", textTransform: "uppercase", marginTop: "1px" }}>
+              Mission Control
+            </div>
           </div>
         </div>
-        <button onClick={() => setAuthed(false)} style={S.btn()}>Log out</button>
+        <button onClick={() => setAuthed(false)} style={{
+          background: "none", border: `1px solid ${T.border}`,
+          borderRadius: "6px", color: T.textDim,
+          padding: "6px 16px", cursor: "pointer",
+          fontSize: "11px", letterSpacing: ".5px", fontFamily: "inherit",
+        }}>Log out</button>
       </div>
 
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "32px 24px" }}>
+      <div style={{ maxWidth: "860px", margin: "0 auto", padding: "36px 24px" }}>
+
+        {/* System status */}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "32px" }}>
+          <div style={{ width: "7px", height: "7px", borderRadius: "50%",
+            background: "#4ade80", animation: "em-pulse 3s ease-in-out infinite" }} />
+          <span style={{ fontSize: "10px", color: T.textDim, letterSpacing: "1.5px", textTransform: "uppercase" }}>
+            {Object.keys(configs).length} display{Object.keys(configs).length !== 1 ? "s" : ""} online
+          </span>
+        </div>
+
         {loading && (
-          <div style={{ textAlign: "center", color: "rgba(100,120,170,.5)", padding: "40px", fontSize: "13px" }}>
-            Loading configurations…
+          <div style={{ textAlign: "center", color: T.textDim, padding: "60px", fontSize: "13px" }}>
+            Syncing configurations…
           </div>
         )}
 
-        {!loading && Object.keys(configs).map(slug => {
+        {!loading && Object.keys(configs).map((slug, idx) => {
           const cfg = configs[slug];
           const isEditing = editSlug === slug;
+          const displayUrl = `${BASE_URL}/display/${slug}`;
+          const setupExpanded = setupOpen === slug;
 
           return (
-            <div key={slug} style={S.card}>
-              {/* Card header */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: isEditing ? "20px" : "0" }}>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div style={{
-                      width: "8px", height: "8px", borderRadius: "50%",
-                      background: cfg.accentColor, boxShadow: `0 0 6px ${cfg.accentColor}`,
-                      flexShrink: 0,
-                    }} />
-                    <span style={{ fontSize: "15px", color: "#c0d0f0", fontWeight: 400 }}>
-                      {cfg.customLabel}
-                    </span>
-                  </div>
-                  <div style={{ marginTop: "4px", paddingLeft: "20px", fontSize: "11px", color: "rgba(80,100,150,.55)", fontFamily: "'DM Mono', monospace", letterSpacing: ".5px" }}>
-                    /display/{slug} · {cfg.locationPins.length} pins · {cfg.skinName} skin · clouds {cfg.cloudsOn ? "on" : "off"}
-                  </div>
-                </div>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <a
-                    href={`/display/${slug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ ...S.btn(), textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "5px" }}
-                  >
-                    ↗ Preview
-                  </a>
-                  {!isEditing
-                    ? <button onClick={() => startEdit(slug)} style={S.btn(true)}>Edit</button>
-                    : <button onClick={cancelEdit} style={S.btn()}>Cancel</button>
-                  }
-                </div>
-              </div>
+            <div key={slug} className="em-card" style={{
+              background: T.bgCard,
+              border: `1px solid ${isEditing ? T.borderHi : T.border}`,
+              borderRadius: "12px", marginBottom: "14px",
+              overflow: "hidden",
+              animationDelay: `${idx * 55}ms`,
+              boxShadow: isEditing ? `0 0 32px rgba(96,165,250,.05)` : "none",
+              transition: "border-color .2s, box-shadow .2s",
+            }}>
+              {/* Left accent bar */}
+              <div style={{ display: "flex" }}>
+                <div style={{ width: "3px", background: cfg.accentColor, flexShrink: 0, borderRadius: "12px 0 0 12px" }} />
+                <div style={{ flex: 1, padding: "18px 22px" }}>
 
-              {/* Edit form */}
-              {isEditing && editState && (
-                <div style={{ borderTop: "1px solid rgba(50,70,120,.18)", paddingTop: "20px" }}>
-
-                  {/* Custom label */}
-                  <div style={{ marginBottom: "16px" }}>
-                    <label style={S.label}>Display Label</label>
-                    <input
-                      type="text"
-                      value={editState.customLabel}
-                      onChange={e => setEditState({ ...editState, customLabel: e.target.value })}
-                      style={S.field}
-                    />
-                  </div>
-
-                  {/* Accent color */}
-                  <div style={{ marginBottom: "16px" }}>
-                    <label style={S.label}>Accent Color</label>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <input
-                        type="color"
-                        value={editState.accentColor}
-                        onChange={e => setEditState({ ...editState, accentColor: e.target.value })}
-                        style={{ width: "44px", height: "34px", borderRadius: "6px", border: "1px solid rgba(60,80,130,.3)", cursor: "pointer", background: "none", padding: "2px" }}
-                      />
-                      <input
-                        type="text"
-                        value={editState.accentColor}
-                        onChange={e => setEditState({ ...editState, accentColor: e.target.value })}
-                        style={{ ...S.field, width: "120px" }}
-                        maxLength={7}
-                      />
+                  {/* Card header */}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
+                    marginBottom: isEditing ? "20px" : "0" }}>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <div style={{
+                          width: "7px", height: "7px", borderRadius: "50%",
+                          background: cfg.accentColor,
+                          boxShadow: `0 0 8px ${cfg.accentColor}`,
+                          animation: "em-pulse 3s ease-in-out infinite",
+                          flexShrink: 0,
+                        }} />
+                        <span style={{ fontSize: "15px", color: T.text, fontWeight: 300, letterSpacing: ".3px" }}>
+                          {cfg.customLabel}
+                        </span>
+                      </div>
+                      <div style={{ marginTop: "5px", paddingLeft: "17px", fontSize: "10px",
+                        color: T.textDim, fontFamily: "'DM Mono', monospace", letterSpacing: ".4px" }}>
+                        /display/{slug} · {cfg.locationPins.length} pins · {cfg.skinName} · {cfg.refreshMinutes}m refresh
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Skin */}
-                  <div style={{ marginBottom: "16px" }}>
-                    <label style={S.label}>Earth Skin</label>
                     <div style={{ display: "flex", gap: "8px" }}>
-                      {["default", "silver", "ice"].map(skin => (
-                        <button
-                          key={skin}
-                          onClick={() => setEditState({ ...editState, skinName: skin })}
-                          style={S.tagBtn(editState.skinName === skin)}
-                        >
-                          {skin.charAt(0).toUpperCase() + skin.slice(1)}
-                        </button>
-                      ))}
+                      <a href={`/display/${slug}`} target="_blank" rel="noopener noreferrer"
+                        style={{
+                          background: "rgba(12,18,36,.8)", border: `1px solid ${T.border}`,
+                          borderRadius: "7px", color: T.textDim,
+                          padding: "7px 14px", cursor: "pointer",
+                          fontSize: "11px", letterSpacing: ".4px",
+                          fontFamily: "inherit", textDecoration: "none",
+                          display: "inline-flex", alignItems: "center", gap: "5px",
+                        }}>↗ Preview</a>
+                      {!isEditing
+                        ? <button onClick={() => startEdit(slug)} style={{
+                            background: "rgba(80,130,220,.18)", border: "1px solid rgba(80,150,255,.35)",
+                            borderRadius: "7px", color: T.blue, padding: "7px 18px",
+                            cursor: "pointer", fontSize: "11px", letterSpacing: ".4px", fontFamily: "inherit",
+                          }}>Edit</button>
+                        : <button onClick={cancelEdit} style={{
+                            background: "rgba(12,18,36,.8)", border: `1px solid ${T.border}`,
+                            borderRadius: "7px", color: T.textDim, padding: "7px 14px",
+                            cursor: "pointer", fontSize: "11px", letterSpacing: ".4px", fontFamily: "inherit",
+                          }}>Cancel</button>
+                      }
                     </div>
                   </div>
 
-                  {/* Toggles row */}
-                  <div style={{ display: "flex", gap: "32px", marginBottom: "20px" }}>
-                    {/* Clouds */}
-                    <div>
-                      <label style={S.label}>Clouds</label>
-                      <div
-                        style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}
-                        onClick={() => setEditState({ ...editState, cloudsOn: !editState.cloudsOn })}
-                      >
-                        <div style={S.toggle(editState.cloudsOn)}>
-                          <div style={S.dot(editState.cloudsOn)} />
+                  {/* Edit form */}
+                  {isEditing && editState && (
+                    <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: "22px" }}>
+
+                      {/* Display Label */}
+                      <div style={{ marginBottom: "18px" }}>
+                        <label style={sec}>Display Label</label>
+                        <input type="text" value={editState.customLabel}
+                          onChange={e => setEditState({ ...editState, customLabel: e.target.value })}
+                          className="em-field" style={field} />
+                      </div>
+
+                      {/* Accent Color */}
+                      <div style={{ marginBottom: "18px" }}>
+                        <label style={sec}>Accent Color</label>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <input type="color" value={editState.accentColor}
+                            onChange={e => setEditState({ ...editState, accentColor: e.target.value })}
+                            style={{ width: "40px", height: "32px", borderRadius: "5px",
+                              border: `1px solid ${T.border}`, cursor: "pointer",
+                              background: "none", padding: "2px" }} />
+                          <input type="text" value={editState.accentColor} maxLength={7}
+                            onChange={e => setEditState({ ...editState, accentColor: e.target.value })}
+                            className="em-field" style={{ ...field, width: "110px" }} />
                         </div>
-                        <span style={{ fontSize: "12px", color: editState.cloudsOn ? "#6bcb77" : "#4a5a7a" }}>
-                          {editState.cloudsOn ? "On" : "Off"}
-                        </span>
+                      </div>
+
+                      {/* Earth Skin */}
+                      <div style={{ marginBottom: "18px" }}>
+                        <label style={sec}>Earth Skin</label>
+                        <div style={{ display: "flex", gap: "7px", flexWrap: "wrap" }}>
+                          {(["default", "silver", "ice", "blue"] as const).map(skin => (
+                            <TagBtn key={skin} active={editState.skinName === skin}
+                              onClick={() => setEditState({ ...editState, skinName: skin })}>
+                              {skin === "default" ? "Classic" : skin === "ice" ? "Ice Age"
+                                : skin.charAt(0).toUpperCase() + skin.slice(1)}
+                            </TagBtn>
+                          ))}
+                        </div>
+                      </div>
+
+
+                      {/* Clouds + Perspective */}
+                      <div style={{ display: "flex", gap: "36px", marginBottom: "18px" }}>
+                        <div>
+                          <label style={sec}>Clouds</label>
+                          <Toggle on={editState.cloudsOn}
+                            onChange={v => setEditState({ ...editState, cloudsOn: v })}
+                            label={editState.cloudsOn ? "On" : "Off"} />
+                        </div>
+                        <div>
+                          <label style={sec}>Perspective</label>
+                          <Toggle on={editState.southPole}
+                            onChange={v => setEditState({ ...editState, southPole: v })}
+                            label={editState.southPole ? "South Pole" : "North Pole"} />
+                        </div>
+                      </div>
+
+                      {/* Display Layout */}
+                      <div style={{ marginBottom: "18px" }}>
+                        <label style={sec}>Aspect Ratio</label>
+                        <div style={{ display: "flex", gap: "7px", flexWrap: "wrap" }}>
+                          {(["auto", "1:1", "9:16", "16:9", "21:9"] as const).map(r => (
+                            <TagBtn key={r} active={editState.aspectRatio === r}
+                              onClick={() => setEditState({ ...editState, aspectRatio: r })}>
+                              {r === "auto" ? "Auto" : r}
+                            </TagBtn>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div style={{ marginBottom: "18px" }}>
+                        <label style={sec}>Display Scale — {Math.round((editState.displayScale ?? 1) * 100)}%</label>
+                        <input type="range" min={50} max={100} step={5}
+                          value={Math.round((editState.displayScale ?? 1) * 100)}
+                          onChange={e => setEditState({ ...editState, displayScale: Number(e.target.value) / 100 })}
+                          style={{ width: "100%", accentColor: "#60a5fa", cursor: "pointer" }} />
+                      </div>
+
+                      {/* Branding */}
+                      <div style={{ marginBottom: "18px" }}>
+                        <label style={sec}>Branding Layout</label>
+                        <div style={{ display: "flex", gap: "7px", flexWrap: "wrap" }}>
+                          {([
+                            { v: "logo_and_label", l: "Logo + Label" },
+                            { v: "logo_only",      l: "Logo Only"  },
+                            { v: "label_only",     l: "Label Only" },
+                            { v: "none",           l: "None"       },
+                          ] as const).map(opt => (
+                            <TagBtn key={opt.v} active={editState.brandingLayout === opt.v}
+                              onClick={() => setEditState({ ...editState, brandingLayout: opt.v })}>
+                              {opt.l}
+                            </TagBtn>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Location Pins */}
+                      <div style={{ marginBottom: "18px" }}>
+                        <label style={sec}>Location Pins ({editState.locationPins.length} selected)</label>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                          {CITY_POOL.map(city => {
+                            const active = editState.locationPins.some(p => p.name === city.name);
+                            return (
+                              <TagBtn key={city.name} active={active} onClick={() => togglePin(city)}>
+                                {city.name}
+                              </TagBtn>
+                            );
+                          })}
+                        </div>
+                        <div style={{ marginTop: "7px", fontSize: "10px", color: T.textDim, letterSpacing: ".4px" }}>
+                          Click cities to add or remove
+                        </div>
+                      </div>
+
+                      {/* Refresh Interval */}
+                      <div style={{ marginBottom: "22px" }}>
+                        <label style={sec}>Refresh Interval</label>
+                        <div style={{ display: "flex", gap: "7px" }}>
+                          {[15, 30, 60, 120].map(m => (
+                            <TagBtn key={m} active={editState.refreshMinutes === m}
+                              onClick={() => setEditState({ ...editState, refreshMinutes: m })}>
+                              {m < 60 ? `${m}m` : `${m / 60}h`}
+                            </TagBtn>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Save row */}
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px",
+                        borderTop: `1px solid ${T.border}`, paddingTop: "18px" }}>
+                        <button onClick={saveEdit} disabled={saving} style={{
+                          background: "linear-gradient(135deg, rgba(96,165,250,.25), rgba(96,165,250,.12))",
+                          border: "1px solid rgba(96,165,250,.38)", borderRadius: "7px",
+                          color: "rgba(200,220,255,.9)", padding: "8px 22px",
+                          cursor: "pointer", fontSize: "12px",
+                          letterSpacing: ".6px", fontFamily: "inherit",
+                        }}>{saving ? "Saving…" : "Save Changes"}</button>
+                        <button onClick={cancelEdit} style={{
+                          background: "none", border: `1px solid ${T.border}`,
+                          borderRadius: "7px", color: T.textDim, padding: "8px 16px",
+                          cursor: "pointer", fontSize: "12px", letterSpacing: ".6px", fontFamily: "inherit",
+                        }}>Cancel</button>
+                        {saveMsg && (
+                          <span style={{ fontSize: "12px", letterSpacing: ".4px",
+                            color: saveMsg.startsWith("Error") ? "#e06060" : "#4ade80" }}>
+                            {saveMsg}
+                          </span>
+                        )}
                       </div>
                     </div>
-                    {/* South Pole */}
-                    <div>
-                      <label style={S.label}>Perspective</label>
-                      <div
-                        style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}
-                        onClick={() => setEditState({ ...editState, southPole: !editState.southPole })}
-                      >
-                        <div style={S.toggle(editState.southPole)}>
-                          <div style={S.dot(editState.southPole)} />
-                        </div>
-                        <span style={{ fontSize: "12px", color: editState.southPole ? "#6bcb77" : "#4a5a7a" }}>
-                          {editState.southPole ? "South Pole" : "North Pole"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  )}
 
-                  {/* Location pins */}
-                  <div style={{ marginBottom: "20px" }}>
-                    <label style={S.label}>
-                      Location Pins ({editState.locationPins.length} selected)
-                    </label>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                      {CITY_POOL.map(city => {
-                        const active = editState.locationPins.some(p => p.name === city.name);
-                        return (
-                          <button
-                            key={city.name}
-                            onClick={() => togglePin(city)}
-                            style={S.tagBtn(active)}
-                          >
-                            {city.name}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    <div style={{ marginTop: "8px", fontSize: "10px", color: "rgba(70,90,130,.4)", letterSpacing: ".5px" }}>
-                      Click to add or remove cities
-                    </div>
-                  </div>
-
-                  {/* Save row */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px", borderTop: "1px solid rgba(50,70,120,.15)", paddingTop: "16px" }}>
-                    <button onClick={saveEdit} disabled={saving} style={S.btn(true)}>
-                      {saving ? "Saving…" : "Save Changes"}
+                  {/* Setup Instructions (collapsible) */}
+                  <div style={{ marginTop: isEditing ? "18px" : "12px", borderTop: `1px solid ${T.border}`, paddingTop: "12px" }}>
+                    <button onClick={() => setSetupOpen(setupExpanded ? null : slug)} style={{
+                      background: "none", border: "none", cursor: "pointer",
+                      fontSize: "9px", color: T.goldDim, letterSpacing: "2px",
+                      textTransform: "uppercase", fontFamily: "'DM Sans', system-ui",
+                      display: "flex", alignItems: "center", gap: "6px", padding: 0,
+                    }}>
+                      <span style={{ fontSize: "10px" }}>{setupExpanded ? "▾" : "▸"}</span>
+                      Setup Instructions
                     </button>
-                    <button onClick={cancelEdit} style={S.btn()}>Cancel</button>
-                    {saveMsg && (
-                      <span style={{ fontSize: "12px", color: saveMsg.startsWith("Error") ? "#e06060" : "#6bcb77", letterSpacing: ".5px" }}>
-                        {saveMsg}
-                      </span>
+
+                    {setupExpanded && (
+                      <div style={{ marginTop: "14px", background: "rgba(4,8,18,.7)",
+                        border: `1px solid ${T.border}`, borderRadius: "8px", padding: "16px 18px" }}>
+
+                        {/* URL */}
+                        <div style={{ marginBottom: "14px" }}>
+                          <div style={{ ...sec, marginBottom: "6px" }}>Display URL</div>
+                          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                            <code style={{ ...field, flex: 1, fontSize: "11px",
+                              color: T.blue, background: "rgba(2,5,14,.9)" }}>
+                              {displayUrl}
+                            </code>
+                            <button onClick={() => copyUrl(displayUrl)} style={{
+                              background: "rgba(80,130,220,.15)", border: "1px solid rgba(80,150,255,.3)",
+                              borderRadius: "6px", color: copied ? "#4ade80" : T.blue,
+                              padding: "8px 14px", cursor: "pointer",
+                              fontSize: "11px", fontFamily: "inherit", whiteSpace: "nowrap",
+                            }}>{copied ? "Copied ✓" : "Copy"}</button>
+                          </div>
+                        </div>
+
+                        {/* Guide */}
+                        <div style={{ ...sec, marginBottom: "8px" }}>Quick Setup Guide</div>
+                        <pre style={{
+                          fontSize: "10px", color: T.textDim,
+                          fontFamily: "'DM Mono', monospace",
+                          lineHeight: 1.7, margin: 0,
+                          whiteSpace: "pre-wrap", wordBreak: "break-word",
+                        }}>{`1. Open the display URL on your screen device
+2. Press F11 for fullscreen (or use kiosk mode)
+3. Display auto-refreshes every ${cfg.refreshMinutes} minutes
+
+RASPBERRY PI (recommended for permanent installs):
+chromium-browser --kiosk --noerrdialogs \\
+  --disable-infobars \\
+  ${displayUrl}
+
+SMART TV:
+Open the URL in the TV's built-in browser
+
+DIGITAL SIGNAGE (BrightSign, Screenly, Yodeck):
+Use the URL as a web content source`}</pre>
+                      </div>
                     )}
                   </div>
+
                 </div>
-              )}
+              </div>
             </div>
           );
         })}
 
         {!loading && Object.keys(configs).length === 0 && (
-          <div style={{ textAlign: "center", color: "rgba(80,100,150,.4)", padding: "60px 20px", fontSize: "13px" }}>
+          <div style={{ textAlign: "center", color: T.textDim, padding: "80px 20px", fontSize: "13px" }}>
             No display configurations found.
           </div>
         )}
