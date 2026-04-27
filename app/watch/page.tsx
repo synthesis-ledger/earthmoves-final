@@ -1555,23 +1555,30 @@ useEffect(() => {
       const nx = cx + nR * Math.cos(a), ny = cy + nR * Math.sin(a);
 
       if (h === 12) {
-        // White Sun — always visible in all modes
+        // Sun moved beyond moon orbit so Moon can cross between Earth and Sun
+        const sunR12 = mO + S * 0.06;
+        const snx = cx + sunR12 * Math.cos(a), sny = cy + sunR12 * Math.sin(a);
         const sr = S * .017;
-        const sg = c.createRadialGradient(nx, ny, 0, nx, ny, sr * 3);
+        const sg = c.createRadialGradient(snx, sny, 0, snx, sny, sr * 3);
         sg.addColorStop(0, night ? nC(.12) : "rgba(255,255,255,.12)");
         sg.addColorStop(.5, night ? nC(.04) : "rgba(255,255,255,.04)");
         sg.addColorStop(1, night ? nC(0) : "rgba(255,255,255,0)");
-        c.fillStyle = sg; c.beginPath(); c.arc(nx, ny, sr * 3, 0, TAU); c.fill();
+        c.fillStyle = sg; c.beginPath(); c.arc(snx, sny, sr * 3, 0, TAU); c.fill();
         c.strokeStyle = night ? nC(0.9) : "rgba(255,255,255,.85)"; c.lineWidth = 1.2;
-        c.beginPath(); c.arc(nx, ny, sr, 0, TAU); c.stroke();
+        c.beginPath(); c.arc(snx, sny, sr, 0, TAU); c.stroke();
         c.strokeStyle = night ? nC(.9) : "rgba(255,255,255,.55)"; c.lineWidth = 0.6;
         for (let r = 0; r < 8; r++) {
           const ra = r * Math.PI / 4;
           c.beginPath();
-          c.moveTo(nx + sr * 1.5 * Math.cos(ra), ny + sr * 1.5 * Math.sin(ra));
-          c.lineTo(nx + sr * 2.3 * Math.cos(ra), ny + sr * 2.3 * Math.sin(ra));
+          c.moveTo(snx + sr * 1.5 * Math.cos(ra), sny + sr * 1.5 * Math.sin(ra));
+          c.lineTo(snx + sr * 2.3 * Math.cos(ra), sny + sr * 2.3 * Math.sin(ra));
           c.stroke();
         }
+        // "12" label where the sun used to be
+        c.fillStyle = night ? nC(.95) : "rgba(225,238,255,.95)";
+        c.font = `300 ${S * (night ? .042 : .035)}px 'DM Sans',system-ui`;
+        c.textAlign = "center"; c.textBaseline = "middle";
+        c.fillText("12", nx, ny);
       } else if (h === 6) {
         // Orbital Vector — always visible in all modes
         const nLen = S * .026;
